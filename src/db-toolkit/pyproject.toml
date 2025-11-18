@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "db-toolkit"
 version = "0.1.0"
-description = "GUI Database Management Application"
+description = "Database Management Application with FastAPI Backend"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -30,7 +30,7 @@ dev = [
 ]
 
 [project.scripts]
-dbtoolkit = "dbtoolkit.gui.main:main"
+db-toolkit = "db_toolkit.main:main"
 
 [tool.ruff]
 line-length = 88
@@ -41,4 +41,4 @@ line-length = 88
 target-version = ["py311"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/dbtoolkit"]
+packages = ["src/db-toolkit"]
