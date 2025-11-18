@@ -4,10 +4,12 @@ import Editor from '@monaco-editor/react';
 import { format } from 'sql-formatter';
 import { Button } from '../common/Button';
 import { useTheme } from '../../contexts/ThemeContext';
+import './QueryEditor.css';
 
-export function QueryEditor({ query, onChange, onExecute, loading, schema }) {
+export function QueryEditor({ query, onChange, onExecute, loading, schema, error }) {
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
+  const decorationsRef = useRef([]);
   const { theme } = useTheme();
 
   const handleEditorDidMount = (editor, monaco) => {
@@ -98,6 +100,61 @@ export function QueryEditor({ query, onChange, onExecute, loading, schema }) {
     });
   };
 
+  // Highlight errors in editor
+  useEffect(() => {
+    if (!editorRef.current || !monacoRef.current || !error) {
+      // Clear decorations if no error
+      if (editorRef.current && decorationsRef.current.length > 0) {
+        decorationsRef.current = editorRef.current.deltaDecorations(decorationsRef.current, []);
+      }
+      return;
+    }
+
+    const editor = editorRef.current;
+    const monaco = monacoRef.current;
+
+    // Parse error message for line number
+    const lineMatch = error.match(/line (\d+)/i);
+    const positionMatch = error.match(/position (\d+)/i);
+    
+    let lineNumber = 1;
+    if (lineMatch) {
+      lineNumber = parseInt(lineMatch[1], 10);
+    } else if (positionMatch) {
+      // Estimate line from position
+      const position = parseInt(positionMatch[1], 10);
+      const lines = query.split('\n');
+      let charCount = 0;
+      for (let i = 0; i < lines.length; i++) {
+        charCount += lines[i].length + 1;
+        if (charCount >= position) {
+          lineNumber = i + 1;
+          break;
+        }
+      }
+    }
+
+    // Add error decoration
+    const newDecorations = [
+      {
+        range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+        options: {
+          isWholeLine: true,
+          className: 'error-line',
+          glyphMarginClassName: 'error-glyph',
+          glyphMarginHoverMessage: { value: error },
+          hoverMessage: { value: `**Error:** ${error}` },
+        },
+      },
+    ];
+
+    decorationsRef.current = editor.deltaDecorations(decorationsRef.current, newDecorations);
+
+    // Jump to error line
+    editor.revealLineInCenter(lineNumber);
+    editor.setPosition({ lineNumber, column: 1 });
+  }, [error, query]);
+
   const handleEditorWillMount = (monaco) => {
     // Define custom themes (Monaco has built-in SQL syntax highlighting)
     monaco.editor.defineTheme('sql-light', {
@@ -163,6 +220,7 @@ export function QueryEditor({ query, onChange, onExecute, loading, schema }) {
             suggestOnTriggerCharacters: true,
             quickSuggestions: true,
             fontFamily: '"JetBrains Mono", "Fira Code", Consolas, monospace',
+            glyphMargin: true,
           }}
         />
       </div>

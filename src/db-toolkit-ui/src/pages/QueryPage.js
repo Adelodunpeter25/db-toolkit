@@ -24,14 +24,19 @@ function QueryPage() {
     }
   }, [connectionId, fetchSchemaTree]);
 
+  const [queryError, setQueryError] = useState(null);
+
   const handleExecute = async () => {
     if (!query.trim()) return;
+    setQueryError(null);
     const startTime = Date.now();
     try {
       await executeQuery(query);
       setExecutionTime(Date.now() - startTime);
     } catch (err) {
       console.error('Query failed:', err);
+      const errorMsg = err.response?.data?.detail || err.message;
+      setQueryError(errorMsg);
       setExecutionTime(Date.now() - startTime);
     }
   };
@@ -76,6 +81,7 @@ function QueryPage() {
               onExecute={handleExecute}
               loading={loading}
               schema={schema}
+              error={queryError}
             />
           </div>
 
