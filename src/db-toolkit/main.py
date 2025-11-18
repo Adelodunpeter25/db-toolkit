@@ -5,11 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.routes.connections import router as connections_router
 from core.routes.health import router as health_router
 from core.routes.schema import router as schema_router
+from core.routes.query import router as query_router
 
 app = FastAPI(
     title="DB Toolkit API",
     description="Database management toolkit API",
-    version="0.1.0"
+    version="0.1.0",
+    swagger_ui_parameters={"defaultModelsExpandDepth": -1},
 )
 
 # CORS middleware for Electron frontend
@@ -25,3 +27,4 @@ app.add_middleware(
 app.include_router(health_router, prefix="/api/v1", tags=["Health"])
 app.include_router(connections_router, prefix="/api/v1", tags=["Connections"])
 app.include_router(schema_router, prefix="/api/v1", tags=["Schema"])
+app.include_router(query_router, prefix="/api/v1", tags=["Query"])
