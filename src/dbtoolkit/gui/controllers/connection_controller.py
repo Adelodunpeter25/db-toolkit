@@ -3,6 +3,7 @@
 from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtQml import QmlElement
 from typing import List
+import asyncio
 from ...core.storage import connection_storage
 from ...core.models import DatabaseConnection, DatabaseType
 from ...connectors.factory import ConnectorFactory
@@ -66,21 +67,60 @@ class ConnectionController(QObject):
         except Exception as e:
             print(f"Error deleting connection: {e}")
     
+    @Slot(str, str, str, str, str, int, str, str, str)
+    def update_connection(self, connection_id: str, name: str, db_type: str, host: str, 
+                         username: str, port: int, password: str, database: str, file_path: str) -> None:
+        """Update existing database connection."""
+        try:
+            connection = DatabaseConnection(
+                id=connection_id,
+                name=name,
+                db_type=DatabaseType(db_type),
+                host=host if host else None,
+                port=port if port > 0 else None,
+                username=username if username else None,
+                password=password if password else None,
+                database=database if database else None,
+                file_path=file_path if file_path else None
+            )
+            
+            connection_storage.update_connection(connection)
+            self.load_connections()
+            
+        except Exception as e:
+            print(f"Error updating connection: {e}")
+    
     @Slot(str)
     def test_connection(self, connection_id: str) -> None:
         """Test database connection."""
+        import asyncio
+        
+        async def _test_async():
+            try:
+                connection = connection_storage.get_connection(connection_id)
+                if not connection:
+                    self.connectionTestResult.emit(False, "Connection not found")
+                    return
+                
+                connector = ConnectorFactory.create_connector(connection)
+                success = await connector.test_connection()
+                
+                if success:
+                    self.connectionTestResult.emit(True, "Connection successful")
+                else:
+                    self.connectionTestResult.emit(False, "Connection failed")
+                    
+            except Exception as e:
+                self.connectionTestResult.emit(False, f"Connection test failed: {str(e)}")
+        
+        # Run async test
         try:
-            connection = connection_storage.get_connection(connection_id)
-            if not connection:
-                self.connectionTestResult.emit(False, "Connection not found")
-                return
-            
-            # For now, just check if we can create a connector
-            connector = ConnectorFactory.create_connector(connection)
-            self.connectionTestResult.emit(True, "Connection configuration valid")
-            
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(_test_async())
+            loop.close()
         except Exception as e:
-            self.connectionTestResult.emit(False, f"Connection test failed: {str(e)}")
+            self.connectionTestResult.emit(False, f"Test error: {str(e)}")
     
     @Slot(result=list)
     def get_supported_database_types(self) -> List[str]:
