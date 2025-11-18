@@ -1,12 +1,16 @@
 /**
  * Data grid component for displaying table data
  */
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, Eye } from 'lucide-react';
 
-export function DataGrid({ data, columns, onSort, sortColumn, sortOrder }) {
+export function DataGrid({ data, columns, onSort, sortColumn, sortOrder, onCellClick }) {
   const handleSort = (column) => {
     const newOrder = sortColumn === column && sortOrder === 'ASC' ? 'DESC' : 'ASC';
     onSort(column, newOrder);
+  };
+
+  const isTruncated = (value) => {
+    return typeof value === 'string' && value.endsWith('...');
   };
 
   if (!data || data.length === 0) {
@@ -41,14 +45,30 @@ export function DataGrid({ data, columns, onSort, sortColumn, sortOrder }) {
         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           {data.map((row, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-              {columns.map((column, colIndex) => (
-                <td
-                  key={colIndex}
-                  className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap"
-                >
-                  {row[colIndex] !== null ? String(row[colIndex]) : <span className="text-gray-400">NULL</span>}
-                </td>
-              ))}
+              {columns.map((column, colIndex) => {
+                const value = row[colIndex];
+                const truncated = isTruncated(value);
+                
+                return (
+                  <td
+                    key={colIndex}
+                    className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap group relative"
+                  >
+                    <div className="flex items-center gap-2">
+                      {value !== null ? String(value) : <span className="text-gray-400">NULL</span>}
+                      {truncated && (
+                        <button
+                          onClick={() => onCellClick(row, column, colIndex)}
+                          className="opacity-0 group-hover:opacity-100 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                          title="View full content"
+                        >
+                          <Eye size={14} />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

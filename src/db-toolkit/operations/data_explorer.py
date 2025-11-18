@@ -1,12 +1,46 @@
 """Data explorer operations."""
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from core.models import DatabaseConnection
 from operations.connection_manager import connection_manager
 
 
 class DataExplorer:
     """Handles data browsing operations."""
+
+    async def get_table_relationships(
+        self,
+        connection: DatabaseConnection,
+        schema_name: str,
+        table_name: str,
+    ) -> Dict[str, Any]:
+        """Get foreign key relationships for a table."""
+        connector = await connection_manager.get_connector(connection.id)
+        if not connector:
+            return {"success": False, "error": "Not connected"}
+
+        try:
+            query = f"""
+                SELECT
+                    kcu.column_name,
+                    ccu.table_schema AS foreign_schema,
+                    ccu.table_name AS foreign_table,
+                    ccu.column_name AS foreign_column
+                FROM information_schema.table_constraints AS tc
+                JOIN information_schema.key_column_usage AS kcu
+                    ON tc.constraint_name = kcu.constraint_name
+                    AND tc.table_schema = kcu.table_schema
+                JOIN information_schema.constraint_column_usage AS ccu
+                    ON ccu.constraint_name = tc.constraint_name
+                    AND ccu.table_schema = tc.table_schema
+                WHERE tc.constraint_type = 'FOREIGN KEY'
+                    AND tc.table_schema = '{schema_name}'
+                    AND tc.table_name = '{table_name}'
+            """
+            result = await connector.execute_query(query)
+            return {"success": True, "relationships": result.get("rows", [])}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     async def browse_data(
         self,
@@ -45,15 +79,53 @@ class DataExplorer:
             query += f" LIMIT {limit} OFFSET {offset}"
 
             result = await connector.execute_query(query)
+            rows = result.get("rows", [])
+            columns = result.get("columns", [])
+            
+            # Truncate large text/blob fields
+            truncated_rows = []
+            for row in rows:
+                truncated_row = []
+                for val in row:
+                    if isinstance(val, (str, bytes)) and len(str(val)) > 100:
+                        truncated_row.append(str(val)[:100] + "...")
+                    else:
+                        truncated_row.append(val)
+                truncated_rows.append(truncated_row)
             
             return {
                 "success": True,
-                "rows": result.get("rows", []),
-                "columns": result.get("columns", []),
+                "rows": truncated_rows,
+                "columns": columns,
                 "limit": limit,
                 "offset": offset,
             }
 
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    async def get_cell_data(
+        self,
+        connection: DatabaseConnection,
+        schema_name: str,
+        table_name: str,
+        column_name: str,
+        row_identifier: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Get full content of a specific cell."""
+        connector = await connection_manager.get_connector(connection.id)
+        if not connector:
+            return {"success": False, "error": "Not connected"}
+
+        try:
+            conditions = [f'"{k}" = \'{v}\'' for k, v in row_identifier.items()]
+            where_clause = " AND ".join(conditions)
+            query = f'SELECT "{column_name}" FROM "{schema_name}"."{table_name}" WHERE {where_clause} LIMIT 1'
+            
+            result = await connector.execute_query(query)
+            if result.get("success") and result.get("rows"):
+                return {"success": True, "data": result["rows"][0][0]}
+            return {"success": False, "error": "No data found"}
         except Exception as e:
             return {"success": False, "error": str(e)}
 

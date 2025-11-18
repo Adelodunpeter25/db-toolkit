@@ -2,13 +2,15 @@
  * Data Explorer page for browsing table data
  */
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, RefreshCw, Database } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RefreshCw, Database, Download, Filter } from 'lucide-react';
 import { useConnections, useSchema } from '../hooks';
 import { useToast } from '../contexts/ToastContext';
 import { Button } from '../components/common/Button';
 import { LoadingState } from '../components/common/LoadingState';
 import { DataGrid } from '../components/data-explorer/DataGrid';
 import { TableSelector } from '../components/data-explorer/TableSelector';
+import { CellViewModal } from '../components/data-explorer/CellViewModal';
+import { ColumnFilter } from '../components/data-explorer/ColumnFilter';
 import api from '../services/api';
 
 function DataExplorerPage() {
@@ -25,6 +27,9 @@ function DataExplorerPage() {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState('ASC');
   const [totalCount, setTotalCount] = useState(0);
+  const [filters, setFilters] = useState({});
+  const [showFilters, setShowFilters] = useState(false);
+  const [cellModal, setCellModal] = useState({ isOpen: false, data: null, column: null });
 
   const handleConnect = async (id) => {
     try {
@@ -42,7 +47,7 @@ function DataExplorerPage() {
     }
   }, [connectionId, fetchSchemaTree]);
 
-  const loadTableData = async (schema, table, offset = 0, sort = null, order = 'ASC') => {
+  const loadTableData = async (schema, table, offset = 0, sort = null, order = 'ASC', filterData = {}) => {
     setLoading(true);
     try {
       const response = await api.post(`/connections/${connectionId}/data/browse`, {
@@ -52,6 +57,7 @@ function DataExplorerPage() {
         offset,
         sort_column: sort,
         sort_order: order,
+        filters: filterData,
       });
 
       if (response.data.success) {
@@ -59,13 +65,12 @@ function DataExplorerPage() {
         setColumns(response.data.columns);
       }
 
-      // Get total count
       const countResponse = await api.get(`/connections/${connectionId}/data/count`, {
         params: { schema_name: schema, table_name: table }
       });
       setTotalCount(countResponse.data.count);
     } catch (err) {
-      console.error('Failed to load data:', err);
+      toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
@@ -76,6 +81,7 @@ function DataExplorerPage() {
     setPage(0);
     setSortColumn(null);
     setSortOrder('ASC');
+    setFilters({});
     loadTableData(schema, table, 0);
   };
 
@@ -83,15 +89,92 @@ function DataExplorerPage() {
     setSortColumn(column);
     setSortOrder(order);
     if (selectedTable) {
-      loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, column, order);
+      loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, column, order, filters);
     }
+  };
+
+  const handleFilterChange = (column, value) => {
+    const newFilters = { ...filters, [column]: value };
+    setFilters(newFilters);
+  };
+
+  const applyFilters = () => {
+    setPage(0);
+    if (selectedTable) {
+      loadTableData(selectedTable.schema, selectedTable.table, 0, sortColumn, sortOrder, filters);
+    }
+  };
+
+  const clearFilters = () => {
+    setFilters({});
+    setPage(0);
+    if (selectedTable) {
+      loadTableData(selectedTable.schema, selectedTable.table, 0, sortColumn, sortOrder, {});
+    }
+  };
+
+  const handleCellClick = async (row, column, colIndex) => {
+    try {
+      const rowId = { [columns[0]]: row[0] };
+      const response = await api.post(`/connections/${connectionId}/data/cell`, {
+        schema_name: selectedTable.schema,
+        table_name: selectedTable.table,
+        column_name: column,
+        row_identifier: rowId,
+      });
+      
+      if (response.data.success) {
+        setCellModal({ isOpen: true, data: response.data.data, column });
+      }
+    } catch (err) {
+      toast.error('Failed to load cell data');
+    }
+  };
+
+  const exportToCSV = () => {
+    if (!data || data.length === 0) return;
+    
+    const csv = [
+      columns.join(','),
+      ...data.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedTable.table}_${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Exported to CSV');
+  };
+
+  const exportToJSON = () => {
+    if (!data || data.length === 0) return;
+    
+    const jsonData = data.map(row => {
+      const obj = {};
+      columns.forEach((col, idx) => {
+        obj[col] = row[idx];
+      });
+      return obj;
+    });
+    
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedTable.table}_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Exported to JSON');
   };
 
   const handleNextPage = () => {
     const newPage = page + 1;
     setPage(newPage);
     if (selectedTable) {
-      loadTableData(selectedTable.schema, selectedTable.table, newPage * pageSize, sortColumn, sortOrder);
+      loadTableData(selectedTable.schema, selectedTable.table, newPage * pageSize, sortColumn, sortOrder, filters);
     }
   };
 
@@ -99,13 +182,13 @@ function DataExplorerPage() {
     const newPage = Math.max(0, page - 1);
     setPage(newPage);
     if (selectedTable) {
-      loadTableData(selectedTable.schema, selectedTable.table, newPage * pageSize, sortColumn, sortOrder);
+      loadTableData(selectedTable.schema, selectedTable.table, newPage * pageSize, sortColumn, sortOrder, filters);
     }
   };
 
   const handleRefresh = () => {
     if (selectedTable) {
-      loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, sortColumn, sortOrder);
+      loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, sortColumn, sortOrder, filters);
     }
   };
 
@@ -172,6 +255,30 @@ function DataExplorerPage() {
                 <Button
                   variant="secondary"
                   size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  icon={<Filter size={16} />}
+                >
+                  {showFilters ? 'Hide' : 'Show'} Filters
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={exportToCSV}
+                  icon={<Download size={16} />}
+                >
+                  CSV
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={exportToJSON}
+                  icon={<Download size={16} />}
+                >
+                  JSON
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={handlePrevPage}
                   disabled={page === 0}
                 >
@@ -208,23 +315,49 @@ function DataExplorerPage() {
           />
         </div>
 
-        <div className="flex-1 overflow-auto">
-          {loading ? (
-            <LoadingState message="Loading data..." />
-          ) : selectedTable ? (
-            <DataGrid
-              data={data}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {showFilters && selectedTable && (
+            <ColumnFilter
               columns={columns}
-              onSort={handleSort}
-              sortColumn={sortColumn}
-              sortOrder={sortOrder}
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={clearFilters}
             />
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-              Select a table to view data
+          )}
+          {showFilters && selectedTable && (
+            <div className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+              <Button variant="primary" size="sm" onClick={applyFilters}>
+                Apply Filters
+              </Button>
             </div>
           )}
+          <div className="flex-1 overflow-auto">
+            {loading ? (
+              <LoadingState message="Loading data..." />
+            ) : selectedTable ? (
+              <DataGrid
+                data={data}
+                columns={columns}
+                onSort={handleSort}
+                sortColumn={sortColumn}
+                sortOrder={sortOrder}
+                onCellClick={handleCellClick}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                Select a table to view data
+              </div>
+            )}
+          </div>
         </div>
+      </div>
+
+      <CellViewModal
+        isOpen={cellModal.isOpen}
+        onClose={() => setCellModal({ isOpen: false, data: null, column: null })}
+        data={cellModal.data}
+        column={cellModal.column}
+      />
       </div>
     </div>
   );

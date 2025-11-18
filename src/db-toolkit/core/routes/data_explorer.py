@@ -64,3 +64,43 @@ async def get_table_row_count(
 
     count = await explorer.get_row_count(connection, schema_name, table_name)
     return {"success": True, "count": count}
+
+
+@router.get("/connections/{connection_id}/data/relationships")
+async def get_table_relationships(
+    connection_id: str,
+    schema_name: str = Query(...),
+    table_name: str = Query(...)
+):
+    """Get foreign key relationships for a table."""
+    connection = await storage.get_connection(connection_id)
+    if not connection:
+        raise HTTPException(status_code=404, detail="Connection not found")
+
+    result = await explorer.get_table_relationships(connection, schema_name, table_name)
+    return result
+
+
+class CellDataRequest(BaseModel):
+    """Cell data request."""
+    schema_name: str
+    table_name: str
+    column_name: str
+    row_identifier: dict
+
+
+@router.post("/connections/{connection_id}/data/cell")
+async def get_cell_data(connection_id: str, request: CellDataRequest):
+    """Get full content of a specific cell."""
+    connection = await storage.get_connection(connection_id)
+    if not connection:
+        raise HTTPException(status_code=404, detail="Connection not found")
+
+    result = await explorer.get_cell_data(
+        connection,
+        request.schema_name,
+        request.table_name,
+        request.column_name,
+        request.row_identifier
+    )
+    return result
