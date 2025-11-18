@@ -61,7 +61,7 @@ class SessionManager:
         connections = []
 
         for conn_id in session.get("active_connection_ids", []):
-            conn = self.storage.get_connection(conn_id)
+            conn = await self.storage.get_connection(conn_id)
             if conn:
                 connections.append(conn)
 

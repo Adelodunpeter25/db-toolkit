@@ -11,7 +11,7 @@ from operations.operation_lock import operation_lock
 class ConnectionManager:
     """Manages active database connections."""
 
-    async def __init__(self):
+    def __init__(self):
         """Initialize connection manager."""
         self._active_connections: Dict[str, BaseConnector] = {}
         self._connection_metadata: Dict[str, DatabaseConnection] = {}
