@@ -1,5 +1,73 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
+
+function createMenu() {
+  const template = [
+    {
+      label: app.name,
+      submenu: [
+        {
+          label: 'About DB Toolkit',
+          click: () => {
+            dialog.showMessageBox({
+              type: 'info',
+              title: 'About DB Toolkit',
+              message: 'DB Toolkit',
+              detail: `Version: 1.0.0\nA modern database management tool\n\nBuilt with Electron, React, and Python FastAPI\n\n© 2024 DB Toolkit`,
+              buttons: ['OK']
+            });
+          }
+        },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideOthers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        { role: 'undo' },
+        { role: 'redo' },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { role: 'selectAll' }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { role: 'toggleDevTools' },
+        { type: 'separator' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+    },
+    {
+      label: 'Window',
+      submenu: [
+        { role: 'minimize' },
+        { role: 'zoom' },
+        { type: 'separator' },
+        { role: 'front' }
+      ]
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -21,7 +89,10 @@ function createWindow() {
   }
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createMenu();
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
