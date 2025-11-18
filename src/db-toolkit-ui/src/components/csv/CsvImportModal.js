@@ -11,20 +11,20 @@ export function CsvImportModal({ isOpen, onClose, connectionId, schema, table, o
   const [delimiter, setDelimiter] = useState(',');
   const [hasHeaders, setHasHeaders] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { showToast } = useToast();
+  const toast = useToast();
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type === 'text/csv') {
       setFile(selectedFile);
     } else {
-      showToast('Please select a valid CSV file', 'error');
+      toast.error('Please select a valid CSV file');
     }
   };
 
   const handleImport = async () => {
     if (!file) {
-      showToast('Please select a file', 'error');
+      toast.error('Please select a file');
       return;
     }
 
@@ -43,13 +43,13 @@ export function CsvImportModal({ isOpen, onClose, connectionId, schema, table, o
           has_headers: hasHeaders,
         });
 
-        showToast(`Imported ${response.data.rows_imported} rows`, 'success');
+        toast.success(`Imported ${response.data.rows_imported} rows`);
         onSuccess?.();
         onClose();
       };
       reader.readAsText(file);
     } catch (error) {
-      showToast(error.response?.data?.detail || 'Import failed', 'error');
+      toast.error(error.response?.data?.detail || 'Import failed');
     } finally {
       setLoading(false);
     }

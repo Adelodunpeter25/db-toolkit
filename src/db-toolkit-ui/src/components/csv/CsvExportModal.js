@@ -11,11 +11,11 @@ export function CsvExportModal({ isOpen, onClose, connectionId, query }) {
   const [delimiter, setDelimiter] = useState(',');
   const [includeHeaders, setIncludeHeaders] = useState(true);
   const [loading, setLoading] = useState(false);
-  const { showToast } = useToast();
+  const toast = useToast();
 
   const handleExport = async () => {
     if (!filename.trim()) {
-      showToast('Please enter a filename', 'error');
+      toast.error('Please enter a filename');
       return;
     }
 
@@ -37,10 +37,10 @@ export function CsvExportModal({ isOpen, onClose, connectionId, query }) {
       a.click();
       window.URL.revokeObjectURL(url);
 
-      showToast(`Exported ${response.data.rows_exported} rows`, 'success');
+      toast.success(`Exported ${response.data.rows_exported} rows`);
       onClose();
     } catch (error) {
-      showToast(error.response?.data?.detail || 'Export failed', 'error');
+      toast.error(error.response?.data?.detail || 'Export failed');
     } finally {
       setLoading(false);
     }
