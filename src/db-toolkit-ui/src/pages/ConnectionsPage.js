@@ -28,12 +28,17 @@ function ConnectionsPage() {
 
   const handleConnect = async (id) => {
     try {
-      await connectToDatabase(id);
+      const response = await connectToDatabase(id);
+      if (response.success === false) {
+        toast.error('Database connection failed. Please ensure you entered the correct details.');
+        return;
+      }
       setActiveConnections(prev => new Set([...prev, id]));
       toast.success('Connected successfully');
       navigate(`/schema/${id}`);
     } catch (err) {
-      toast.error('Connection failed');
+      const errorMsg = err.response?.data?.detail || err.message || 'Database connection failed. Please ensure you entered the correct details.';
+      toast.error(errorMsg);
     }
   };
 
