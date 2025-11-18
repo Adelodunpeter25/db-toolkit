@@ -14,7 +14,7 @@ export function SchemaTree({ schema, onTableClick }) {
     onTableClick(schemaName, tableName);
   };
 
-  if (!schema) return null;
+  if (!schema || !schema.schemas) return null;
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
@@ -22,8 +22,11 @@ export function SchemaTree({ schema, onTableClick }) {
         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Tables</h3>
       </div>
       <div className="overflow-y-auto max-h-[calc(100vh-300px)]">
-        {Object.entries(schema).map(([schemaName, schemaData]) => {
-          const tables = schemaData?.tables || [];
+        {Object.entries(schema.schemas).map(([schemaName, schemaData]) => {
+          const tables = schemaData?.tables || {};
+          const tableNames = Object.keys(tables);
+          const tableCount = schemaData?.table_count || tableNames.length;
+          
           return (
             <div key={schemaName}>
               <div
@@ -36,24 +39,24 @@ export function SchemaTree({ schema, onTableClick }) {
                 }
                 <Database size={16} className="text-gray-600 dark:text-gray-400" />
                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{schemaName}</span>
-                <span className="ml-auto text-xs text-gray-500 dark:text-gray-500">{tables.length}</span>
+                <span className="ml-auto text-xs text-gray-500 dark:text-gray-500">{tableCount}</span>
               </div>
 
               {expandedSchemas[schemaName] && (
                 <div className="bg-gray-50 dark:bg-gray-900/30">
-                  {tables.map((table) => {
-                    const tableKey = `${schemaName}.${table.name}`;
+                  {tableNames.map((tableName) => {
+                    const tableKey = `${schemaName}.${tableName}`;
                     const isSelected = selectedTable === tableKey;
                     return (
                       <div
-                        key={table.name}
+                        key={tableName}
                         className={`flex items-center gap-2 pl-9 pr-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer border-b border-gray-100 dark:border-gray-700/50 ${
                           isSelected ? 'bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-500' : ''
                         }`}
-                        onClick={() => handleTableClick(schemaName, table.name)}
+                        onClick={() => handleTableClick(schemaName, tableName)}
                       >
                         <Table size={14} className="text-green-600 dark:text-green-400" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{table.name}</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{tableName}</span>
                       </div>
                     );
                   })}
