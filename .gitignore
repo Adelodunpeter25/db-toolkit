@@ -1,5 +1,7 @@
 # Python-generated files
 __pycache__/
+*/__pycache__/
+**/__pycache__/
 *.py[oc]
 build/
 dist/
@@ -8,6 +10,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# macOS
+.DS_Store
 
 # Amazon Q rules
 .amazonq/
