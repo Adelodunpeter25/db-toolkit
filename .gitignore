@@ -14,5 +14,6 @@ wheels/
 # macOS
 .DS_Store
 
-# Amazon Q rules
+# Docs
 .amazonq/
+implementation.md
