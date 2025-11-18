@@ -1,15 +1,18 @@
 """Query execution routes."""
 
+import json
 from fastapi import APIRouter, HTTPException
 from core.storage import ConnectionStorage
 from core.schemas import QueryRequest, QueryResponse
 from operations.query_executor import QueryExecutor
 from operations.query_history import QueryHistory
+from operations.explain_analyzer import ExplainAnalyzer
 
 router = APIRouter()
 storage = ConnectionStorage()
 executor = QueryExecutor()
 history = QueryHistory()
+analyzer = ExplainAnalyzer()
 
 
 @router.post("/connections/{connection_id}/query", response_model=QueryResponse)
@@ -80,3 +83,46 @@ async def search_query_history(connection_id: str, q: str):
     
     results = history.search_history(connection_id, q)
     return {"success": True, "results": results, "count": len(results)}
+
+
+@router.post("/connections/{connection_id}/query/explain")
+async def explain_query(connection_id: str, request: QueryRequest):
+    """Get query execution plan with AI analysis."""
+    from operations.operation_lock import operation_lock
+
+    connection = await storage.get_connection(connection_id)
+    if not connection:
+        raise HTTPException(status_code=404, detail="Connection not found")
+
+    if operation_lock.is_locked(connection_id):
+        raise HTTPException(
+            status_code=409, detail="Connection is busy with another operation"
+        )
+
+    lock = operation_lock.get_lock(connection_id)
+    async with lock:
+        # Execute EXPLAIN query
+        explain_query_text = f"EXPLAIN (FORMAT JSON, ANALYZE, BUFFERS) {request.query}"
+        result = await executor.execute_query(
+            connection=connection,
+            query=explain_query_text,
+            limit=1000,
+            offset=0,
+            timeout=request.timeout,
+        )
+        
+        if not result["success"]:
+            return {"success": False, "error": result.get("error")}
+        
+        # Get explain output
+        explain_output = result["rows"][0][0] if result["rows"] else "{}"
+        
+        # Analyze with Gemini
+        analysis = await analyzer.analyze_explain(request.query, json.dumps(explain_output, indent=2))
+        
+        return {
+            "success": True,
+            "explain_plan": explain_output,
+            "analysis": analysis.get("analysis") if analysis["success"] else None,
+            "error": analysis.get("error") if not analysis["success"] else None
+        }
