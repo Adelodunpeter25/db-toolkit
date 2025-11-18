@@ -20,5 +20,6 @@ export default defineConfig({
         '.js': 'jsx',
       },
     },
+    include: ['monaco-editor'],
   },
 })

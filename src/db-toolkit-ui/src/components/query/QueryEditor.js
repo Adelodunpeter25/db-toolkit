@@ -8,15 +8,29 @@ export function QueryEditor({ query, onChange, onExecute, loading }) {
   const editorRef = useRef(null);
   const { theme } = useTheme();
 
-  const handleEditorDidMount = (editor) => {
+  const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
     
     editor.addCommand(
-      window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.Enter,
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
       () => {
         onExecute();
       }
     );
+
+    monaco.languages.registerCompletionItemProvider('sql', {
+      provideCompletionItems: () => {
+        const suggestions = [
+          { label: 'SELECT', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'SELECT ' },
+          { label: 'FROM', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'FROM ' },
+          { label: 'WHERE', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'WHERE ' },
+          { label: 'INSERT', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'INSERT INTO ' },
+          { label: 'UPDATE', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'UPDATE ' },
+          { label: 'DELETE', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'DELETE FROM ' },
+        ];
+        return { suggestions };
+      },
+    });
   };
 
   return (
