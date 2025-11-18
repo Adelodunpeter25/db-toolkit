@@ -1,9 +1,9 @@
 """Connection management operations."""
 
 from typing import Dict, Optional
-from ..connectors.factory import ConnectorFactory
-from ..connectors.base import BaseConnector
-from ..core.models import DatabaseConnection
+from connectors.factory import ConnectorFactory
+from connectors.base import BaseConnector
+from core.models import DatabaseConnection
 
 
 class ConnectionManager:

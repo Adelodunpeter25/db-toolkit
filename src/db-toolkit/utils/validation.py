@@ -2,7 +2,7 @@
 
 import asyncio
 from typing import Dict, Any
-from ..core.models import DatabaseConnection, DatabaseType
+from core.models import DatabaseConnection, DatabaseType
 
 
 async def validate_connection(connection: DatabaseConnection) -> Dict[str, Any]:

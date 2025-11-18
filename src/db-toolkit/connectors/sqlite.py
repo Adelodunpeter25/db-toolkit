@@ -2,8 +2,8 @@
 
 import aiosqlite
 from typing import Dict, List, Any
-from .base import BaseConnector
-from ..core.models import DatabaseConnection
+from connectors.base import BaseConnector
+from core.models import DatabaseConnection
 
 
 class SQLiteConnector(BaseConnector):

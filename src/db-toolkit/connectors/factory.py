@@ -1,12 +1,12 @@
 """Connector factory for creating database connectors."""
 
 from typing import Dict, Type
-from .base import BaseConnector
-from .postgresql import PostgreSQLConnector
-from .mysql import MySQLConnector
-from .sqlite import SQLiteConnector
-from .mongodb import MongoDBConnector
-from ..core.models import DatabaseType
+from connectors.base import BaseConnector
+from connectors.postgresql import PostgreSQLConnector
+from connectors.mysql import MySQLConnector
+from connectors.sqlite import SQLiteConnector
+from connectors.mongodb import MongoDBConnector
+from core.models import DatabaseType
 
 
 class ConnectorFactory:

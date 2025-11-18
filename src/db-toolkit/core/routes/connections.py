@@ -3,9 +3,9 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 
-from ..storage import ConnectionStorage
-from ..models import DatabaseConnection
-from ..schemas import ConnectionRequest
+from core.storage import ConnectionStorage
+from core.models import DatabaseConnection
+from core.schemas import ConnectionRequest
 
 router = APIRouter()
 storage = ConnectionStorage()
@@ -37,7 +37,7 @@ def delete_connection(connection_id: str):
 @router.post("/connections/{connection_id}/test")
 async def test_connection(connection_id: str):
     """Test database connection."""
-    from ...utils.validation import validate_connection
+    from utils.validation import validate_connection
     
     connection = storage.get_connection(connection_id)
     if not connection:
@@ -50,7 +50,7 @@ async def test_connection(connection_id: str):
 @router.post("/connections/{connection_id}/connect")
 async def connect_to_database(connection_id: str):
     """Connect to database."""
-    from ...operations.connection_manager import ConnectionManager
+    from operations.connection_manager import ConnectionManager
     
     connection = storage.get_connection(connection_id)
     if not connection:
@@ -68,7 +68,7 @@ async def connect_to_database(connection_id: str):
 @router.post("/connections/{connection_id}/disconnect")
 async def disconnect_from_database(connection_id: str):
     """Disconnect from database."""
-    from ...operations.connection_manager import ConnectionManager
+    from operations.connection_manager import ConnectionManager
     
     manager = ConnectionManager()
     success = await manager.disconnect(connection_id)

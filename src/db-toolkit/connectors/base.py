@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any
-from ..core.models import DatabaseConnection
+from core.models import DatabaseConnection
 
 
 class BaseConnector(ABC):

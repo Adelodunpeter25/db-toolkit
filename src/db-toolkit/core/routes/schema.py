@@ -1,8 +1,8 @@
 """Schema exploration routes."""
 
 from fastapi import APIRouter, HTTPException
-from ..storage import ConnectionStorage
-from ...operations.schema_explorer import SchemaExplorer
+from core.storage import ConnectionStorage
+from operations.schema_explorer import SchemaExplorer
 
 router = APIRouter()
 storage = ConnectionStorage()

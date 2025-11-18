@@ -1,7 +1,7 @@
 """API request/response schemas."""
 
 from pydantic import BaseModel
-from .models import DatabaseType
+from core.models import DatabaseType
 
 
 class ConnectionRequest(BaseModel):

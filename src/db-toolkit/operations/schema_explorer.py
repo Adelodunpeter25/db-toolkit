@@ -1,9 +1,9 @@
 """Schema exploration operations."""
 
 from typing import Dict, List, Any, Optional
-from ..connectors.factory import ConnectorFactory
-from ..core.models import DatabaseConnection
-from ..utils.cache import SchemaCache
+from connectors.factory import ConnectorFactory
+from core.models import DatabaseConnection
+from utils.cache import SchemaCache
 
 
 class SchemaExplorer:
