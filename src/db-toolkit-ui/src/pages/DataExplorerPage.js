@@ -45,7 +45,7 @@ function DataExplorerPage() {
   const loadTableData = async (schema, table, offset = 0, sort = null, order = 'ASC') => {
     setLoading(true);
     try {
-      const response = await api.post(`/api/v1/connections/${connectionId}/data/browse`, {
+      const response = await api.post(`/connections/${connectionId}/data/browse`, {
         schema_name: schema,
         table_name: table,
         limit: pageSize,
@@ -60,7 +60,7 @@ function DataExplorerPage() {
       }
 
       // Get total count
-      const countResponse = await api.get(`/api/v1/connections/${connectionId}/data/count`, {
+      const countResponse = await api.get(`/connections/${connectionId}/data/count`, {
         params: { schema_name: schema, table_name: table }
       });
       setTotalCount(countResponse.data.count);
