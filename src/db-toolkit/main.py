@@ -2,7 +2,8 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .api.routes import router
+from .core.routes.connections import router as connections_router
+from .core.routes.health import router as health_router
 
 app = FastAPI(
     title="DB Toolkit API",
@@ -20,7 +21,8 @@ app.add_middleware(
 )
 
 # Include API routes
-app.include_router(router, prefix="/api/v1")
+app.include_router(connections_router, prefix="/api/v1", tags=["connections"])
+app.include_router(health_router, prefix="/api/v1", tags=["health"])
 
 
 if __name__ == "__main__":
