@@ -8,7 +8,6 @@ import { ErrorMessage } from '../components/common/ErrorMessage';
 import { QueryEditor } from '../components/query/QueryEditor';
 import { QueryResultsPanel } from '../components/query/QueryResultsPanel';
 import { CsvExportModal } from '../components/csv';
-import 'react-split/dist/react-split.css';
 
 function QueryPage() {
   const { connectionId } = useParams();
