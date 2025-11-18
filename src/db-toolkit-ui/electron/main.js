@@ -4,7 +4,7 @@ const path = require('path');
 function createMenu() {
   const template = [
     {
-      label: app.name,
+      label: 'DB Toolkit',
       submenu: [
         {
           label: 'About DB Toolkit',
@@ -21,9 +21,9 @@ function createMenu() {
         { type: 'separator' },
         { role: 'services' },
         { type: 'separator' },
-        { role: 'hide' },
+        { label: 'Hide DB Toolkit', role: 'hide' },
         { role: 'hideOthers' },
-        { role: 'unhide' },
+        { label: 'Show All', role: 'unhide' },
         { type: 'separator' },
         { role: 'quit' }
       ]
