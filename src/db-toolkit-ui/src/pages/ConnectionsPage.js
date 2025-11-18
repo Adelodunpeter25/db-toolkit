@@ -69,7 +69,7 @@ function ConnectionsPage() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Database Connections</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Database Connections</h2>
         <Button icon={<Plus size={20} />} onClick={() => setShowModal(true)}>
           New Connection
         </Button>

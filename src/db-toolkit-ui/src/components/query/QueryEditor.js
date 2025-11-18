@@ -73,7 +73,7 @@ export function QueryEditor({ query, onChange, onExecute, loading, schema }) {
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-lg font-semibold">SQL Editor</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">SQL Editor</h3>
         <Button
           size="sm"
           icon={<Play size={16} />}
