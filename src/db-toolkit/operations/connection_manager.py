@@ -50,3 +50,6 @@ class ConnectionManager:
         """Disconnect all active connections."""
         for connection_id in list(self._active_connections.keys()):
             await self.disconnect(connection_id)
+
+
+connection_manager = ConnectionManager()

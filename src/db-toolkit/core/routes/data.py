@@ -20,7 +20,7 @@ async def update_row(connection_id: str, request: UpdateRowRequest):
     result = await editor.update_row(
         connection=connection,
         table=request.table,
-        schema=request.schema,
+        schema_name=request.schema_name,
         primary_key=request.primary_key,
         changes=request.changes
     )
@@ -41,7 +41,7 @@ async def insert_row(connection_id: str, request: InsertRowRequest):
     result = await editor.insert_row(
         connection=connection,
         table=request.table,
-        schema=request.schema,
+        schema_name=request.schema_name,
         data=request.data
     )
     
@@ -61,7 +61,7 @@ async def delete_row(connection_id: str, request: DeleteRowRequest):
     result = await editor.delete_row(
         connection=connection,
         table=request.table,
-        schema=request.schema,
+        schema_name=request.schema_name,
         primary_key=request.primary_key
     )
     

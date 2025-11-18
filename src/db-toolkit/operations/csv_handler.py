@@ -4,16 +4,15 @@ import csv
 import io
 from typing import Any, Dict, List, Optional
 
-from db_toolkit.connectors.base import DatabaseConnector
-from db_toolkit.core.models import DatabaseType
-
+from connectors.base import BaseConnector
+from core.models import DatabaseType
 
 class CSVHandler:
     """Handle CSV import and export operations."""
 
     @staticmethod
     async def export_to_csv(
-        connector: DatabaseConnector,
+        connector: BaseConnector,
         table: str,
         schema: Optional[str] = None,
         query: Optional[str] = None,
@@ -74,7 +73,7 @@ class CSVHandler:
 
     @staticmethod
     async def import_from_csv(
-        connector: DatabaseConnector,
+        connector: BaseConnector,
         table: str,
         rows: List[Dict[str, Any]],
         schema: Optional[str] = None,

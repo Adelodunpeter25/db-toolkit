@@ -12,7 +12,7 @@ class DataEditor:
         self,
         connection: DatabaseConnection,
         table: str,
-        schema: str,
+        schema_name: str,
         primary_key: Dict[str, Any],
         changes: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -31,7 +31,7 @@ class DataEditor:
             if connection.db_type.value == "mongodb":
                 result = await self._update_mongodb(connector, table, primary_key, changes)
             else:
-                result = await self._update_sql(connector, table, schema, primary_key, changes)
+                result = await self._update_sql(connector, table, schema_name, primary_key, changes)
             
             await connector.disconnect()
             return result
@@ -43,7 +43,7 @@ class DataEditor:
         self,
         connection: DatabaseConnection,
         table: str,
-        schema: str,
+        schema_name: str,
         data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Insert a new row."""
@@ -57,7 +57,7 @@ class DataEditor:
             if connection.db_type.value == "mongodb":
                 result = await self._insert_mongodb(connector, table, data)
             else:
-                result = await self._insert_sql(connector, table, schema, data)
+                result = await self._insert_sql(connector, table, schema_name, data)
             
             await connector.disconnect()
             return result
@@ -69,7 +69,7 @@ class DataEditor:
         self,
         connection: DatabaseConnection,
         table: str,
-        schema: str,
+        schema_name: str,
         primary_key: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Delete a row."""
@@ -83,7 +83,7 @@ class DataEditor:
             if connection.db_type.value == "mongodb":
                 result = await self._delete_mongodb(connector, table, primary_key)
             else:
-                result = await self._delete_sql(connector, table, schema, primary_key)
+                result = await self._delete_sql(connector, table, schema_name, primary_key)
             
             await connector.disconnect()
             return result
