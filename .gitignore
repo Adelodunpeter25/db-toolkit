@@ -18,3 +18,19 @@ wheels/
 # Docs
 .amazonq/
 implementation.md
+
+# Frontend (Node.js)
+node_modules/
+src/db-toolkit-ui/node_modules/
+src/db-toolkit-ui/build/
+src/db-toolkit-ui/.env.local
+src/db-toolkit-ui/.env.development.local
+src/db-toolkit-ui/.env.test.local
+src/db-toolkit-ui/.env.production.local
+src/db-toolkit-ui/npm-debug.log*
+src/db-toolkit-ui/yarn-debug.log*
+src/db-toolkit-ui/yarn-error.log*
+
+# Electron
+src/db-toolkit-ui/dist/
+src/db-toolkit-ui/out/
