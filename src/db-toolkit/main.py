@@ -28,7 +28,7 @@ from core.routes.data_explorer import router as data_explorer_router
 app = FastAPI(
     title="DB Toolkit API",
     description="Database management toolkit API",
-    version="0.1.0",
+    version="1.0.0",
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     lifespan=lifespan,
 )
