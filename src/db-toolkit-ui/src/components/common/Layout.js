@@ -16,10 +16,10 @@ function Layout({ children }) {
             className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
           >
             <Settings size={20} />
-            <span className="text-sm font-medium">Settings</span>
+            <span className="hidden sm:inline text-sm font-medium">Settings</span>
           </button>
         </header>
-        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 pt-16 lg:pt-0">
           {children}
         </main>
       </div>
