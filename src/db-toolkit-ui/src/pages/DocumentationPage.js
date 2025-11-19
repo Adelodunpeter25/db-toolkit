@@ -12,16 +12,28 @@ import documentation from '../data/documentation.json';
 
 function DocumentationPage() {
   const { showToast } = useToast();
+  const [activeTab, setActiveTab] = useState('sql');
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedCode, setCopiedCode] = useState(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
 
+  const tabs = [
+    { id: 'sql', label: 'SQL Reference', categoryIds: ['basics', 'joins', 'aggregate', 'advanced', 'functions'] },
+    { id: 'features', label: 'Features', categoryIds: ['features'] },
+    { id: 'troubleshooting', label: 'Troubleshooting', categoryIds: ['troubleshooting'] },
+  ];
+
   const filteredDocs = useMemo(() => {
-    if (!debouncedSearch) return documentation.categories;
+    const activeTabData = tabs.find(t => t.id === activeTab);
+    const tabCategories = documentation.categories.filter(cat => 
+      activeTabData.categoryIds.includes(cat.id)
+    );
+
+    if (!debouncedSearch) return tabCategories;
 
     const query = debouncedSearch.toLowerCase();
-    return documentation.categories
+    return tabCategories
       .map(category => ({
         ...category,
         topics: category.topics.filter(topic =>
@@ -31,7 +43,7 @@ function DocumentationPage() {
         )
       }))
       .filter(category => category.topics.length > 0);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, activeTab, tabs]);
 
   const handleCopy = (code, id) => {
     navigator.clipboard.writeText(code);
@@ -88,7 +100,26 @@ function DocumentationPage() {
       {/* Sidebar */}
       <div className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">SQL Reference</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Documentation</h2>
+          
+          <div className="flex gap-1 mb-4 bg-gray-100 dark:bg-gray-900 p-1 rounded-lg">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSelectedTopic(null);
+                }}
+                className={`flex-1 px-3 py-2 text-xs font-medium rounded-md transition ${
+                  activeTab === tab.id
+                    ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
           <div className="relative">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -141,10 +172,10 @@ function DocumentationPage() {
             <div className="text-center">
               <BookOpen size={64} className="mx-auto mb-4 text-gray-400" />
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                SQL Documentation
+                Documentation
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Select a topic from the sidebar to view documentation
+                Select a topic from the sidebar to get started
               </p>
             </div>
           </div>
