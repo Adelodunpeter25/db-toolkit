@@ -5,7 +5,7 @@ import { Database, Download, Github, ArrowRight } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -52,7 +52,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-6xl md:text-7xl font-bold text-gray-900 mb-6"
+          className="text-6xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6"
         >
           DB Toolkit
         </motion.h1>
@@ -62,7 +62,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto"
+          className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto"
         >
           Modern, cross-platform database management made simple. 
           Built with Electron, React, and Python FastAPI.
@@ -85,7 +85,7 @@ export default function Hero() {
           </a>
           <a
             href="https://github.com/Adelodunpeter25/db-toolkit"
-            className="flex items-center gap-2 px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-300 hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold"
+            className="flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold"
           >
             <Github size={20} />
             View on GitHub
@@ -99,7 +99,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-8"
         >
-          <span className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full text-sm text-gray-600">
+          <span className="inline-block px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-600 dark:text-gray-300">
             Latest version: v0.3.0
           </span>
         </motion.div>
@@ -115,8 +115,8 @@ export default function Hero() {
         }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-gray-400 rounded-full mt-2" />
+        <div className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-gray-400 dark:bg-gray-600 rounded-full mt-2" />
         </div>
       </motion.div>
     </section>

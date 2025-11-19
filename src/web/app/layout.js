@@ -1,4 +1,6 @@
 import './globals.css';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import Navbar from '@/components/Navbar';
 
 export const metadata = {
   title: 'DB Toolkit - Modern Database Management',
@@ -8,7 +10,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>
+          <Navbar />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
