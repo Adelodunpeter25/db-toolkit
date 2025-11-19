@@ -22,7 +22,7 @@ function MigrationsPanel({ isOpen, onClose }) {
     setOutput(prev => [...prev, { text, type, timestamp: new Date() }]);
   }, []);
 
-  const { executeCommand, isConnected, isRunning } = useMigratorStream(addOutput);
+  const { executeCommand, isRunning } = useMigratorStream(addOutput);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -33,11 +33,6 @@ function MigrationsPanel({ isOpen, onClose }) {
   const runCommand = (command, args = []) => {
     if (!selectedConnection) {
       toast.error('Please select a connection');
-      return;
-    }
-
-    if (!isConnected) {
-      toast.error('WebSocket not connected');
       return;
     }
 

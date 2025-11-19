@@ -1,56 +1,55 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { WS_ENDPOINTS } from '../services/websocket';
 
 export function useMigratorStream(onOutput) {
-  const [isConnected, setIsConnected] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const wsRef = useRef(null);
 
-  useEffect(() => {
-    const ws = new WebSocket(WS_ENDPOINTS.MIGRATOR);
+  const connect = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      const ws = new WebSocket(WS_ENDPOINTS.MIGRATOR);
 
-    ws.onopen = () => {
-      setIsConnected(true);
-      wsRef.current = ws;
-    };
+      ws.onopen = () => {
+        wsRef.current = ws;
+        resolve(ws);
+      };
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      if (data.type === 'stdout' || data.type === 'stderr') {
-        onOutput(data.data, data.type === 'stderr' ? 'error' : 'info');
-      } else if (data.type === 'exit') {
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'stdout' || data.type === 'stderr') {
+          onOutput(data.data, data.type === 'stderr' ? 'error' : 'info');
+        } else if (data.type === 'exit') {
+          setIsRunning(false);
+          onOutput(`Command exited with code ${data.code}`, data.success ? 'success' : 'error');
+        } else if (data.type === 'error') {
+          setIsRunning(false);
+          onOutput(`Error: ${data.data}`, 'error');
+        }
+      };
+
+      ws.onerror = () => {
         setIsRunning(false);
-        onOutput(`Command exited with code ${data.code}`, data.success ? 'success' : 'error');
-      } else if (data.type === 'error') {
+        reject(new Error('WebSocket connection failed'));
+      };
+
+      ws.onclose = () => {
         setIsRunning(false);
-        onOutput(`Error: ${data.data}`, 'error');
-      }
-    };
-
-    ws.onerror = () => {
-      setIsConnected(false);
-      setIsRunning(false);
-    };
-
-    ws.onclose = () => {
-      setIsConnected(false);
-      setIsRunning(false);
-    };
-
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
-    };
+        wsRef.current = null;
+      };
+    });
   }, [onOutput]);
 
-  const executeCommand = (command) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+  const executeCommand = useCallback(async (command) => {
+    try {
       setIsRunning(true);
-      wsRef.current.send(JSON.stringify({ command }));
+      const ws = await connect();
+      ws.send(JSON.stringify({ command }));
+    } catch (error) {
+      setIsRunning(false);
+      onOutput(`Connection error: ${error.message}`, 'error');
     }
-  };
+  }, [connect, onOutput]);
 
-  return { executeCommand, isConnected, isRunning };
+  return { executeCommand, isRunning };
 }
