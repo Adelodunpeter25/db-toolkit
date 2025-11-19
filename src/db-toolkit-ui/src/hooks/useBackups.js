@@ -6,8 +6,8 @@ export function useBackups(connectionId = null) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchBackups = useCallback(async () => {
-    setLoading(true);
+  const fetchBackups = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const params = connectionId ? { connection_id: connectionId } : {};
@@ -16,7 +16,7 @@ export function useBackups(connectionId = null) {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [connectionId]);
 

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from typing import Optional, List
 from core.models import DatabaseConnection, BackupType, BackupStatus, Backup, BackupSchedule
 from core.backup_storage import BackupStorage
+from websockets.backup_notifier import backup_notifier
 
 
 class BackupManager:
@@ -84,6 +85,7 @@ class BackupManager:
         """Execute backup in background."""
         try:
             await self.storage.update_backup(backup.id, status=BackupStatus.IN_PROGRESS)
+            await backup_notifier.notify_backup_update(backup.id, BackupStatus.IN_PROGRESS.value)
             
             if connection.db_type.value == "postgresql":
                 await self._backup_postgresql(backup, connection, tables)
@@ -106,12 +108,14 @@ class BackupManager:
                 completed_at=datetime.now().isoformat(),
                 file_size=file_size,
             )
+            await backup_notifier.notify_backup_update(backup.id, BackupStatus.COMPLETED.value, {"file_size": file_size})
         except Exception as e:
             await self.storage.update_backup(
                 backup.id,
                 status=BackupStatus.FAILED,
                 error_message=str(e),
             )
+            await backup_notifier.notify_backup_update(backup.id, BackupStatus.FAILED.value, {"error": str(e)})
 
     async def _backup_postgresql(
         self,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Database, Clock } from 'lucide-react';
 import { useBackups } from '../hooks/useBackups';
 import { useConnections } from '../hooks';
@@ -10,6 +10,7 @@ import { BackupCard } from '../components/backup/BackupCard';
 import { BackupModal } from '../components/backup/BackupModal';
 import { ScheduleModal } from '../components/backup/ScheduleModal';
 import { ScheduleCard } from '../components/backup/ScheduleCard';
+import { useBackupWebSocket } from '../websockets/useBackupWebSocket';
 import api from '../services/api';
 
 function BackupsPage() {
@@ -21,15 +22,14 @@ function BackupsPage() {
   const { connections } = useConnections();
   const { backups, loading, createBackup, restoreBackup, downloadBackup, deleteBackup, fetchBackups } = useBackups();
 
+  const handleBackupUpdate = useCallback((data) => {
+    fetchBackups(true);
+  }, [fetchBackups]);
+
+  useBackupWebSocket(handleBackupUpdate);
+
   useEffect(() => {
     fetchSchedules();
-    
-    // Poll for backup status updates every 3 seconds
-    const interval = setInterval(() => {
-      fetchBackups();
-    }, 3000);
-    
-    return () => clearInterval(interval);
   }, []);
 
   const fetchSchedules = async () => {
