@@ -2,9 +2,11 @@
  * Status bar showing system metrics and app info.
  */
 import { useState, useEffect } from 'react';
+import { useConnections } from '../../hooks';
 import { Tooltip } from './Tooltip';
 
 function StatusBar() {
+  const { connectedIds } = useConnections();
   const [metrics, setMetrics] = useState({
     ram: '0 MB',
     cpu: '0%',
@@ -47,7 +49,7 @@ function StatusBar() {
     <div className="h-6 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex items-center px-4 text-xs text-gray-600 dark:text-gray-400">
       <Tooltip text="Active connections" position="top">
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
-          Connections 0
+          Connections {connectedIds.size}
         </span>
       </Tooltip>
       
