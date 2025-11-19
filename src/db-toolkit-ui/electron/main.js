@@ -1,5 +1,7 @@
-const { app, BrowserWindow, Menu, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
+const os = require('os');
+const { exec } = require('child_process');
 
 // Set app name before anything else
 app.name = 'DB Toolkit';
@@ -93,6 +95,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     },
   });
   
@@ -109,6 +112,33 @@ function createWindow() {
     win.loadFile(path.join(__dirname, '../dist/index.html'));
   }
 }
+
+ipcMain.handle('get-system-metrics', async () => {
+  const cpus = os.cpus();
+  const loadAvg = os.loadavg()[0];
+  
+  return new Promise((resolve) => {
+    if (process.platform === 'darwin' || process.platform === 'linux') {
+      exec('df -k /', (error, stdout) => {
+        let disk = { used: 0, free: 0, total: 0 };
+        if (!error) {
+          const lines = stdout.trim().split('\n');
+          if (lines.length > 1) {
+            const parts = lines[1].split(/\s+/);
+            disk = {
+              used: parseInt(parts[2]) / 1024 / 1024,
+              free: parseInt(parts[3]) / 1024 / 1024,
+              total: (parseInt(parts[2]) + parseInt(parts[3])) / 1024 / 1024
+            };
+          }
+        }
+        resolve({ loadAvg, disk });
+      });
+    } else {
+      resolve({ loadAvg, disk: { used: 0, free: 0, total: 0 } });
+    }
+  });
+});
 
 app.whenReady().then(() => {
   createMenu();
