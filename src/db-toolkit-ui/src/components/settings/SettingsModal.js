@@ -59,7 +59,7 @@ export function SettingsModal({ isOpen, onClose }) {
   if (!localSettings) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Settings</h2>
@@ -71,27 +71,27 @@ export function SettingsModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        <div className="flex border-b border-gray-200 dark:border-gray-700 px-6">
+        <div className="flex overflow-x-auto border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 border-b-2 transition ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-3 border-b-2 transition whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
               >
                 <Icon size={18} />
-                <span className="text-sm font-medium">{tab.label}</span>
+                <span className="text-xs sm:text-sm font-medium">{tab.label}</span>
               </button>
             );
           })}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {activeTab === 'appearance' && (
             <AppearanceSettings settings={localSettings} onChange={handleChange} />
           )}
@@ -106,15 +106,16 @@ export function SettingsModal({ isOpen, onClose }) {
           )}
         </div>
 
-        <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700">
           <Button variant="secondary" size="sm" icon={<RotateCcw size={16} />} onClick={handleReset}>
-            Reset to Defaults
+            <span className="hidden sm:inline">Reset to Defaults</span>
+            <span className="sm:hidden">Reset</span>
           </Button>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={onClose}>
+            <Button variant="secondary" onClick={onClose} className="flex-1 sm:flex-none">
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button onClick={handleSave} className="flex-1 sm:flex-none">
               Save Changes
             </Button>
           </div>

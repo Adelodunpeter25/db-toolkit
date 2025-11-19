@@ -17,7 +17,7 @@ function Sidebar() {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
@@ -26,19 +26,19 @@ function Sidebar() {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="md:hidden fixed inset-0 bg-black/50 z-30"
         />
       )}
 
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-40
-          w-64 lg:w-56 xl:w-64
+          fixed md:static inset-y-0 left-0 z-40
+          w-64 md:w-56 lg:w-64
           bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white
           h-screen flex flex-col border-r border-gray-200 dark:border-gray-900
           transform transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
         <div className="p-6 border-b border-gray-200 dark:border-gray-900">

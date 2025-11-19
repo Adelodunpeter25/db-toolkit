@@ -19,7 +19,7 @@ function Layout({ children }) {
             <span className="hidden sm:inline text-sm font-medium">Settings</span>
           </button>
         </header>
-        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 pt-16 lg:pt-0">
+        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 pt-16 md:pt-0">
           {children}
         </main>
       </div>
