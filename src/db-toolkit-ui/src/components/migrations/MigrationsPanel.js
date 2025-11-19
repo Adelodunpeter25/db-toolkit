@@ -16,11 +16,40 @@ function MigrationsPanel({ isOpen, onClose }) {
   const [output, setOutput] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [migrationName, setMigrationName] = useState('');
+  const [height, setHeight] = useState(384);
+  const [isResizing, setIsResizing] = useState(false);
   const outputRef = useRef(null);
 
   const addOutput = useCallback((text, type = 'info') => {
     setOutput(prev => [...prev, { text, type, timestamp: new Date() }]);
   }, []);
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isResizing) return;
+      const newHeight = window.innerHeight - e.clientY;
+      setHeight(Math.max(200, Math.min(newHeight, window.innerHeight - 100)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   const { executeCommand, isRunning } = useMigratorStream(addOutput);
 
@@ -62,10 +91,13 @@ function MigrationsPanel({ isOpen, onClose }) {
   return (
     <>
       <div 
-        className={`fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-40 transition-all ${
-          isMaximized ? 'h-screen' : 'h-96'
-        }`}
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-40"
+        style={{ height: isMaximized ? '100vh' : `${height}px` }}
       >
+        <div
+          onMouseDown={handleMouseDown}
+          className="absolute top-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-blue-500 transition-colors"
+        />
         <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-900 dark:text-white font-medium">Migrations</span>
@@ -120,7 +152,7 @@ function MigrationsPanel({ isOpen, onClose }) {
         <div 
           ref={outputRef}
           className="overflow-y-auto p-4 font-mono text-sm bg-gray-900 text-gray-100"
-          style={{ height: isMaximized ? 'calc(100vh - 120px)' : 'calc(24rem - 120px)' }}
+          style={{ height: isMaximized ? 'calc(100vh - 120px)' : `${height - 120}px` }}
         >
           {output.length === 0 ? (
             <div className="text-gray-500">Select a connection and run migration commands...</div>
