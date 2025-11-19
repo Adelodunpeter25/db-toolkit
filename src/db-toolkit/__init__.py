@@ -1,3 +1,3 @@
 """DB Toolkit - Database management application."""
 
-__version__ = "2.0.0"
+__version__ = "0.2.0"
