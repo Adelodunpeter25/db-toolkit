@@ -2,7 +2,7 @@
 
 All notable changes to DB Toolkit will be documented in this file.
 
-## [2.0.0] - 2025-01-XX
+## [2.0.0] - 2025-11-19
 
 ### Added
 - **Backup & Restore System** - Automated and manual backups with scheduling
@@ -12,9 +12,7 @@ All notable changes to DB Toolkit will be documented in this file.
 - **MongoDB Backup Support** - Native mongodump/mongorestore integration
 - **Native Python Backups** - Fallback backup using asyncpg, aiomysql, and motor
 - **WebSocket Real-time Updates** - Live backup status updates without polling
-- **Browser Notifications** - Desktop notifications for backup completion/failure
-- **Responsive Design** - Mobile-friendly sidebar with hamburger menu (<768px)
-- **Smooth Animations** - Framer Motion transitions for modals, toasts, and pages
+- **Notifications** - Desktop notifications for backup completion/failure
 - **Smart Caching** - LocalStorage caching with TTL for schema, tables, and connections
 - **Debounced Search** - Search functionality across connections, backups, and schema tree
 - **Tooltips** - Helpful hints throughout the interface
@@ -27,7 +25,6 @@ All notable changes to DB Toolkit will be documented in this file.
 - **Data Explorer** - Enhanced pagination info ("Showing 1-100 of 500 rows")
 - **Schema Tree** - Added search bar for filtering tables
 - **Dark Mode** - Fixed label colors in connection modal
-- **Table Details** - Changed "Sample Data" label to "Data"
 - **Performance** - Reduced re-renders with React.memo and caching
 
 ### Technical
@@ -52,5 +49,4 @@ All notable changes to DB Toolkit will be documented in this file.
 - Session persistence (auto-restore connections)
 - Query formatting (Ctrl+Shift+F) and error highlighting
 - Cell preview for large text/blob fields
-- Built with Python FastAPI backend and Electron + React frontend
 - Secure credential storage and parameterized queries
