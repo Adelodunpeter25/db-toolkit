@@ -44,6 +44,7 @@ class BackupManager:
             compressed=compress,
         )
         
+        asyncio.create_task(self._execute_backup(backup, connection, tables, compress))
         return backup
 
     async def create_scheduled_backup(
