@@ -1,16 +1,15 @@
 /**
  * Migrations panel for running migrator commands.
  */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { X, Minimize2, Maximize2, Play, RotateCcw, History, Plus, FileText } from 'lucide-react';
 import { useConnections } from '../../hooks';
-import { useMigrator } from '../../hooks/useMigrator';
+import { useMigratorStream } from '../../hooks/useMigratorStream';
 import { useToast } from '../../contexts/ToastContext';
 import { Button } from '../common/Button';
 
 function MigrationsPanel({ isOpen, onClose }) {
   const { connections } = useConnections();
-  const { executeCommand, isRunning } = useMigrator();
   const toast = useToast();
   const [selectedConnection, setSelectedConnection] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
@@ -19,40 +18,32 @@ function MigrationsPanel({ isOpen, onClose }) {
   const [migrationName, setMigrationName] = useState('');
   const outputRef = useRef(null);
 
+  const addOutput = useCallback((text, type = 'info') => {
+    setOutput(prev => [...prev, { text, type, timestamp: new Date() }]);
+  }, []);
+
+  const { executeCommand, isConnected, isRunning } = useMigratorStream(addOutput);
+
   useEffect(() => {
     if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
   }, [output]);
 
-  const addOutput = (text, type = 'info') => {
-    setOutput(prev => [...prev, { text, type, timestamp: new Date() }]);
-  };
-
-  const runCommand = async (command, args = []) => {
+  const runCommand = (command, args = []) => {
     if (!selectedConnection) {
       toast.error('Please select a connection');
       return;
     }
 
+    if (!isConnected) {
+      toast.error('WebSocket not connected');
+      return;
+    }
+
     const fullCommand = `${command} ${args.join(' ')}`;
     addOutput(`$ migrator ${fullCommand}`, 'command');
-
-    try {
-      const result = await executeCommand(fullCommand);
-
-      if (result.success) {
-        if (result.output) addOutput(result.output, 'success');
-        toast.info('Command completed successfully');
-      } else {
-        if (result.output) addOutput(result.output, 'error');
-        if (result.error) addOutput(result.error, 'error');
-        toast.error('Command failed');
-      }
-    } catch (err) {
-      addOutput(`Error: ${err.message}`, 'error');
-      toast.error('Command failed');
-    }
+    executeCommand(fullCommand);
   };
 
   const handleInit = () => runCommand('init');

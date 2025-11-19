@@ -30,6 +30,7 @@ from core.routes.backup import router as backup_router
 from core.routes.migrator import router as migrator_router
 from ws.websocket import websocket_backups
 from ws.terminal import websocket_terminal
+from ws.migrator import websocket_migrator
 
 app = FastAPI(
     title="DB Toolkit API",
@@ -64,3 +65,4 @@ app.include_router(migrator_router, prefix="/api/v1", tags=["Migrator"])
 # WebSocket routes
 app.websocket("/ws/backups")(websocket_backups)
 app.websocket("/ws/terminal")(websocket_terminal)
+app.websocket("/ws/migrator")(websocket_migrator)
