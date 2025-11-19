@@ -1,35 +1,10 @@
-import { Database, Download, Zap, Shield } from 'lucide-react';
+import Hero from '@/components/Hero';
+import { Database, Zap, Shield } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20 text-center">
-        <div className="flex justify-center mb-6">
-          <Database className="w-20 h-20 text-blue-600" />
-        </div>
-        <h1 className="text-5xl font-bold text-gray-900 mb-4">
-          DB Toolkit
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Modern, cross-platform desktop database management application built with Electron, React, and Python FastAPI
-        </p>
-        <div className="flex gap-4 justify-center">
-          <a
-            href="https://github.com/Adelodunpeter25/db-toolkit/releases/latest"
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            <Download size={20} />
-            Download for macOS
-          </a>
-          <a
-            href="https://github.com/Adelodunpeter25/db-toolkit"
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-          >
-            View on GitHub
-          </a>
-        </div>
-      </section>
+    <main className="min-h-screen">
+      <Hero />
 
       {/* Features Section */}
       <section className="container mx-auto px-6 py-20">
