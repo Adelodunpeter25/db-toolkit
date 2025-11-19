@@ -23,6 +23,13 @@ function BackupsPage() {
 
   useEffect(() => {
     fetchSchedules();
+    
+    // Poll for backup status updates every 3 seconds
+    const interval = setInterval(() => {
+      fetchBackups();
+    }, 3000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const fetchSchedules = async () => {
