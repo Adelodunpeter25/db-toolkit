@@ -23,6 +23,10 @@ IMPLEMENTATION_PLAN.md
 node_modules/
 src/db-toolkit-ui/node_modules/
 src/db-toolkit-ui/.env.local
+src/web/node_modules/
+src/web/.next/
+src/web/out/
+src/web/.env*.local
 src/db-toolkit-ui/.env.development.local
 src/db-toolkit-ui/.env.test.local
 src/db-toolkit-ui/.env.production.local
