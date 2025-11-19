@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { WS_ENDPOINTS } from '../services/websocket';
 
 export function useMigratorStream(onOutput) {
   const [isConnected, setIsConnected] = useState(false);
@@ -6,7 +7,7 @@ export function useMigratorStream(onOutput) {
   const wsRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8001/ws/migrator');
+    const ws = new WebSocket(WS_ENDPOINTS.MIGRATOR);
 
     ws.onopen = () => {
       setIsConnected(true);

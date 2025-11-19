@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { WS_ENDPOINTS } from '../services/websocket';
 
 export function useBackupWebSocket(onUpdate) {
   const wsRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8001/ws/backups');
+    const ws = new WebSocket(WS_ENDPOINTS.BACKUPS);
     wsRef.current = ws;
 
     ws.onopen = () => {
