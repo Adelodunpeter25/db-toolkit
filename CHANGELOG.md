@@ -2,7 +2,7 @@
 
 All notable changes to DB Toolkit will be documented in this file.
 
-## [1.0.0] - 2025-12-XX
+## [1.0.0] - 2025-11-19
 
 ### Initial Release
 
