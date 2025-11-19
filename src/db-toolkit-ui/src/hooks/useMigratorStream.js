@@ -40,11 +40,11 @@ export function useMigratorStream(onOutput) {
     });
   }, [onOutput]);
 
-  const executeCommand = useCallback(async (command, cwd) => {
+  const executeCommand = useCallback(async (command, cwd, dbUrl) => {
     try {
       setIsRunning(true);
       const ws = await connect();
-      ws.send(JSON.stringify({ command, cwd }));
+      ws.send(JSON.stringify({ command, cwd, dbUrl }));
     } catch (error) {
       setIsRunning(false);
       onOutput(`Connection error: ${error.message}`, 'error');

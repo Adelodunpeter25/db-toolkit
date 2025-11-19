@@ -12,11 +12,12 @@ async def websocket_migrator(websocket: WebSocket):
             data = await websocket.receive_json()
             command = data.get("command")
             cwd = data.get("cwd")
+            db_url = data.get("dbUrl")
             
             if not command:
                 await websocket.send_json({"type": "error", "data": "No command provided"})
                 continue
             
-            await MigratorExecutor.execute_command_stream(command, websocket, cwd)
+            await MigratorExecutor.execute_command_stream(command, websocket, cwd, db_url)
     except Exception:
         pass

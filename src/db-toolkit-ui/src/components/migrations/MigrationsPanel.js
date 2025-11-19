@@ -11,7 +11,7 @@ import { Button } from '../common/Button';
 function MigrationsPanel({ isOpen, onClose }) {
   const { connections } = useConnections();
   const toast = useToast();
-  const [selectedProject, setSelectedProject] = useState('');
+  const [selectedProject, setSelectedProject] = useState(null);
   const [savedProjects, setSavedProjects] = useState([]);
   const [isMaximized, setIsMaximized] = useState(false);
   const [output, setOutput] = useState([]);
@@ -64,8 +64,9 @@ function MigrationsPanel({ isOpen, onClose }) {
   const handleSelectFolder = async () => {
     const path = await window.electron.ipcRenderer.invoke('select-folder');
     if (path) {
-      setSelectedProject(path);
+      setSelectedProject({ path, connectionId: null });
       addOutput(`Selected project: ${path}`, 'info');
+      addOutput('Warning: No database connection linked. Please select from saved projects.', 'error');
     }
   };
 
@@ -77,13 +78,26 @@ function MigrationsPanel({ isOpen, onClose }) {
 
   const runCommand = (command, args = []) => {
     if (!selectedProject) {
-      toast.error('Please select a project folder');
+      toast.error('Please select a project');
       return;
     }
 
+    if (!selectedProject.connectionId) {
+      toast.error('Project has no database connection. Please configure in settings.');
+      return;
+    }
+
+    const connection = connections.find(c => c.id === selectedProject.connectionId);
+    if (!connection) {
+      toast.error('Database connection not found');
+      return;
+    }
+
+    const dbUrl = `${connection.db_type}://${connection.username}:${connection.password}@${connection.host}:${connection.port}/${connection.database}`;
+
     const fullCommand = `${command} ${args.join(' ')}`;
     addOutput(`$ migrator ${fullCommand}`, 'command');
-    executeCommand(fullCommand, selectedProject);
+    executeCommand(fullCommand, selectedProject.path, dbUrl);
   };
 
   const handleInit = () => runCommand('init');
@@ -118,8 +132,11 @@ function MigrationsPanel({ isOpen, onClose }) {
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-900 dark:text-white font-medium">Migrations</span>
             <select
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
+              value={selectedProject?.path || ''}
+              onChange={(e) => {
+                const proj = savedProjects.find(p => p.path === e.target.value);
+                setSelectedProject(proj || null);
+              }}
               className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               disabled={isRunning}
             >

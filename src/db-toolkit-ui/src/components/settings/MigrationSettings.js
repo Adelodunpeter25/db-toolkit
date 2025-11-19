@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Folder, Edit2, Check, X } from 'lucide-react';
 import { Button } from '../common/Button';
+import { useConnections } from '../../hooks';
 
 export function MigrationSettings() {
+  const { connections } = useConnections();
   const [projects, setProjects] = useState([]);
-  const [newProject, setNewProject] = useState({ name: '', path: '' });
+  const [newProject, setNewProject] = useState({ name: '', path: '', connectionId: '' });
   const [editingIndex, setEditingIndex] = useState(null);
-  const [editingProject, setEditingProject] = useState({ name: '', path: '' });
+  const [editingProject, setEditingProject] = useState({ name: '', path: '', connectionId: '' });
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('migration-projects') || '[]');
@@ -26,11 +28,11 @@ export function MigrationSettings() {
   };
 
   const handleAdd = () => {
-    if (!newProject.name || !newProject.path) return;
+    if (!newProject.name || !newProject.path || !newProject.connectionId) return;
     
     const updated = [...projects, newProject];
     saveProjects(updated);
-    setNewProject({ name: '', path: '' });
+    setNewProject({ name: '', path: '', connectionId: '' });
   };
 
   const handleDelete = (index) => {
@@ -52,7 +54,7 @@ export function MigrationSettings() {
 
   const handleCancelEdit = () => {
     setEditingIndex(null);
-    setEditingProject({ name: '', path: '' });
+    setEditingProject({ name: '', path: '', connectionId: '' });
   };
 
   const handleEditBrowse = async () => {
@@ -101,7 +103,17 @@ export function MigrationSettings() {
                 <Folder size={18} />
               </button>
             </div>
-            <Button onClick={handleAdd} disabled={!newProject.name || !newProject.path}>
+            <select
+              value={newProject.connectionId}
+              onChange={(e) => setNewProject(prev => ({ ...prev, connectionId: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="">Select database connection...</option>
+              {connections.map(conn => (
+                <option key={conn.id} value={conn.id}>{conn.name}</option>
+              ))}
+            </select>
+            <Button onClick={handleAdd} disabled={!newProject.name || !newProject.path || !newProject.connectionId}>
               <Plus size={16} className="mr-1" /> Add Project
             </Button>
           </div>
@@ -143,6 +155,16 @@ export function MigrationSettings() {
                         <Folder size={16} />
                       </button>
                     </div>
+                    <select
+                      value={editingProject.connectionId}
+                      onChange={(e) => setEditingProject(prev => ({ ...prev, connectionId: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                    >
+                      <option value="">Select database connection...</option>
+                      {connections.map(conn => (
+                        <option key={conn.id} value={conn.id}>{conn.name}</option>
+                      ))}
+                    </select>
                     <div className="flex gap-2">
                       <button
                         onClick={handleSaveEdit}
@@ -166,6 +188,9 @@ export function MigrationSettings() {
                       </div>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         {project.path}
+                      </div>
+                      <div className="text-xs text-blue-600 dark:text-blue-400">
+                        {connections.find(c => c.id === project.connectionId)?.name || 'No connection'}
                       </div>
                     </div>
                     <div className="flex gap-2">

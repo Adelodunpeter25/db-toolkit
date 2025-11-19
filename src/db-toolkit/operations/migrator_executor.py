@@ -61,17 +61,24 @@ class MigratorExecutor:
             }
 
     @classmethod
-    async def execute_command_stream(cls, command: str, websocket, cwd: Optional[str] = None):
+    async def execute_command_stream(cls, command: str, websocket, cwd: Optional[str] = None, db_url: Optional[str] = None):
         """Execute migrator command and stream output via WebSocket."""
         try:
             migrator_path = cls.get_migrator_path()
             migrator_cmd = [migrator_path] + command.split()
             
+            env = None
+            if db_url:
+                import os
+                env = os.environ.copy()
+                env['DATABASE_URL'] = db_url
+            
             process = await asyncio.create_subprocess_exec(
                 *migrator_cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=cwd
+                cwd=cwd,
+                env=env
             )
             
             async def read_stream(stream, stream_type):
