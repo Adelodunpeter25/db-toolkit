@@ -36,7 +36,7 @@ function TerminalPanel({ isOpen, onClose }) {
     fit.fit();
     terminalInstance.current = term;
 
-    const websocket = new WebSocket('ws://localhost:8000/ws/terminal');
+    const websocket = new WebSocket('ws://localhost:8001/ws/terminal');
     ws.current = websocket;
 
     websocket.onopen = () => {
