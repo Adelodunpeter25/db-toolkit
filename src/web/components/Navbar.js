@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Database, Moon, Sun, Menu, X } from 'lucide-react';
+import { Database, Moon, Sun, Menu, X, Github } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Navbar() {
@@ -39,8 +39,17 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Theme Toggle & Mobile Menu */}
+          {/* GitHub & Theme Toggle & Mobile Menu */}
           <div className="flex items-center gap-2">
+            <a
+              href="https://github.com/Adelodunpeter25/db-toolkit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              aria-label="GitHub"
+            >
+              <Github size={20} className="text-gray-700 dark:text-gray-300" />
+            </a>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
