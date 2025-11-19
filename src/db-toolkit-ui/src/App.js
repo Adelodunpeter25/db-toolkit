@@ -5,6 +5,7 @@ import SchemaPage from './pages/SchemaPage';
 import QueryPage from './pages/QueryPage';
 import DataExplorerPage from './pages/DataExplorerPage';
 import BackupsPage from './pages/BackupsPage';
+import DocumentationPage from './pages/DocumentationPage';
 import './styles/App.css';
 import './styles/split.css';
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/query/:connectionId" element={<QueryPage />} />
           <Route path="/data-explorer" element={<DataExplorerPage />} />
           <Route path="/backups" element={<BackupsPage />} />
+          <Route path="/docs" element={<DocumentationPage />} />
         </Routes>
       </Layout>
     </Router>

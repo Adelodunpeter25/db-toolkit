@@ -1,0 +1,160 @@
+{
+  "categories": [
+    {
+      "id": "basics",
+      "title": "SQL Basics",
+      "topics": [
+        {
+          "id": "select",
+          "title": "SELECT Statement",
+          "content": "The SELECT statement retrieves data from one or more tables.\n\n**Basic Syntax:**\n```sql\nSELECT column1, column2 FROM table_name;\n```\n\n**Select All Columns:**\n```sql\nSELECT * FROM users;\n```\n\n**Select Specific Columns:**\n```sql\nSELECT name, email FROM users;\n```",
+          "keywords": ["select", "query", "retrieve", "data"]
+        },
+        {
+          "id": "where",
+          "title": "WHERE Clause",
+          "content": "The WHERE clause filters records based on conditions.\n\n**Basic Syntax:**\n```sql\nSELECT * FROM table_name WHERE condition;\n```\n\n**Examples:**\n```sql\nSELECT * FROM users WHERE age > 18;\nSELECT * FROM products WHERE price BETWEEN 10 AND 50;\nSELECT * FROM customers WHERE city IN ('New York', 'London');\n```",
+          "keywords": ["where", "filter", "condition"]
+        },
+        {
+          "id": "insert",
+          "title": "INSERT Statement",
+          "content": "The INSERT statement adds new records to a table.\n\n**Basic Syntax:**\n```sql\nINSERT INTO table_name (column1, column2) VALUES (value1, value2);\n```\n\n**Examples:**\n```sql\nINSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');\n\nINSERT INTO products (name, price, stock)\nVALUES ('Laptop', 999.99, 50);\n```",
+          "keywords": ["insert", "add", "create", "new"]
+        },
+        {
+          "id": "update",
+          "title": "UPDATE Statement",
+          "content": "The UPDATE statement modifies existing records.\n\n**Basic Syntax:**\n```sql\nUPDATE table_name SET column1 = value1 WHERE condition;\n```\n\n**Examples:**\n```sql\nUPDATE users SET email = 'newemail@example.com' WHERE id = 1;\n\nUPDATE products SET price = price * 1.1 WHERE category = 'Electronics';\n```",
+          "keywords": ["update", "modify", "change", "edit"]
+        },
+        {
+          "id": "delete",
+          "title": "DELETE Statement",
+          "content": "The DELETE statement removes records from a table.\n\n**Basic Syntax:**\n```sql\nDELETE FROM table_name WHERE condition;\n```\n\n**Examples:**\n```sql\nDELETE FROM users WHERE id = 1;\n\nDELETE FROM orders WHERE status = 'cancelled';\n```\n\n**⚠️ Warning:** Always use WHERE clause to avoid deleting all records!",
+          "keywords": ["delete", "remove", "drop"]
+        }
+      ]
+    },
+    {
+      "id": "joins",
+      "title": "Joins",
+      "topics": [
+        {
+          "id": "inner-join",
+          "title": "INNER JOIN",
+          "content": "Returns records with matching values in both tables.\n\n**Syntax:**\n```sql\nSELECT columns\nFROM table1\nINNER JOIN table2 ON table1.column = table2.column;\n```\n\n**Example:**\n```sql\nSELECT orders.id, customers.name, orders.total\nFROM orders\nINNER JOIN customers ON orders.customer_id = customers.id;\n```",
+          "keywords": ["inner join", "join", "match"]
+        },
+        {
+          "id": "left-join",
+          "title": "LEFT JOIN",
+          "content": "Returns all records from the left table and matched records from the right table.\n\n**Syntax:**\n```sql\nSELECT columns\nFROM table1\nLEFT JOIN table2 ON table1.column = table2.column;\n```\n\n**Example:**\n```sql\nSELECT customers.name, orders.id\nFROM customers\nLEFT JOIN orders ON customers.id = orders.customer_id;\n```",
+          "keywords": ["left join", "outer join"]
+        },
+        {
+          "id": "right-join",
+          "title": "RIGHT JOIN",
+          "content": "Returns all records from the right table and matched records from the left table.\n\n**Syntax:**\n```sql\nSELECT columns\nFROM table1\nRIGHT JOIN table2 ON table1.column = table2.column;\n```",
+          "keywords": ["right join", "outer join"]
+        },
+        {
+          "id": "full-join",
+          "title": "FULL OUTER JOIN",
+          "content": "Returns all records when there is a match in either table.\n\n**Syntax:**\n```sql\nSELECT columns\nFROM table1\nFULL OUTER JOIN table2 ON table1.column = table2.column;\n```",
+          "keywords": ["full join", "full outer join"]
+        }
+      ]
+    },
+    {
+      "id": "aggregate",
+      "title": "Aggregate Functions",
+      "topics": [
+        {
+          "id": "count",
+          "title": "COUNT",
+          "content": "Returns the number of rows.\n\n**Syntax:**\n```sql\nSELECT COUNT(column) FROM table_name;\n```\n\n**Examples:**\n```sql\nSELECT COUNT(*) FROM users;\nSELECT COUNT(DISTINCT country) FROM customers;\n```",
+          "keywords": ["count", "aggregate", "total"]
+        },
+        {
+          "id": "sum",
+          "title": "SUM",
+          "content": "Returns the sum of numeric values.\n\n**Syntax:**\n```sql\nSELECT SUM(column) FROM table_name;\n```\n\n**Example:**\n```sql\nSELECT SUM(amount) FROM orders WHERE status = 'completed';\n```",
+          "keywords": ["sum", "total", "aggregate"]
+        },
+        {
+          "id": "avg",
+          "title": "AVG",
+          "content": "Returns the average value.\n\n**Syntax:**\n```sql\nSELECT AVG(column) FROM table_name;\n```\n\n**Example:**\n```sql\nSELECT AVG(price) FROM products;\n```",
+          "keywords": ["avg", "average", "mean"]
+        },
+        {
+          "id": "min-max",
+          "title": "MIN and MAX",
+          "content": "Returns the minimum or maximum value.\n\n**Syntax:**\n```sql\nSELECT MIN(column), MAX(column) FROM table_name;\n```\n\n**Example:**\n```sql\nSELECT MIN(price), MAX(price) FROM products;\n```",
+          "keywords": ["min", "max", "minimum", "maximum"]
+        },
+        {
+          "id": "group-by",
+          "title": "GROUP BY",
+          "content": "Groups rows with the same values.\n\n**Syntax:**\n```sql\nSELECT column, COUNT(*)\nFROM table_name\nGROUP BY column;\n```\n\n**Example:**\n```sql\nSELECT country, COUNT(*) as customer_count\nFROM customers\nGROUP BY country\nORDER BY customer_count DESC;\n```",
+          "keywords": ["group by", "aggregate", "grouping"]
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced SQL",
+      "topics": [
+        {
+          "id": "subquery",
+          "title": "Subqueries",
+          "content": "A query nested inside another query.\n\n**Syntax:**\n```sql\nSELECT column FROM table1\nWHERE column IN (SELECT column FROM table2);\n```\n\n**Example:**\n```sql\nSELECT name FROM products\nWHERE price > (SELECT AVG(price) FROM products);\n```",
+          "keywords": ["subquery", "nested", "inner query"]
+        },
+        {
+          "id": "cte",
+          "title": "Common Table Expressions (CTE)",
+          "content": "Temporary result set that can be referenced within a SELECT, INSERT, UPDATE, or DELETE statement.\n\n**Syntax:**\n```sql\nWITH cte_name AS (\n  SELECT columns FROM table\n)\nSELECT * FROM cte_name;\n```\n\n**Example:**\n```sql\nWITH high_value_customers AS (\n  SELECT customer_id, SUM(total) as total_spent\n  FROM orders\n  GROUP BY customer_id\n  HAVING SUM(total) > 1000\n)\nSELECT c.name, hvc.total_spent\nFROM customers c\nJOIN high_value_customers hvc ON c.id = hvc.customer_id;\n```",
+          "keywords": ["cte", "with", "common table expression"]
+        },
+        {
+          "id": "window",
+          "title": "Window Functions",
+          "content": "Performs calculations across rows related to the current row.\n\n**Common Functions:**\n- ROW_NUMBER()\n- RANK()\n- DENSE_RANK()\n- LAG()\n- LEAD()\n\n**Example:**\n```sql\nSELECT \n  name,\n  salary,\n  ROW_NUMBER() OVER (ORDER BY salary DESC) as rank\nFROM employees;\n```",
+          "keywords": ["window", "row_number", "rank", "partition"]
+        },
+        {
+          "id": "index",
+          "title": "Indexes",
+          "content": "Indexes improve query performance by allowing faster data retrieval.\n\n**Create Index:**\n```sql\nCREATE INDEX idx_name ON table_name(column);\n```\n\n**Create Unique Index:**\n```sql\nCREATE UNIQUE INDEX idx_email ON users(email);\n```\n\n**Drop Index:**\n```sql\nDROP INDEX idx_name;\n```",
+          "keywords": ["index", "performance", "optimization"]
+        }
+      ]
+    },
+    {
+      "id": "functions",
+      "title": "Functions",
+      "topics": [
+        {
+          "id": "string-functions",
+          "title": "String Functions",
+          "content": "Common string manipulation functions.\n\n**CONCAT:** Concatenate strings\n```sql\nSELECT CONCAT(first_name, ' ', last_name) as full_name FROM users;\n```\n\n**UPPER/LOWER:** Change case\n```sql\nSELECT UPPER(name), LOWER(email) FROM users;\n```\n\n**SUBSTRING:** Extract substring\n```sql\nSELECT SUBSTRING(name, 1, 3) FROM products;\n```\n\n**LENGTH:** Get string length\n```sql\nSELECT name, LENGTH(name) FROM products;\n```",
+          "keywords": ["string", "concat", "upper", "lower", "substring"]
+        },
+        {
+          "id": "date-functions",
+          "title": "Date Functions",
+          "content": "Common date and time functions.\n\n**NOW/CURRENT_TIMESTAMP:** Current date and time\n```sql\nSELECT NOW();\n```\n\n**DATE:** Extract date part\n```sql\nSELECT DATE(created_at) FROM orders;\n```\n\n**DATE_ADD/DATE_SUB:** Add or subtract intervals\n```sql\nSELECT DATE_ADD(NOW(), INTERVAL 7 DAY);\n```\n\n**DATEDIFF:** Difference between dates\n```sql\nSELECT DATEDIFF(end_date, start_date) FROM projects;\n```",
+          "keywords": ["date", "time", "now", "timestamp"]
+        },
+        {
+          "id": "numeric-functions",
+          "title": "Numeric Functions",
+          "content": "Common numeric functions.\n\n**ROUND:** Round to specified decimals\n```sql\nSELECT ROUND(price, 2) FROM products;\n```\n\n**CEIL/FLOOR:** Round up or down\n```sql\nSELECT CEIL(price), FLOOR(price) FROM products;\n```\n\n**ABS:** Absolute value\n```sql\nSELECT ABS(balance) FROM accounts;\n```",
+          "keywords": ["numeric", "round", "ceil", "floor", "abs"]
+        }
+      ]
+    }
+  ]
+}

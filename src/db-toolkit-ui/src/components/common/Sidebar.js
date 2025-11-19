@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Database, Home, Table, HardDrive, Menu, X } from 'lucide-react';
+import { Database, Home, Table, HardDrive, Menu, X, BookOpen } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 
 function Sidebar() {
@@ -11,6 +11,7 @@ function Sidebar() {
     { path: '/', icon: Home, label: 'Connections' },
     { path: '/data-explorer', icon: Table, label: 'Data Explorer' },
     { path: '/backups', icon: HardDrive, label: 'Backups' },
+    { path: '/docs', icon: BookOpen, label: 'Documentation' },
   ];
 
   return (
