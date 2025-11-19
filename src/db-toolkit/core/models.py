@@ -25,6 +25,38 @@ class DatabaseConnection(BaseModel):
     password: Optional[str] = None
 
 
+class BackupType(str, Enum):
+    """Backup types."""
+    FULL = "full"
+    SCHEMA_ONLY = "schema_only"
+    DATA_ONLY = "data_only"
+    TABLES = "tables"
+
+
+class BackupStatus(str, Enum):
+    """Backup status."""
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class Backup(BaseModel):
+    """Backup model."""
+    id: str
+    connection_id: str
+    name: str
+    backup_type: BackupType
+    file_path: str
+    file_size: Optional[int] = None
+    status: BackupStatus
+    tables: Optional[list[str]] = None
+    compressed: bool = False
+    created_at: str
+    completed_at: Optional[str] = None
+    error_message: Optional[str] = None
+
+
 class AppSettings(BaseModel):
     """Application settings model."""
     # Appearance
