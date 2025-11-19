@@ -3,23 +3,24 @@
  */
 import { useState, useEffect } from 'react';
 import { useConnections } from '../../hooks';
-import { Tooltip } from './Tooltip';
 
 function StatusBar() {
   const { connectedIds } = useConnections();
+  const [hoveredMetric, setHoveredMetric] = useState(null);
   const [metrics, setMetrics] = useState({
-    ram: '0 MB',
-    cpu: '0%',
-    load: '0.0',
-    disk: '0 GB / 0 GB',
-    uptime: '0s'
+    ram: { used: 0, total: 0 },
+    cpu: 0,
+    load: 0,
+    disk: { used: 0, free: 0, total: 0 },
+    uptime: 0
   });
 
   useEffect(() => {
     const updateMetrics = () => {
       if (window.performance && window.performance.memory) {
-        const usedMemory = (window.performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(1);
-        setMetrics(prev => ({ ...prev, ram: `${usedMemory} MB` }));
+        const used = window.performance.memory.usedJSHeapSize / 1024 / 1024;
+        const total = window.performance.memory.totalJSHeapSize / 1024 / 1024;
+        setMetrics(prev => ({ ...prev, ram: { used, total } }));
       }
     };
 
@@ -32,12 +33,7 @@ function StatusBar() {
     const startTime = Date.now();
     const updateUptime = () => {
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const minutes = Math.floor(elapsed / 60);
-      const seconds = elapsed % 60;
-      setMetrics(prev => ({ 
-        ...prev, 
-        uptime: minutes > 0 ? `${minutes}m` : `${seconds}s` 
-      }));
+      setMetrics(prev => ({ ...prev, uptime: elapsed }));
     };
 
     updateUptime();
@@ -45,53 +41,126 @@ function StatusBar() {
     return () => clearInterval(interval);
   }, []);
 
+  const formatUptime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    return m > 0 ? `${m}m` : `${seconds}s`;
+  };
+
+  const formatBytes = (bytes) => (bytes / 1024).toFixed(1);
+
+  const diskUsagePercent = metrics.disk.total > 0 
+    ? ((metrics.disk.used / metrics.disk.total) * 100).toFixed(1)
+    : 0;
+
   return (
-    <div className="h-6 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex items-center px-4 text-xs text-gray-600 dark:text-gray-400">
-      <Tooltip text="Active connections" position="top">
+    <div className="relative h-6 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex items-center px-4 text-xs text-gray-600 dark:text-gray-400">
+      <div className="relative"
+        onMouseEnter={() => setHoveredMetric('connections')}
+        onMouseLeave={() => setHoveredMetric(null)}
+      >
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
           Connections {connectedIds.size}
         </span>
-      </Tooltip>
+        {hoveredMetric === 'connections' && (
+          <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
+            <div className="font-semibold mb-1">Active Connections</div>
+            <div>Connected: {connectedIds.size}</div>
+            <div>Status: {connectedIds.size > 0 ? 'Active' : 'Idle'}</div>
+          </div>
+        )}
+      </div>
       
       <span className="mx-2">|</span>
       
-      <Tooltip text="Memory usage" position="top">
+      <div className="relative"
+        onMouseEnter={() => setHoveredMetric('ram')}
+        onMouseLeave={() => setHoveredMetric(null)}
+      >
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
-          RAM {metrics.ram}
+          RAM {formatBytes(metrics.ram.used)} MB
         </span>
-      </Tooltip>
+        {hoveredMetric === 'ram' && (
+          <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
+            <div className="font-semibold mb-1">App Memory Usage</div>
+            <div>Used: {formatBytes(metrics.ram.used)} MB</div>
+            <div>Includes: Main process + Renderer + Database instances</div>
+          </div>
+        )}
+      </div>
       
       <span className="mx-2">|</span>
       
-      <Tooltip text="CPU usage" position="top">
+      <div className="relative"
+        onMouseEnter={() => setHoveredMetric('cpu')}
+        onMouseLeave={() => setHoveredMetric(null)}
+      >
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
-          CPU {metrics.cpu}
+          CPU {metrics.cpu}%
         </span>
-      </Tooltip>
+        {hoveredMetric === 'cpu' && (
+          <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
+            <div className="font-semibold mb-1">CPU Usage</div>
+            <div>Current: {metrics.cpu}%</div>
+            <div>Process: Electron + Python Backend</div>
+          </div>
+        )}
+      </div>
       
       <span className="mx-2">|</span>
       
-      <Tooltip text="System load" position="top">
+      <div className="relative"
+        onMouseEnter={() => setHoveredMetric('load')}
+        onMouseLeave={() => setHoveredMetric(null)}
+      >
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
-          Load {metrics.load}
+          Load {metrics.load.toFixed(1)}
         </span>
-      </Tooltip>
+        {hoveredMetric === 'load' && (
+          <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
+            <div className="font-semibold mb-1">System Load</div>
+            <div>Average: {metrics.load.toFixed(1)}</div>
+            <div>Status: {metrics.load < 1 ? 'Normal' : 'High'}</div>
+          </div>
+        )}
+      </div>
       
       <span className="mx-2">|</span>
       
-      <Tooltip text="Disk usage" position="top">
+      <div className="relative"
+        onMouseEnter={() => setHoveredMetric('disk')}
+        onMouseLeave={() => setHoveredMetric(null)}
+      >
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
-          {metrics.disk}
+          {formatBytes(metrics.disk.used)} GB / {formatBytes(metrics.disk.total)} GB
         </span>
-      </Tooltip>
+        {hoveredMetric === 'disk' && (
+          <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
+            <div className="font-semibold mb-1">Disk Usage</div>
+            <div>Used: {formatBytes(metrics.disk.used)} GB</div>
+            <div>Free: {formatBytes(metrics.disk.free)} GB</div>
+            <div>Total: {formatBytes(metrics.disk.total)} GB</div>
+            <div>Usage: {diskUsagePercent}%</div>
+          </div>
+        )}
+      </div>
       
       <span className="mx-2">|</span>
       
-      <Tooltip text="Uptime" position="top">
+      <div className="relative"
+        onMouseEnter={() => setHoveredMetric('uptime')}
+        onMouseLeave={() => setHoveredMetric(null)}
+      >
         <span className="hover:text-gray-900 dark:hover:text-gray-200 cursor-default">
-          {metrics.uptime}
+          {formatUptime(metrics.uptime)}
         </span>
-      </Tooltip>
+        {hoveredMetric === 'uptime' && (
+          <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
+            <div className="font-semibold mb-1">Application Uptime</div>
+            <div>Running: {formatUptime(metrics.uptime)}</div>
+            <div>Started: {new Date(Date.now() - metrics.uptime * 1000).toLocaleTimeString()}</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
