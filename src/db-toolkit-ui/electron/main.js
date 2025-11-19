@@ -73,10 +73,15 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    title: 'DB Toolkit',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
     },
+  });
+  
+  win.on('page-title-updated', (event) => {
+    event.preventDefault();
   });
 
   const isDev = !app.isPackaged;
@@ -90,6 +95,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  app.name = 'DB Toolkit';
   createMenu();
   createWindow();
 });
