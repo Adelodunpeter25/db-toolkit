@@ -219,12 +219,35 @@ class BackupManager:
                 for table in table_list:
                     # Get table schema
                     if backup.backup_type != BackupType.DATA_ONLY:
-                        schema = await conn.fetchval(
-                            "SELECT pg_get_tabledef($1::regclass)", table
+                        # Get CREATE TABLE statement
+                        columns = await conn.fetch(
+                            """
+                            SELECT column_name, data_type, character_maximum_length,
+                                   is_nullable, column_default
+                            FROM information_schema.columns
+                            WHERE table_name = $1 AND table_schema = 'public'
+                            ORDER BY ordinal_position
+                            """, table
                         )
-                        if schema:
+                        
+                        if columns:
                             f.write(f"\n-- Table: {table}\n")
-                            f.write(f"{schema};\n\n")
+                            f.write(f"DROP TABLE IF EXISTS \"{table}\";\n")
+                            f.write(f"CREATE TABLE \"{table}\" (\n")
+                            
+                            col_defs = []
+                            for col in columns:
+                                col_def = f'  "{col["column_name"]}" {col["data_type"]}'
+                                if col['character_maximum_length']:
+                                    col_def += f'({col["character_maximum_length"]})'
+                                if col['is_nullable'] == 'NO':
+                                    col_def += ' NOT NULL'
+                                if col['column_default']:
+                                    col_def += f' DEFAULT {col["column_default"]}'
+                                col_defs.append(col_def)
+                            
+                            f.write(',\n'.join(col_defs))
+                            f.write('\n);\n\n')
                     
                     # Get table data
                     if backup.backup_type != BackupType.SCHEMA_ONLY:
