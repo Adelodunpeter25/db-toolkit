@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  MagnifyingGlassIcon, 
-  ServerIcon, 
-  DocumentTextIcon, 
-  BookOpenIcon,
-  PlusIcon,
-  ArrowPathIcon,
-  CommandLineIcon
-} from '@heroicons/react/24/outline';
+  Search, 
+  Server, 
+  FileText, 
+  BookOpen,
+  Plus,
+  RefreshCw,
+  Terminal
+} from 'lucide-react';
 
 export default function CommandPalette({ isOpen, onClose, connections, queries }) {
   const [search, setSearch] = useState('');
@@ -17,17 +17,17 @@ export default function CommandPalette({ isOpen, onClose, connections, queries }
   const inputRef = useRef(null);
 
   const actions = [
-    { id: 'new-query', name: 'New Query', icon: PlusIcon, action: () => navigate('/query') },
-    { id: 'new-backup', name: 'Create Backup', icon: ArrowPathIcon, action: () => navigate('/backups') },
-    { id: 'migrations', name: 'Open Migrations', icon: CommandLineIcon, action: () => navigate('/migrations') },
-    { id: 'docs', name: 'View Documentation', icon: BookOpenIcon, action: () => navigate('/documentation') },
+    { id: 'new-query', name: 'New Query', icon: Plus, action: () => navigate('/query') },
+    { id: 'new-backup', name: 'Create Backup', icon: RefreshCw, action: () => navigate('/backups') },
+    { id: 'migrations', name: 'Open Migrations', icon: Terminal, action: () => navigate('/migrations') },
+    { id: 'docs', name: 'View Documentation', icon: BookOpen, action: () => navigate('/documentation') },
   ];
 
   const connectionItems = (connections || []).map(conn => ({
     id: `conn-${conn.id}`,
     name: conn.name,
     subtitle: `${conn.type} - ${conn.host}`,
-    icon: ServerIcon,
+    icon: Server,
     action: () => {
       window.electron.ipcRenderer.send('connect-database', conn);
       navigate('/');
@@ -38,7 +38,7 @@ export default function CommandPalette({ isOpen, onClose, connections, queries }
     id: `query-${query.id}`,
     name: query.name || 'Untitled Query',
     subtitle: query.sql?.substring(0, 50) + '...',
-    icon: DocumentTextIcon,
+    icon: FileText,
     action: () => navigate(`/query?id=${query.id}`)
   }));
 
@@ -91,7 +91,7 @@ export default function CommandPalette({ isOpen, onClose, connections, queries }
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />
+          <Search className="w-5 h-5 text-gray-400" />
           <input
             ref={inputRef}
             type="text"
