@@ -19,23 +19,28 @@ const sections = [
 
 export default function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <h2>DB Toolkit</h2>
-        <span className="version">v0.3.0</span>
+    <aside className="w-72 bg-gray-50 border-r border-gray-200 py-8 h-[calc(100vh-72px)] overflow-y-hidden">
+      <div className="px-6 pb-6 border-b border-gray-200 mb-4">
+        <h2 className="text-xl font-bold text-emerald-600 mb-1">DB Toolkit</h2>
+        <span className="text-sm text-gray-500">v0.3.0</span>
       </div>
       <motion.nav 
-        className="sidebar-nav"
+        className="flex flex-col"
         variants={staggerContainer}
         initial="initial"
         animate="animate"
       >
         {sections.map((section) => {
           const Icon = section.icon;
+          const isActive = activeSection === section.id;
           return (
             <motion.button
               key={section.id}
-              className={`nav-item ${activeSection === section.id ? 'active' : ''}`}
+              className={`px-6 py-3 text-left flex items-center gap-3 transition-all border-l-3 ${
+                isActive 
+                  ? 'bg-emerald-50 text-emerald-600 font-semibold border-l-emerald-600' 
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-emerald-600 border-l-transparent'
+              }`}
               onClick={() => onSectionChange(section.id)}
               variants={fadeInUp}
               whileHover={{ x: 4 }}

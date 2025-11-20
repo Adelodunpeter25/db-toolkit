@@ -25,7 +25,7 @@ export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('getting-started');
 
   return (
-    <div className="main-container">
+    <div className="flex max-w-7xl mx-auto w-full">
       <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       <DocContent data={docMap[activeSection]} />
     </div>
