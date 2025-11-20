@@ -21,7 +21,7 @@ function DocContent({ data, prevSection, nextSection, onNavigate }: DocContentPr
 
   return (
     <motion.main 
-      className="flex-1 p-12 max-w-4xl min-h-[calc(100vh-124px)]"
+      className="flex-1 p-12 max-w-4xl"
       variants={staggerContainer}
       initial="initial"
       animate="animate"
