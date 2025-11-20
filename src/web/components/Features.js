@@ -11,13 +11,13 @@ export default function Features() {
       icon: Zap,
       title: 'Lightning Fast',
       description: 'Optimized query execution with Monaco editor and intelligent autocomplete',
-      color: 'blue'
+      color: 'orange'
     },
     {
       icon: Database,
       title: 'Multi-Database',
       description: 'PostgreSQL, MySQL, SQLite, and MongoDB support in one unified interface',
-      color: 'green'
+      color: 'indigo'
     },
     {
       icon: Shield,
@@ -29,7 +29,7 @@ export default function Features() {
       icon: Code,
       title: 'Developer Friendly',
       description: 'Syntax highlighting, code completion, and query formatting built-in',
-      color: 'orange'
+      color: 'green'
     },
     {
       icon: Lock,
@@ -41,7 +41,7 @@ export default function Features() {
       icon: Layers,
       title: 'Migration Ready',
       description: 'Built-in database migration tools with real-time output streaming',
-      color: 'indigo'
+      color: 'blue'
     }
   ];
 
