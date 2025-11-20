@@ -19,13 +19,13 @@ const sections = [
 
 export default function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
   return (
-    <aside className="w-72 bg-gray-50 border-r border-gray-200 py-8 h-[calc(100vh-72px)] overflow-y-hidden">
-      <div className="px-6 pb-6 border-b border-gray-200 mb-4">
+    <aside className="w-72 bg-gray-50 border-r border-gray-200 h-[calc(100vh-72px)] flex flex-col">
+      <div className="px-6 py-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-emerald-600 mb-1">DB Toolkit</h2>
         <span className="text-sm text-gray-500">v0.3.0</span>
       </div>
       <motion.nav 
-        className="flex flex-col"
+        className="flex flex-col flex-1"
         variants={staggerContainer}
         initial="initial"
         animate="animate"
