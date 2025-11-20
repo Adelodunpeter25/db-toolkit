@@ -9,6 +9,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      external: [],
+    },
   },
   esbuild: {
     loader: 'jsx',
@@ -21,6 +24,6 @@ export default defineConfig({
         '.js': 'jsx',
       },
     },
-    include: ['monaco-editor'],
+    include: ['monaco-editor', '@xterm/xterm', '@xterm/addon-fit'],
   },
 })
