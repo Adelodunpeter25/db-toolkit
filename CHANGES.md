@@ -5,27 +5,7 @@ This file tracks changes during development before they are added to CHANGELOG.m
 ## Unreleased
 
 ### Added
-- Database URL connection option with async protocol support (postgresql+asyncpg, mysql+aiomysql, mongodb+srv, sqlite:///)
-- Database Analytics page with real-time monitoring (WebSocket, 5s updates)
-  - Query monitoring: current, long-running (>30s), blocked queries with kill functionality
-  - Query execution plan visualization and type classification (SELECT/INSERT/UPDATE/DELETE)
-  - System metrics: CPU, memory, disk, connections, database size
-  - Historical data storage (3 hours) with time range selector (1h/2h/3h)
-  - Slow query log (persistent, 24h retention)
-  - PDF export for analytics reports
-- Documentation for Connections, Data Explorer, Analytics, and Backups features
-- DBAssist AI integration with Google Gemini API - natural language to SQL, query optimization, schema analysis
-
 
 ### Fixed
-- Database URL parsing for async protocols and SQLite format
-- Create Connection button navigation without page refresh
-- Charts dark/light mode compatibility
-- Connection management performance - reuse connections instead of creating new ones (5-10x faster queries)
-- Query result caching and schema cache optimization (3-5x faster repeated queries, 5-10x faster metadata)
-- Adaptive background task scheduling and query validation caching (reduced CPU usage, faster validation)
-- Frontend performance optimizations: React.memo, virtualized lists, request deduplication (50% render reduction, 90% DOM reduction)
-- Route-based code splitting with lazy loading (40-60% faster initial load, smaller bundle chunks)
-- Operation lock conflicts with timeouts, expiration, and read-only operations (prevents "operation in progress" errors)
 
 ### Removed
