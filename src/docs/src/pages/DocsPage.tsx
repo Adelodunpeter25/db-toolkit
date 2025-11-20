@@ -1,4 +1,5 @@
 import { useState, lazy, Suspense } from 'react';
+import { BookOpen, Clock } from 'lucide-react';
 import CommandPalette from '../components/CommandPalette';
 
 const GuidePage = lazy(() => import('./GuidePage'));
@@ -18,23 +19,25 @@ export default function DocsPage({ isCommandOpen, onCommandClose }: DocsPageProp
         <div className="flex gap-8 px-8">
           <button
             onClick={() => setActiveTab('guide')}
-            className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+            className={`px-4 py-3 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'guide'
                 ? 'border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
-            Guide
+            <BookOpen size={18} />
+            <span>Guide</span>
           </button>
           <button
             onClick={() => setActiveTab('changelog')}
-            className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+            className={`px-4 py-3 font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'changelog'
                 ? 'border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
-            Changelog
+            <Clock size={18} />
+            <span>Changelog</span>
           </button>
         </div>
       </div>
