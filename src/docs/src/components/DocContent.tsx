@@ -22,13 +22,13 @@ function DocContent({ data, prevSection, nextSection, onNavigate }: DocContentPr
 
   return (
     <motion.main 
-      className="p-12 max-w-4xl w-full"
+      className="p-4 md:p-8 lg:p-12 max-w-4xl w-full"
       variants={staggerContainer}
       initial="initial"
       animate="animate"
     >
       <motion.h1 
-        className="text-5xl font-bold mb-8 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent"
+        className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent"
         variants={fadeInUp}
       >
         {data.title}
@@ -36,15 +36,15 @@ function DocContent({ data, prevSection, nextSection, onNavigate }: DocContentPr
       {data.sections.map((section, index) => (
         <motion.section 
           key={index} 
-          className={`mb-12 p-8 rounded-xl ${index % 2 === 0 ? 'bg-gray-50/50 dark:bg-gray-800/30' : ''}`}
+          className={`mb-8 md:mb-12 p-4 md:p-6 lg:p-8 rounded-xl ${index % 2 === 0 ? 'bg-gray-50/50 dark:bg-gray-800/30' : ''}`}
           variants={fadeInUp}
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-emerald-600 to-teal-600 rounded-full" />
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
+          <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+            <div className="w-1 h-6 md:h-8 bg-gradient-to-b from-emerald-600 to-teal-600 rounded-full" />
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
               {section.heading}
             </h2>
-            <Sparkles size={20} className="text-emerald-600 dark:text-emerald-400" />
+            <Sparkles size={16} className="md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div className="space-y-2">
             {parseContent(section.content)}
@@ -54,32 +54,32 @@ function DocContent({ data, prevSection, nextSection, onNavigate }: DocContentPr
       
       {(prevSection || nextSection) && onNavigate && (
         <motion.div 
-          className="mt-16 pt-8 border-t-2 border-gray-200 dark:border-gray-700 flex justify-between items-center gap-4"
+          className="mt-8 md:mt-16 pt-6 md:pt-8 border-t-2 border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 md:gap-4"
           variants={fadeInUp}
         >
           {prevSection ? (
             <button
               onClick={() => handleNavigate(prevSection.id)}
-              className="flex items-center gap-3 px-6 py-4 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-4 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
             >
-              <ArrowLeft size={24} />
+              <ArrowLeft size={20} className="md:w-6 md:h-6" />
               <div className="text-left">
-                <div className="text-sm opacity-70">Previous</div>
-                <div className="text-lg font-semibold">{prevSection.label}</div>
+                <div className="text-xs md:text-sm opacity-70">Previous</div>
+                <div className="text-sm md:text-lg font-semibold">{prevSection.label}</div>
               </div>
             </button>
-          ) : <div />}
+          ) : <div className="hidden sm:block" />}
           
           {nextSection && (
             <button
               onClick={() => handleNavigate(nextSection.id)}
-              className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl"
             >
               <div className="text-right">
-                <div className="text-sm opacity-80">Next</div>
-                <div className="text-lg font-semibold">{nextSection.label}</div>
+                <div className="text-xs md:text-sm opacity-80">Next</div>
+                <div className="text-sm md:text-lg font-semibold">{nextSection.label}</div>
               </div>
-              <ArrowRight size={24} />
+              <ArrowRight size={20} className="md:w-6 md:h-6" />
             </button>
           )}
         </motion.div>

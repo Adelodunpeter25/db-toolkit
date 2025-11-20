@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import { Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import DocContent from '../components/DocContent';
 import ScrollToTop from '../components/ScrollToTop';
@@ -40,6 +41,7 @@ const sections = [
 export default function GuidePage() {
   const [activeSection, setActiveSection] = useState('getting-started');
   const [currentData, setCurrentData] = useState<any>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     loadData(activeSection).then(setCurrentData);
@@ -59,15 +61,30 @@ export default function GuidePage() {
 
   return (
     <>
+      <button
+        onClick={() => setIsSidebarOpen(true)}
+        className="fixed left-4 top-[76px] md:top-[84px] z-30 lg:hidden bg-emerald-600 text-white p-2 md:p-3 rounded-lg shadow-lg hover:bg-emerald-700 transition-colors"
+        aria-label="Open menu"
+      >
+        <Menu size={20} className="md:w-6 md:h-6" />
+      </button>
+      
       <div className="flex w-full h-auto">
-        <div className="w-72 flex-shrink-0" />
-        <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
-        {currentData && <DocContent 
-          data={currentData} 
-          prevSection={prevSection}
-          nextSection={nextSection}
-          onNavigate={setActiveSection}
-        />}
+        <div className="hidden lg:block w-72 flex-shrink-0" />
+        <Sidebar 
+          activeSection={activeSection} 
+          onSectionChange={handleSectionChange}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+        <div className="w-full lg:w-auto">
+          {currentData && <DocContent 
+            data={currentData} 
+            prevSection={prevSection}
+            nextSection={nextSection}
+            onNavigate={setActiveSection}
+          />}
+        </div>
       </div>
       <ScrollToTop />
     </>
