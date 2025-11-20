@@ -15,7 +15,7 @@ export function useContact() {
         body: JSON.stringify({
           to: 'adelodunpeter24@gmail.com',
           website_name: 'DB Toolkit',
-          website_url: 'https://github.com/Adelodunpeter25/db-toolkit',
+          website_url: 'https://dbtoolkit.vercel.app',
           ...formData
         })
       });
