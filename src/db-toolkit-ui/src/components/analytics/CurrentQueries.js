@@ -1,10 +1,10 @@
 /**
  * Current queries table
  */
-import { XCircle } from 'lucide-react';
+import { XCircle, Eye } from 'lucide-react';
 import { Button } from '../common/Button';
 
-export function CurrentQueries({ queries, onKill }) {
+export function CurrentQueries({ queries, onKill, onViewPlan }) {
   if (!queries || queries.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
@@ -25,9 +25,10 @@ export function CurrentQueries({ queries, onKill }) {
             <tr>
               <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">PID</th>
               <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">User</th>
-              <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">State</th>
+              <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">Type</th>
+              <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">Duration</th>
               <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">Query</th>
-              <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">Action</th>
+              <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -36,22 +37,35 @@ export function CurrentQueries({ queries, onKill }) {
                 <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{query.pid}</td>
                 <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{query.usename || 'N/A'}</td>
                 <td className="px-4 py-2">
-                  <span className="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                    {query.state}
+                  <span className="px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                    {query.query_type || 'N/A'}
                   </span>
+                </td>
+                <td className="px-4 py-2 text-gray-900 dark:text-gray-100">
+                  {query.duration ? `${query.duration.toFixed(1)}s` : 'N/A'}
                 </td>
                 <td className="px-4 py-2 text-gray-900 dark:text-gray-100 max-w-md truncate font-mono text-xs">
                   {query.query}
                 </td>
                 <td className="px-4 py-2">
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    icon={<XCircle size={14} />}
-                    onClick={() => onKill(query.pid)}
-                  >
-                    Kill
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      icon={<Eye size={14} />}
+                      onClick={() => onViewPlan(query.query)}
+                    >
+                      Plan
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      icon={<XCircle size={14} />}
+                      onClick={() => onKill(query.pid)}
+                    >
+                      Kill
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

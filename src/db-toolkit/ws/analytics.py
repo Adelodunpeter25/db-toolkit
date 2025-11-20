@@ -32,11 +32,11 @@ async def websocket_analytics(websocket: WebSocket):
         config, connector = connection_info
         analytics_manager = AnalyticsManager(connector.connection)
         
-        # Send analytics every 5 seconds
+        # Send analytics every 2 seconds
         while True:
             result = await analytics_manager.get_analytics(config, connection_id)
             await websocket.send_json(result)
-            await asyncio.sleep(3)
+            await asyncio.sleep(2)
             
     except WebSocketDisconnect:
         pass

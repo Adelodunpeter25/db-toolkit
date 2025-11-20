@@ -10,13 +10,18 @@ This file tracks changes during development before they are added to CHANGELOG.m
   - Support for SQLite file paths: sqlite:///path/to/db.sqlite
   - URL validation with specific error messages
 - Database Analytics page - Real-time monitoring dashboard
-  - Current queries with kill query functionality
+  - Current queries with kill query functionality and query type classification
   - Long-running queries detection (>30 seconds)
   - Blocked queries/locks monitoring
   - Database size tracking
   - Active/idle connections count
   - System metrics: CPU, memory, disk usage
-  - Real-time charts with auto-refresh (5 seconds)
+  - Professional charts with Recharts (tooltips, legends, zoom)
+  - Historical data storage (3 hours max)
+  - Time range selector (1h, 2h, 3h)
+  - Query execution plan visualization
+  - Query distribution by type (SELECT/INSERT/UPDATE/DELETE)
+  - Query duration tracking
   - Support for PostgreSQL, MySQL, MongoDB, SQLite
 
 ### Changed

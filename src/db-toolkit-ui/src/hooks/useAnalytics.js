@@ -94,5 +94,26 @@ export function useAnalytics(connectionId) {
     }
   };
 
-  return { analytics, loading, history, killQuery };
+  const getQueryPlan = async (query) => {
+    try {
+      const response = await api.post(`/analytics/connections/${connectionId}/query-plan`, { query });
+      return response.data;
+    } catch (err) {
+      toast.error('Failed to get query plan');
+      return null;
+    }
+  };
+
+  const fetchHistoricalData = async (hours = 3) => {
+    try {
+      const response = await api.get(`/analytics/connections/${connectionId}/history?hours=${hours}`);
+      if (response.data.success) {
+        setHistory(response.data.history);
+      }
+    } catch (err) {
+      // Silent fail
+    }
+  };
+
+  return { analytics, loading, history, killQuery, getQueryPlan, fetchHistoricalData };
 }

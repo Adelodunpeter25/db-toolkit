@@ -11,9 +11,11 @@ import { Button } from '../components/common/Button';
 import { LoadingState } from '../components/common/LoadingState';
 import { AnalyticsStats } from '../components/analytics/AnalyticsStats';
 import { AnalyticsCharts } from '../components/analytics/AnalyticsCharts';
+import { QueryStats } from '../components/analytics/QueryStats';
 import { CurrentQueries } from '../components/analytics/CurrentQueries';
 import { LongRunningQueries } from '../components/analytics/LongRunningQueries';
 import { BlockedQueries } from '../components/analytics/BlockedQueries';
+import { QueryPlanModal } from '../components/analytics/QueryPlanModal';
 import { pageTransition } from '../utils/animations';
 
 function AnalyticsPage() {
@@ -23,7 +25,22 @@ function AnalyticsPage() {
   const [connectionId, setConnectionId] = useState(null);
   const [connectionName, setConnectionName] = useState('');
   const [connecting, setConnecting] = useState(null);
-  const { analytics, loading, history, killQuery } = useAnalytics(connectionId);
+  const [timeRange, setTimeRange] = useState(1);
+  const [planModal, setPlanModal] = useState({ isOpen: false, query: '', plan: null });
+  const { analytics, loading, history, killQuery, getQueryPlan, fetchHistoricalData } = useAnalytics(connectionId);
+
+  useEffect(() => {
+    if (connectionId) {
+      fetchHistoricalData(timeRange);
+    }
+  }, [connectionId, timeRange]);
+
+  const handleViewPlan = async (query) => {
+    const result = await getQueryPlan(query);
+    if (result?.success) {
+      setPlanModal({ isOpen: true, query, plan: result.plan });
+    }
+  };
 
   const handleConnect = async (id) => {
     setConnecting(id);
@@ -107,6 +124,15 @@ function AnalyticsPage() {
             <p className="text-sm text-gray-600 dark:text-gray-400">{connectionName}</p>
           </div>
           <div className="flex items-center gap-4">
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(Number(e.target.value))}
+              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            >
+              <option value={1}>Last 1 hour</option>
+              <option value={2}>Last 2 hours</option>
+              <option value={3}>Last 3 hours</option>
+            </select>
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Live updates every 5s
             </span>
@@ -127,11 +153,18 @@ function AnalyticsPage() {
         ) : analytics ? (
           <div className="space-y-6">
             <AnalyticsStats analytics={analytics} />
-            <AnalyticsCharts history={history} />
-            <CurrentQueries queries={analytics.current_queries} onKill={killQuery} />
+            <AnalyticsCharts history={history} timeRange={timeRange} />
+            {analytics.query_stats && <QueryStats stats={analytics.query_stats} />}
+            <CurrentQueries queries={analytics.current_queries} onKill={killQuery} onViewPlan={handleViewPlan} />
             <LongRunningQueries queries={analytics.long_running_queries} onKill={killQuery} />
             <BlockedQueries queries={analytics.blocked_queries} />
           </div>
+          <QueryPlanModal 
+            isOpen={planModal.isOpen}
+            onClose={() => setPlanModal({ isOpen: false, query: '', plan: null })}
+            query={planModal.query}
+            plan={planModal.plan}
+          />
         ) : (
           <div className="text-center text-gray-500 dark:text-gray-400">
             No analytics data available
