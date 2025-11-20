@@ -31,7 +31,7 @@ class AnalyticsManager:
         """Initialize analytics manager."""
         self.connection = connection
 
-    async def get_analytics(self, config: DatabaseConnection, connection_id: int) -> Dict[str, Any]:
+    async def get_analytics(self, config: DatabaseConnection, connection_id: str) -> Dict[str, Any]:
         """Get comprehensive database analytics."""
         db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
         
@@ -63,7 +63,7 @@ class AnalyticsManager:
         
         return result
     
-    def _store_historical_data(self, connection_id: int, data: Dict[str, Any]):
+    def _store_historical_data(self, connection_id: str, data: Dict[str, Any]):
         """Store metrics for historical analysis (last 3 hours)."""
         key = f"conn_{connection_id}"
         timestamp = datetime.utcnow()
@@ -85,7 +85,7 @@ class AnalyticsManager:
             if datetime.fromisoformat(m['timestamp']) > cutoff
         ]
     
-    def get_historical_data(self, connection_id: int, hours: int = 3) -> List[Dict[str, Any]]:
+    def get_historical_data(self, connection_id: str, hours: int = 3) -> List[Dict[str, Any]]:
         """Get historical metrics for specified time range."""
         key = f"conn_{connection_id}"
         cutoff = datetime.utcnow() - timedelta(hours=hours)
@@ -95,7 +95,7 @@ class AnalyticsManager:
             if datetime.fromisoformat(m['timestamp']) > cutoff
         ]
     
-    def get_slow_query_log(self, connection_id: int, hours: int = 24) -> List[Dict[str, Any]]:
+    def get_slow_query_log(self, connection_id: str, hours: int = 24) -> List[Dict[str, Any]]:
         """Get slow query log."""
         return get_slow_queries(connection_id, hours)
     
@@ -113,7 +113,7 @@ class AnalyticsManager:
             return await get_table_stats_sqlite(self.connection)
         return []
     
-    async def export_to_pdf(self, connection_id: int, connection_name: str, config: DatabaseConnection) -> bytes:
+    async def export_to_pdf(self, connection_id: str, connection_name: str, config: DatabaseConnection) -> bytes:
         """Export analytics to PDF."""
         # Get current metrics
         metrics = await self.get_analytics(config, connection_id)
