@@ -13,8 +13,16 @@ const playfair = Playfair_Display({
 export const metadata = {
   title: 'DB Toolkit - Modern Database Management',
   description: 'A modern, cross-platform desktop database management application',
+  keywords: 'database management, PostgreSQL, MySQL, SQLite, MongoDB, database tool',
   icons: {
     icon: '/favicon.png',
+  },
+  openGraph: {
+    title: 'DB Toolkit - Modern Database Management',
+    description: 'A modern, cross-platform desktop database management application',
+    url: 'https://dbtoolkit.vercel.app',
+    siteName: 'DB Toolkit',
+    type: 'website',
   },
 };
 
