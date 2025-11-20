@@ -1,5 +1,41 @@
 export const changelogVersions = [
   {
+    version: "0.5.0",
+    date: "2025-01-22",
+    sections: [
+      {
+        heading: "Added",
+        content: `- DBAssist AI Integration - Natural language to SQL conversion with Google Gemini API
+- Query optimization suggestions and error fixing with AI
+- Schema analysis and table insights with AI recommendations
+- AI Assistant panel in Query Editor (right sidebar)
+- Schema Explorer AI insights for table analysis
+- Database Analytics Dashboard - Real-time monitoring with WebSocket updates (5s interval)
+- Query monitoring: active, long-running (>30s), blocked queries with kill functionality
+- Query execution plan visualization and type classification
+- System metrics: CPU, memory, disk, connections, database size
+- Historical data storage (3 hours) with time range selector
+- Slow query log with 24h retention and PDF export for analytics reports
+- Enhanced Connection Management - Database URL connection option with async protocol support
+- Support for postgresql+asyncpg, mysql+aiomysql, mongodb+srv, sqlite:///
+- Connection reuse optimization (5-10x faster queries)
+- Performance Optimizations - Query result caching and schema cache optimization (3-5x faster repeated queries)
+- Adaptive background task scheduling (50-70% CPU reduction)
+- Frontend React.memo, virtualized lists, request deduplication (50% render reduction)
+- Route-based code splitting with lazy loading (40-60% faster initial load)
+- Comprehensive feature documentation for all major components`
+      },
+      {
+        heading: "Fixed",
+        content: `- Operation lock conflicts with timeouts and expiration (prevents "operation in progress" errors)
+- Database URL parsing for async protocols and SQLite format
+- Charts dark/light mode compatibility
+- Connection management performance issues
+- Frontend performance bottlenecks`
+      }
+    ]
+  },
+  {
     version: "0.4.1",
     date: "2025-01-21",
     sections: [
