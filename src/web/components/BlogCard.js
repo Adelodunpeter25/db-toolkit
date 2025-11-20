@@ -22,7 +22,7 @@ export default function BlogCard({ post }) {
           <p className="text-gray-600 dark:text-gray-300 mb-4">
             {post.excerpt}
           </p>
-          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold">
+          <div className="flex items-center gap-2 text-cyan-600 dark:text-teal-400 font-semibold">
             Read More
             <ArrowRight size={16} />
           </div>

@@ -31,7 +31,7 @@ export default function BlogPost({ params }) {
       <article className="container mx-auto px-6 max-w-4xl py-12">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline mb-8"
+          className="inline-flex items-center gap-2 text-cyan-600 dark:text-teal-400 hover:underline mb-8"
         >
           <ArrowLeft size={20} />
           Back to Blog
