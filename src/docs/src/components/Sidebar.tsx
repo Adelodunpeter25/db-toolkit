@@ -37,7 +37,7 @@ function Sidebar({ activeSection, onSectionChange, isOpen, onClose }: SidebarPro
       </AnimatePresence>
       
       <motion.aside
-        className="w-72 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-112px)] md:h-[calc(100vh-124px)] flex flex-col fixed left-0 top-[112px] md:top-[124px] z-50 lg:translate-x-0"
+        className="w-72 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-64px)] md:h-[calc(100vh-72px)] flex flex-col fixed left-0 top-[64px] md:top-[72px] z-50 lg:h-[calc(100vh-124px)] lg:top-[124px] lg:translate-x-0"
         initial={false}
         animate={{ x: isOpen ? 0 : -288 }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
