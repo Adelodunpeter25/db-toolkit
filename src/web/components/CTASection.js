@@ -8,6 +8,7 @@ import { detectPlatform, getDownloadUrl } from '@/utils/detectPlatform';
 
 export default function CTASection() {
   const [downloadUrl, setDownloadUrl] = useState('/downloads');
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const platform = detectPlatform();
@@ -15,6 +16,12 @@ export default function CTASection() {
       setDownloadUrl(getDownloadUrl(platform));
     }
   }, []);
+
+  const handleDownload = (url) => {
+    setDownloading(true);
+    window.location.href = url;
+    setTimeout(() => setDownloading(false), 2000);
+  };
 
   return (
     <section className="relative py-8 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 overflow-hidden">
@@ -101,14 +108,24 @@ export default function CTASection() {
             viewport={{ once: true }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
-            <a
-              href={downloadUrl}
-              className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 font-semibold"
+            <button
+              onClick={() => handleDownload(downloadUrl)}
+              disabled={downloading}
+              className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 font-semibold disabled:opacity-70 disabled:cursor-not-allowed disabled:scale-100"
             >
-              <Download size={20} />
-              Download Now
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </a>
+              {downloading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                  Downloading...
+                </>
+              ) : (
+                <>
+                  <Download size={20} />
+                  Download Now
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
             <a
               href="/downloads"
               className="flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold"

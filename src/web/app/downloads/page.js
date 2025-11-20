@@ -10,7 +10,7 @@ export default function DownloadsPage() {
   const handleDownload = (url, label) => {
     setDownloading(label);
     window.location.href = url;
-    setTimeout(() => setDownloading(null), 2000);
+    setTimeout(() => setDownloading(null), 3000);
   };
 
   const platforms = [
