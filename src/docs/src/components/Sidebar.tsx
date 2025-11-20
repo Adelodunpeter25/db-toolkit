@@ -1,4 +1,4 @@
-import { BookOpen, Database, Code, FolderTree, Table, Shield, Settings } from 'lucide-react';
+import { BookOpen, Database, Code, FolderTree, Table, Shield, Settings, GitBranch } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { fadeInUp, staggerContainer } from '../utils/motion';
 
@@ -14,6 +14,7 @@ const sections = [
   { id: 'schema-explorer', label: 'Schema Explorer', icon: FolderTree },
   { id: 'data-explorer', label: 'Data Explorer', icon: Table },
   { id: 'backup-restore', label: 'Backup & Restore', icon: Shield },
+  { id: 'migrations', label: 'Migrations', icon: GitBranch },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 

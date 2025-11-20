@@ -9,6 +9,7 @@ import {
   schemaExplorerData,
   dataExplorerData,
   backupRestoreData,
+  migrationsData,
   settingsData,
 } from '../data';
 
@@ -25,6 +26,7 @@ const allSections = [
   { id: 'schema-explorer', data: schemaExplorerData },
   { id: 'data-explorer', data: dataExplorerData },
   { id: 'backup-restore', data: backupRestoreData },
+  { id: 'migrations', data: migrationsData },
   { id: 'settings', data: settingsData },
 ];
 

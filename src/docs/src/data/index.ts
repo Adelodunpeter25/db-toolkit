@@ -5,6 +5,7 @@ export { schemaExplorerData } from './schemaExplorer';
 export { dataExplorerData } from './dataExplorer';
 export { backupRestoreData } from './backupRestore';
 export { settingsData } from './settings';
+export { migrationsData } from './migrations';
 export { changelogData } from './changelog';
 
 export interface DocSection {

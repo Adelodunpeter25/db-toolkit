@@ -8,6 +8,7 @@ import {
   schemaExplorerData,
   dataExplorerData,
   backupRestoreData,
+  migrationsData,
   settingsData,
 } from '../data';
 
@@ -18,6 +19,7 @@ const docMap: Record<string, any> = {
   'schema-explorer': schemaExplorerData,
   'data-explorer': dataExplorerData,
   'backup-restore': backupRestoreData,
+  'migrations': migrationsData,
   'settings': settingsData,
 };
 
