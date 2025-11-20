@@ -23,6 +23,8 @@ class QueryPlanRequest(BaseModel):
 @router.get("/connections/{connection_id}")
 async def get_analytics(connection_id: str):
     """Get database analytics."""
+    from operations.operation_lock import operation_lock
+    
     try:
         connection_info = await connection_manager.get_connection(connection_id)
         if not connection_info:
@@ -31,11 +33,17 @@ async def get_analytics(connection_id: str):
         connector = await connection_manager.get_connector(connection_id)
         if not connector:
             raise HTTPException(status_code=404, detail="Connection not active")
-            
-        analytics_manager = AnalyticsManager(connector.connection)
-        result = await analytics_manager.get_analytics(connection_info, connection_id)
+        
+        # Read-only operation - don't block
+        async with operation_lock.acquire_lock(connection_id, timeout=2.0, read_only=True):
+            analytics_manager = AnalyticsManager(connector.connection)
+            result = await analytics_manager.get_analytics(connection_info, connection_id)
         
         return result
+    except RuntimeError as e:
+        if "operation is in progress" in str(e):
+            raise HTTPException(status_code=409, detail="Analytics temporarily unavailable. Please try again.")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -150,21 +158,19 @@ async def export_pdf(connection_id: str):
         if not connection_info:
             raise HTTPException(status_code=404, detail="Connection not found")
         
-        # Check if locked and force unlock if needed for read-only operation
-        if operation_lock.is_locked(connection_id):
-            operation_lock.force_unlock(connection_id)
-        
         connector = await connection_manager.get_connector(connection_id, auto_reconnect=False)
         if not connector:
             raise HTTPException(status_code=404, detail="Connection not active")
-            
-        analytics_manager = AnalyticsManager(connector.connection)
         
-        pdf_bytes = await analytics_manager.export_to_pdf(
-            connection_id,
-            connection_info.name,
-            connection_info
-        )
+        # Use context manager with read-only flag
+        async with operation_lock.acquire_lock(connection_id, timeout=5.0, read_only=True):
+            analytics_manager = AnalyticsManager(connector.connection)
+            
+            pdf_bytes = await analytics_manager.export_to_pdf(
+                connection_id,
+                connection_info.name,
+                connection_info
+            )
         
         return Response(
             content=pdf_bytes,
@@ -173,9 +179,11 @@ async def export_pdf(connection_id: str):
                 "Content-Disposition": f"attachment; filename=analytics_{connection_info.name}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.pdf"
             }
         )
+    except RuntimeError as e:
+        if "operation is in progress" in str(e):
+            raise HTTPException(status_code=409, detail="Another operation is in progress. Please try again in a few seconds.")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
-        if "operation is in progress" in str(e).lower():
-            raise HTTPException(status_code=409, detail="Another operation is in progress. Please try again.")
         raise HTTPException(status_code=500, detail=str(e))
 
 
