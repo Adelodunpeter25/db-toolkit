@@ -91,15 +91,23 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-4 max-w-3xl mx-auto"
         >
-          Modern, cross-platform database management made simple. 
-          Built with Electron, React, and Python FastAPI.
+          Your all-in-one database companion
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-2xl mx-auto"
+        >
+          Query, migrate, and backup databases effortlessly
         </motion.p>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-lg text-gray-600 dark:text-gray-300 mb-12 italic"
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="text-base text-gray-500 dark:text-gray-400 mb-12 italic"
         >
           "Simplify your database workflow, amplify your productivity"
         </motion.p>
