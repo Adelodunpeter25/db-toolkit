@@ -2,7 +2,7 @@
 
 from typing import Dict, List, Any, Optional
 from core.models import DatabaseConnection
-from utils.cache import SchemaCache
+from utils.cache import schema_cache
 from operations.connection_manager import connection_manager
 
 
@@ -11,14 +11,15 @@ class SchemaExplorer:
     
     def __init__(self):
         """Initialize schema explorer."""
-        self.cache = SchemaCache()
+        # Use global schema cache instance
+        pass
     
     async def get_schema_tree(self, connection: DatabaseConnection, use_cache: bool = True) -> Dict[str, Any]:
         """Get complete schema tree for connection."""
         cache_key = f"{connection.id}_schema"
         
         if use_cache:
-            cached = self.cache.get(cache_key)
+            cached = schema_cache.get(cache_key)
             if cached:
                 return cached
         
@@ -57,8 +58,8 @@ class SchemaExplorer:
             
             # Don't disconnect - let connection manager handle connection lifecycle
             
-            # Cache the result
-            self.cache.set(cache_key, schema_tree)
+            # Cache the result with longer TTL for schema data
+            schema_cache.set(cache_key, schema_tree, ttl=900)  # 15 minutes
             
             return schema_tree
             
@@ -67,6 +68,12 @@ class SchemaExplorer:
     
     async def get_table_info(self, connection: DatabaseConnection, schema: str, table: str) -> Dict[str, Any]:
         """Get detailed table information."""
+        # Check cache first
+        cache_key = f"{connection.id}_table_{schema}_{table}"
+        cached = schema_cache.get(cache_key)
+        if cached:
+            return cached
+        
         try:
             connector = await connection_manager.get_connector(connection.id)
             if not connector:
@@ -86,13 +93,17 @@ class SchemaExplorer:
             
             # Don't disconnect - let connection manager handle connection lifecycle
             
-            return {
+            table_info = {
                 "success": True,
                 "table": table,
                 "schema": schema,
                 "columns": columns,
                 "sample_data": sample_result.get("data", [])[:5] if sample_result.get("success") else []
             }
+            
+            # Cache table info
+            schema_cache.set(cache_key, table_info, ttl=600)  # 10 minutes
+            return table_info
             
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -108,9 +119,84 @@ class SchemaExplorer:
     
     async def refresh_schema(self, connection_id: str):
         """Refresh cached schema for connection."""
-        cache_key = f"{connection_id}_schema"
-        self.cache.delete(cache_key)
+        # Clear all cache entries for this connection
+        keys_to_remove = []
+        for key in schema_cache.get_keys():
+            if key.startswith(f"{connection_id}_"):
+                keys_to_remove.append(key)
+        
+        for key in keys_to_remove:
+            schema_cache.delete(key)
     
     def get_cached_schemas(self) -> List[str]:
         """Get list of cached schema keys."""
-        return self.cache.get_keys()
+        return schema_cache.get_keys()
+    
+    async def get_schemas_cached(self, connection: DatabaseConnection) -> List[str]:
+        """Get schemas with caching."""
+        cache_key = f"{connection.id}_schemas_list"
+        cached = schema_cache.get(cache_key)
+        if cached:
+            return cached
+        
+        try:
+            connector = await connection_manager.get_connector(connection.id)
+            if not connector:
+                success = await connection_manager.connect(connection)
+                if not success:
+                    return []
+                connector = await connection_manager.get_connector(connection.id)
+                if not connector:
+                    return []
+            
+            schemas = await connector.get_schemas()
+            schema_cache.set(cache_key, schemas, ttl=900)  # 15 minutes
+            return schemas
+        except Exception:
+            return []
+    
+    async def get_tables_cached(self, connection: DatabaseConnection, schema: str) -> List[str]:
+        """Get tables with caching."""
+        cache_key = f"{connection.id}_tables_{schema}"
+        cached = schema_cache.get(cache_key)
+        if cached:
+            return cached
+        
+        try:
+            connector = await connection_manager.get_connector(connection.id)
+            if not connector:
+                success = await connection_manager.connect(connection)
+                if not success:
+                    return []
+                connector = await connection_manager.get_connector(connection.id)
+                if not connector:
+                    return []
+            
+            tables = await connector.get_tables(schema)
+            schema_cache.set(cache_key, tables, ttl=600)  # 10 minutes
+            return tables
+        except Exception:
+            return []
+    
+    async def get_columns_cached(self, connection: DatabaseConnection, table: str, schema: str) -> List[Dict[str, Any]]:
+        """Get columns with caching."""
+        cache_key = f"{connection.id}_columns_{schema}_{table}"
+        cached = schema_cache.get(cache_key)
+        if cached:
+            return cached
+        
+        try:
+            connector = await connection_manager.get_connector(connection.id)
+            if not connector:
+                success = await connection_manager.connect(connection)
+                if not success:
+                    return []
+                connector = await connection_manager.get_connector(connection.id)
+                if not connector:
+                    return []
+            
+            columns = await connector.get_columns(table, schema)
+            schema_cache.set(cache_key, columns, ttl=600)  # 10 minutes
+            return columns
+        except Exception:
+            return []

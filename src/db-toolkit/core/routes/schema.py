@@ -39,7 +39,12 @@ async def refresh_schema(connection_id: str):
         raise HTTPException(status_code=404, detail="Connection not found")
     
     await explorer.refresh_schema(connection_id)
-    return {"success": True, "message": "Schema cache refreshed"}
+    
+    # Also clear query cache for this connection
+    from utils.cache import query_cache
+    query_cache.invalidate_connection(connection_id)
+    
+    return {"success": True, "message": "Schema and query cache refreshed"}
 
 
 @router.get("/cache/schemas")
@@ -47,3 +52,36 @@ async def get_cached_schemas():
     """Get list of cached schema keys."""
     keys = explorer.get_cached_schemas()
     return {"cached_schemas": keys}
+
+
+@router.get("/connections/{connection_id}/schemas")
+async def get_schemas(connection_id: str):
+    """Get schemas list with caching."""
+    connection = await storage.get_connection(connection_id)
+    if not connection:
+        raise HTTPException(status_code=404, detail="Connection not found")
+    
+    schemas = await explorer.get_schemas_cached(connection)
+    return {"success": True, "schemas": schemas}
+
+
+@router.get("/connections/{connection_id}/schemas/{schema_name}/tables")
+async def get_tables(connection_id: str, schema_name: str):
+    """Get tables list with caching."""
+    connection = await storage.get_connection(connection_id)
+    if not connection:
+        raise HTTPException(status_code=404, detail="Connection not found")
+    
+    tables = await explorer.get_tables_cached(connection, schema_name)
+    return {"success": True, "tables": tables}
+
+
+@router.get("/connections/{connection_id}/schemas/{schema_name}/tables/{table_name}/columns")
+async def get_columns(connection_id: str, schema_name: str, table_name: str):
+    """Get columns list with caching."""
+    connection = await storage.get_connection(connection_id)
+    if not connection:
+        raise HTTPException(status_code=404, detail="Connection not found")
+    
+    columns = await explorer.get_columns_cached(connection, table_name, schema_name)
+    return {"success": True, "columns": columns}

@@ -57,6 +57,24 @@ class ConnectionManager:
                 if connection_id in self._connection_metadata:
                     del self._connection_metadata[connection_id]
                 operation_lock.cleanup(connection_id)
+                
+                # Clear caches for this connection
+                from utils.cache import schema_cache, query_cache, prepared_cache
+                
+                # Clear schema cache
+                keys_to_remove = []
+                for key in schema_cache.get_keys():
+                    if key.startswith(f"{connection_id}_"):
+                        keys_to_remove.append(key)
+                for key in keys_to_remove:
+                    schema_cache.delete(key)
+                
+                # Clear query cache
+                query_cache.invalidate_connection(connection_id)
+                
+                # Clear prepared statements
+                prepared_cache.clear_connection(connection_id)
+                
             return success
         return False
 

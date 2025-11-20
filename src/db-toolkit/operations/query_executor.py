@@ -5,6 +5,7 @@ import asyncio
 from typing import Dict, Any, Optional
 from core.models import DatabaseConnection
 from operations.connection_manager import connection_manager
+from utils.cache import query_cache, prepared_cache
 
 
 class QueryExecutor:
@@ -50,6 +51,12 @@ class QueryExecutor:
                 "execution_time": 0.0
             }
         
+        # Check query cache first (only for SELECT queries)
+        if query.strip().upper().startswith('SELECT'):
+            cached_result = query_cache.get_query_result(connection.id, query)
+            if cached_result:
+                return cached_result
+        
         start_time = time.time()
         
         try:
@@ -67,16 +74,21 @@ class QueryExecutor:
             # Add pagination for SQL queries
             paginated_query = self._add_pagination(query, connection.db_type.value, limit, offset)
             
+            # Get prepared statement (placeholder for future optimization)
+            prepared_query = prepared_cache.get_prepared_query(
+                connection.id, paginated_query, connection.db_type.value
+            )
+            
             # Execute with timeout
             result = await asyncio.wait_for(
-                connector.execute_query(paginated_query),
+                connector.execute_query(prepared_query),
                 timeout=timeout
             )
             
             execution_time = time.time() - start_time
             
             if result.get("success"):
-                return {
+                formatted_result = {
                     "success": True,
                     "columns": result.get("columns", []),
                     "rows": result.get("data", []),
@@ -84,6 +96,12 @@ class QueryExecutor:
                     "execution_time": round(execution_time, 3),
                     "has_more": result.get("row_count", 0) >= limit
                 }
+                
+                # Cache successful SELECT queries
+                if query.strip().upper().startswith('SELECT'):
+                    query_cache.set_query_result(connection.id, query, formatted_result)
+                
+                return formatted_result
             else:
                 return {
                     "success": False,
