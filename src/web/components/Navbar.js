@@ -22,7 +22,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-gray-900 dark:text-white">
-            <Database size={24} className="text-blue-600 dark:text-blue-400" />
+            <Database size={24} className="text-emerald-600 dark:text-teal-400" />
             <span className="hidden sm:inline">DB Toolkit</span>
           </Link>
 
@@ -45,7 +45,7 @@ export default function Navbar() {
               href="https://github.com/Adelodunpeter25/db-toolkit"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              className="hidden sm:flex p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-110 transition-all"
               aria-label="GitHub"
             >
               <Github size={20} className="text-gray-700 dark:text-gray-300" />
