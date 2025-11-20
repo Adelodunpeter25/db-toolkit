@@ -164,6 +164,7 @@ function TerminalPanel({ isOpen, onClose }) {
         ref={terminalRef}
         className="w-full h-full p-2"
         style={{ height: isMaximized ? 'calc(100vh - 40px)' : `${height - 40}px` }}
+        onClick={() => termRef.current?.focus()}
       />
     </div>
   );

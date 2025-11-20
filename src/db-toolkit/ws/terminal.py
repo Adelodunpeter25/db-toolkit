@@ -20,6 +20,11 @@ async def websocket_terminal(websocket: WebSocket):
     winsize = struct.pack('HHHH', 24, 80, 0, 0)
     fcntl.ioctl(master_fd, termios.TIOCSWINSZ, winsize)
     
+    # Set terminal to raw mode
+    attrs = termios.tcgetattr(slave_fd)
+    attrs[3] = attrs[3] | termios.ECHO
+    termios.tcsetattr(slave_fd, termios.TCSANOW, attrs)
+    
     # Start shell process
     shell = os.environ.get('SHELL', '/bin/bash')
     pid = os.fork()
@@ -32,7 +37,13 @@ async def websocket_terminal(websocket: WebSocket):
         os.dup2(slave_fd, 1)
         os.dup2(slave_fd, 2)
         os.close(slave_fd)
-        os.execv(shell, [shell])
+        
+        # Set environment for interactive shell
+        os.environ['TERM'] = 'xterm-256color'
+        os.environ['COLORTERM'] = 'truecolor'
+        
+        # Execute shell with login flag for prompt
+        os.execv(shell, [shell, '-l'])
     else:
         # Parent process
         os.close(slave_fd)

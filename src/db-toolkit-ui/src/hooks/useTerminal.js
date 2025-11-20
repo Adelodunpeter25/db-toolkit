@@ -13,9 +13,6 @@ export function useTerminal(onData) {
 
     ws.onopen = () => {
       setIsConnected(true);
-      if (onData) {
-        onData('\r\nTerminal connected. Type commands below:\r\n', 'info');
-      }
     };
 
     ws.onmessage = (event) => {
