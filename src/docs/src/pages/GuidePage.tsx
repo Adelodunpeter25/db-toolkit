@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import DocContent from '../components/DocContent';
 import ScrollToTop from '../components/ScrollToTop';
+import BottomBar from '../components/BottomBar';
 
 const loadData = async (section: string) => {
   switch (section) {
@@ -61,15 +61,7 @@ export default function GuidePage() {
 
   return (
     <>
-      <button
-        onClick={() => setIsSidebarOpen(true)}
-        className="fixed left-4 top-[76px] md:top-[84px] z-30 lg:hidden bg-emerald-600 text-white p-2 md:p-3 rounded-lg shadow-lg hover:bg-emerald-700 transition-colors"
-        aria-label="Open menu"
-      >
-        <Menu size={20} className="md:w-6 md:h-6" />
-      </button>
-      
-      <div className="flex w-full h-auto">
+      <div className="flex w-full h-auto pb-20 lg:pb-0">
         <div className="hidden lg:block w-72 flex-shrink-0" />
         <Sidebar 
           activeSection={activeSection} 
@@ -86,6 +78,13 @@ export default function GuidePage() {
           />}
         </div>
       </div>
+      
+      <BottomBar
+        onHomeClick={() => setActiveSection('getting-started')}
+        onDocsClick={() => setActiveSection('getting-started')}
+        onMenuClick={() => setIsSidebarOpen(true)}
+      />
+      
       <ScrollToTop />
     </>
   );

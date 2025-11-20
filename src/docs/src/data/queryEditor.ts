@@ -26,8 +26,7 @@ Results show:
 1. Execute query with EXPLAIN ANALYZE
 2. Click **"Explain with AI"**
 3. Get optimization suggestions
-
-Requires Google Gemini API key in Settings.`
+`
     },
     {
       heading: "Keyboard Shortcuts",
