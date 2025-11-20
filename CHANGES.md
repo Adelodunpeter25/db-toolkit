@@ -28,5 +28,6 @@ This file tracks changes during development before they are added to CHANGELOG.m
 - Adaptive background task scheduling and query validation caching (reduced CPU usage, faster validation)
 - Frontend performance optimizations: React.memo, virtualized lists, request deduplication (50% render reduction, 90% DOM reduction)
 - Route-based code splitting with lazy loading (40-60% faster initial load, smaller bundle chunks)
+- Operation lock conflicts with timeouts, expiration, and read-only operations (prevents "operation in progress" errors)
 
 ### Removed
