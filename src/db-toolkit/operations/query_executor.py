@@ -1,9 +1,10 @@
 """Production-ready query execution engine."""
 
 import time
+import asyncio
 from typing import Dict, Any, Optional
-from connectors.factory import ConnectorFactory
 from core.models import DatabaseConnection
+from operations.connection_manager import connection_manager
 
 
 class QueryExecutor:
@@ -52,14 +53,25 @@ class QueryExecutor:
         start_time = time.time()
         
         try:
-            connector = ConnectorFactory.create_connector(connection.db_type)
-            await connector.connect(connection)
+            # Get existing connector from connection manager
+            connector = await connection_manager.get_connector(connection.id)
+            if not connector:
+                # Try to establish connection if not exists
+                success = await connection_manager.connect(connection, timeout)
+                if not success:
+                    raise Exception("Failed to establish database connection")
+                connector = await connection_manager.get_connector(connection.id)
+                if not connector:
+                    raise Exception("Connection manager failed to provide connector")
             
             # Add pagination for SQL queries
             paginated_query = self._add_pagination(query, connection.db_type.value, limit, offset)
             
-            result = await connector.execute_query(paginated_query)
-            await connector.disconnect()
+            # Execute with timeout
+            result = await asyncio.wait_for(
+                connector.execute_query(paginated_query),
+                timeout=timeout
+            )
             
             execution_time = time.time() - start_time
             

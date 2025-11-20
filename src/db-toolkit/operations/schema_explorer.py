@@ -1,9 +1,9 @@
 """Schema exploration operations."""
 
 from typing import Dict, List, Any, Optional
-from connectors.factory import ConnectorFactory
 from core.models import DatabaseConnection
 from utils.cache import SchemaCache
+from operations.connection_manager import connection_manager
 
 
 class SchemaExplorer:
@@ -23,8 +23,15 @@ class SchemaExplorer:
                 return cached
         
         try:
-            connector = ConnectorFactory.create_connector(connection.db_type)
-            await connector.connect(connection)
+            connector = await connection_manager.get_connector(connection.id)
+            if not connector:
+                # Try to establish connection if not exists
+                success = await connection_manager.connect(connection)
+                if not success:
+                    raise Exception("Failed to establish database connection")
+                connector = await connection_manager.get_connector(connection.id)
+                if not connector:
+                    raise Exception("Connection manager failed to provide connector")
             
             schema_tree = {
                 "connection_id": connection.id,
@@ -48,7 +55,7 @@ class SchemaExplorer:
                         "column_count": len(columns)
                     }
             
-            await connector.disconnect()
+            # Don't disconnect - let connection manager handle connection lifecycle
             
             # Cache the result
             self.cache.set(cache_key, schema_tree)
@@ -61,8 +68,15 @@ class SchemaExplorer:
     async def get_table_info(self, connection: DatabaseConnection, schema: str, table: str) -> Dict[str, Any]:
         """Get detailed table information."""
         try:
-            connector = ConnectorFactory.create_connector(connection.db_type)
-            await connector.connect(connection)
+            connector = await connection_manager.get_connector(connection.id)
+            if not connector:
+                # Try to establish connection if not exists
+                success = await connection_manager.connect(connection)
+                if not success:
+                    raise Exception("Failed to establish database connection")
+                connector = await connection_manager.get_connector(connection.id)
+                if not connector:
+                    raise Exception("Connection manager failed to provide connector")
             
             columns = await connector.get_columns(table, schema)
             
@@ -70,7 +84,7 @@ class SchemaExplorer:
             sample_query = self._build_sample_query(connection.db_type, schema, table)
             sample_result = await connector.execute_query(sample_query)
             
-            await connector.disconnect()
+            # Don't disconnect - let connection manager handle connection lifecycle
             
             return {
                 "success": True,
