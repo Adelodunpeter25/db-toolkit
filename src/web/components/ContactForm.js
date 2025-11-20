@@ -1,23 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { useContact } from '@/hooks/useContact';
+import { createHoneypot } from '@/utils/honeypot';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
-    message: ''
+    message: '',
+    username: '',
+    phone: ''
   });
   const { submitContact, status, loading } = useContact();
+  const honeypotRef = useRef(null);
+
+  useEffect(() => {
+    honeypotRef.current = createHoneypot();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await submitContact(formData);
+    
+    const validation = honeypotRef.current?.validate(formData.username, formData.phone);
+    if (!validation?.valid) {
+      return;
+    }
+    
+    const { username, phone, ...cleanData } = formData;
+    const success = await submitContact(cleanData);
     if (success) {
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', subject: '', message: '', username: '', phone: '' });
     }
   };
 
@@ -84,6 +99,25 @@ export default function ContactForm() {
           required
           rows={4}
           className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-gray-900 dark:text-white resize-none"
+        />
+      </div>
+
+      <div className="absolute left-[-9999px]" aria-hidden="true">
+        <input
+          type="text"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          tabIndex="-1"
+          autoComplete="off"
+        />
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          tabIndex="-1"
+          autoComplete="off"
         />
       </div>
       
