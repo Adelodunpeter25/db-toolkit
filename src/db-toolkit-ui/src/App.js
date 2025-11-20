@@ -7,6 +7,7 @@ import ConnectionsPage from './pages/ConnectionsPage';
 import SchemaPage from './pages/SchemaPage';
 import QueryPage from './pages/QueryPage';
 import DataExplorerPage from './pages/DataExplorerPage';
+import MigrationsPage from './pages/MigrationsPage';
 import BackupsPage from './pages/BackupsPage';
 import DocumentationPage from './pages/DocumentationPage';
 import './styles/App.css';
@@ -44,6 +45,7 @@ function App() {
           <Route path="/schema/:connectionId" element={<SchemaPage />} />
           <Route path="/query/:connectionId" element={<QueryPage />} />
           <Route path="/data-explorer" element={<DataExplorerPage />} />
+          <Route path="/migrations" element={<MigrationsPage />} />
           <Route path="/backups" element={<BackupsPage />} />
           <Route path="/docs" element={<DocumentationPage />} />
         </Routes>

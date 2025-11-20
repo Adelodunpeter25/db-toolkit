@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Settings } from 'lucide-react';
 import Sidebar from './Sidebar';
 import StatusBar from './StatusBar';
-import MigrationsPanel from '../migrations/MigrationsPanel';
 import CommandPalette from './CommandPalette';
 import { NotificationCenter } from './NotificationCenter';
 import { SettingsModal } from '../settings/SettingsModal';
@@ -10,7 +9,6 @@ import { Tooltip } from './Tooltip';
 
 function Layout({ children }) {
   const [showSettings, setShowSettings] = useState(false);
-  const [showMigrations, setShowMigrations] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [connections, setConnections] = useState([]);
   const [queries, setQueries] = useState([]);
@@ -53,10 +51,9 @@ function Layout({ children }) {
         <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 pt-16 md:pt-0">
           {children}
         </main>
-        <StatusBar onTerminalClick={() => setShowMigrations(!showMigrations)} />
+        <StatusBar />
       </div>
       <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
-      <MigrationsPanel isOpen={showMigrations} onClose={() => setShowMigrations(false)} />
       <CommandPalette 
         isOpen={showCommandPalette} 
         onClose={() => setShowCommandPalette(false)}
