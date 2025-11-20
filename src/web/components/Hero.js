@@ -71,14 +71,14 @@ export default function Hero() {
         </motion.div>
 
         {/* Subtitle */}
-        <motion.p
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-6xl md:text-7xl font-bold text-gray-700 dark:text-gray-200 mb-4 max-w-3xl mx-auto"
+          className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4 max-w-4xl mx-auto"
         >
-          Your all-in-one database companion
-        </motion.p>
+          Your <span className="bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">all-in-one</span> database companion
+        </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
