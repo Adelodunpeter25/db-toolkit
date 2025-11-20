@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from operations.analytics_manager import AnalyticsManager
 from operations.connection_manager import ConnectionManager
 
-router = APIRouter(prefix="/analytics", tags=["analytics"])
+router = APIRouter()
 connection_manager = ConnectionManager()
 
 

@@ -9,6 +9,7 @@ import QueryPage from './pages/QueryPage';
 import DataExplorerPage from './pages/DataExplorerPage';
 import MigrationsPage from './pages/MigrationsPage';
 import BackupsPage from './pages/BackupsPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import DocumentationPage from './pages/DocumentationPage';
 import './styles/App.css';
 import './styles/split.css';
@@ -38,6 +39,7 @@ function AppContent() {
         <Route path="/data-explorer" element={<DataExplorerPage />} />
         <Route path="/migrations" element={<MigrationsPage />} />
         <Route path="/backups" element={<BackupsPage />} />
+        <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/docs" element={<DocumentationPage />} />
       </Routes>
     </Layout>

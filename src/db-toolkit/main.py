@@ -62,7 +62,7 @@ app.include_router(settings_router, prefix="/api/v1", tags=["Settings"])
 app.include_router(data_explorer_router, prefix="/api/v1", tags=["Data Explorer"])
 app.include_router(backup_router, prefix="/api/v1", tags=["Backups"])
 app.include_router(migrator_router, prefix="/api/v1", tags=["Migrator"])
-app.include_router(analytics_router, prefix="/api/v1", tags=["Analytics"])
+app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["Analytics"])
 
 # WebSocket routes
 app.websocket("/ws/backups")(websocket_backups)

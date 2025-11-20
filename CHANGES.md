@@ -9,6 +9,15 @@ This file tracks changes during development before they are added to CHANGELOG.m
   - Support for async protocols: postgresql+asyncpg, mysql+aiomysql, mongodb+srv
   - Support for SQLite file paths: sqlite:///path/to/db.sqlite
   - URL validation with specific error messages
+- Database Analytics page - Real-time monitoring dashboard
+  - Current queries with kill query functionality
+  - Long-running queries detection (>30 seconds)
+  - Blocked queries/locks monitoring
+  - Database size tracking
+  - Active/idle connections count
+  - System metrics: CPU, memory, disk usage
+  - Real-time charts with auto-refresh (5 seconds)
+  - Support for PostgreSQL, MySQL, MongoDB, SQLite
 
 ### Changed
 
