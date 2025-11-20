@@ -51,7 +51,7 @@ export default function GuidePage() {
   }, []);
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full h-auto">
       <div className="w-72 flex-shrink-0" />
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
       <DocContent 
