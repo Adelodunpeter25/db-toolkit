@@ -4,4 +4,5 @@ export const WS_ENDPOINTS = {
   BACKUPS: `${WS_BASE_URL}/backups`,
   TERMINAL: `${WS_BASE_URL}/terminal`,
   MIGRATOR: `${WS_BASE_URL}/migrator`,
+  ANALYTICS: `${WS_BASE_URL}/analytics`,
 };

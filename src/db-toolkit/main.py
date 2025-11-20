@@ -32,6 +32,7 @@ from core.routes.analytics import router as analytics_router
 from ws.websocket import websocket_backups
 from ws.terminal import websocket_terminal
 from ws.migrator import websocket_migrator
+from ws.analytics import websocket_analytics
 
 app = FastAPI(
     title="DB Toolkit API",
@@ -68,3 +69,4 @@ app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["Analytic
 app.websocket("/ws/backups")(websocket_backups)
 app.websocket("/ws/terminal")(websocket_terminal)
 app.websocket("/ws/migrator")(websocket_migrator)
+app.websocket("/ws/analytics")(websocket_analytics)

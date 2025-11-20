@@ -4,8 +4,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Database, RefreshCw } from 'lucide-react';
-import { useConnections } from '../hooks';
+import { Database } from 'lucide-react';
+import { useConnections, useAnalytics } from '../hooks';
 import { useToast } from '../contexts/ToastContext';
 import { Button } from '../components/common/Button';
 import { LoadingState } from '../components/common/LoadingState';
@@ -15,7 +15,6 @@ import { CurrentQueries } from '../components/analytics/CurrentQueries';
 import { LongRunningQueries } from '../components/analytics/LongRunningQueries';
 import { BlockedQueries } from '../components/analytics/BlockedQueries';
 import { pageTransition } from '../utils/animations';
-import api from '../services/api';
 
 function AnalyticsPage() {
   const navigate = useNavigate();
@@ -24,10 +23,7 @@ function AnalyticsPage() {
   const [connectionId, setConnectionId] = useState(null);
   const [connectionName, setConnectionName] = useState('');
   const [connecting, setConnecting] = useState(null);
-  const [analytics, setAnalytics] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [history, setHistory] = useState([]);
+  const { analytics, loading, history, killQuery } = useAnalytics(connectionId);
 
   const handleConnect = async (id) => {
     setConnecting(id);
@@ -44,56 +40,7 @@ function AnalyticsPage() {
     }
   };
 
-  const fetchAnalytics = async () => {
-    if (!connectionId) return;
-    
-    setLoading(true);
-    try {
-      const response = await api.get(`/analytics/connections/${connectionId}`);
-      if (response.data.success) {
-        setAnalytics(response.data);
-        setHistory(prev => [...prev.slice(-19), {
-          timestamp: new Date(),
-          cpu: response.data.system_stats.cpu_usage,
-          memory: response.data.system_stats.memory_usage,
-          connections: response.data.active_connections
-        }]);
-      } else {
-        toast.error(response.data.error || 'Failed to fetch analytics');
-      }
-    } catch (err) {
-      toast.error('Failed to fetch analytics');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleKillQuery = async (pid) => {
-    try {
-      const response = await api.post(`/analytics/connections/${connectionId}/kill`, { pid });
-      if (response.data.success) {
-        toast.success('Query terminated');
-        fetchAnalytics();
-      } else {
-        toast.error(response.data.error || 'Failed to kill query');
-      }
-    } catch (err) {
-      toast.error('Failed to kill query');
-    }
-  };
-
-  useEffect(() => {
-    if (connectionId) {
-      fetchAnalytics();
-    }
-  }, [connectionId]);
-
-  useEffect(() => {
-    if (connectionId && autoRefresh) {
-      const interval = setInterval(fetchAnalytics, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [connectionId, autoRefresh]);
 
   if (!connectionId) {
     if (connections.length === 0) {
@@ -160,24 +107,9 @@ function AnalyticsPage() {
             <p className="text-sm text-gray-600 dark:text-gray-400">{connectionName}</p>
           </div>
           <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-              <input
-                type="checkbox"
-                checked={autoRefresh}
-                onChange={(e) => setAutoRefresh(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded"
-              />
-              Auto-refresh (5s)
-            </label>
-            <Button
-              variant="secondary"
-              size="sm"
-              icon={<RefreshCw size={16} />}
-              onClick={fetchAnalytics}
-              disabled={loading}
-            >
-              Refresh
-            </Button>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Live updates every 5s
+            </span>
             <Button
               variant="secondary"
               size="sm"
@@ -196,8 +128,8 @@ function AnalyticsPage() {
           <div className="space-y-6">
             <AnalyticsStats analytics={analytics} />
             <AnalyticsCharts history={history} />
-            <CurrentQueries queries={analytics.current_queries} onKill={handleKillQuery} />
-            <LongRunningQueries queries={analytics.long_running_queries} onKill={handleKillQuery} />
+            <CurrentQueries queries={analytics.current_queries} onKill={killQuery} />
+            <LongRunningQueries queries={analytics.long_running_queries} onKill={killQuery} />
             <BlockedQueries queries={analytics.blocked_queries} />
           </div>
         ) : (
