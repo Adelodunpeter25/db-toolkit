@@ -33,7 +33,7 @@ jobs:
         run: npm run package:mac
       
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: db-toolkit-macos
           path: src/db-toolkit-ui/release/*.dmg
