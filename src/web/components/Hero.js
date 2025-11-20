@@ -59,30 +59,16 @@ export default function Hero() {
       </div>
 
       <div className="relative container mx-auto px-6 py-20 text-center">
-        {/* Icon */}
         <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="flex flex-col items-center mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
         >
-          <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold rounded-full mb-4">
+          <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold rounded-full">
             Latest version: v0.3.0
           </span>
-          <div className={`p-6 bg-gradient-to-br ${buttonGradient} rounded-3xl shadow-2xl`}>
-            <Database className="w-16 h-16 text-white" />
-          </div>
         </motion.div>
-
-        {/* Title */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
-        >
-          DB Toolkit
-        </motion.h1>
 
         {/* Subtitle */}
         <motion.p
@@ -98,7 +84,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 mb-4 max-w-2xl mx-auto"
+          className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-4 max-w-2xl mx-auto"
         >
           Query, migrate, and backup databases effortlessly
         </motion.p>
