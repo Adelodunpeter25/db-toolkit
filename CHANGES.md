@@ -12,15 +12,13 @@ This file tracks changes during development before they are added to CHANGELOG.m
   - System metrics: CPU, memory, disk, connections, database size
   - Historical data storage (3 hours) with time range selector (1h/2h/3h)
   - Slow query log (persistent, 24h retention)
-  - Connection pool statistics (avg, peak, min, current)
-  - Table-level statistics (size, rows, indexes, top 20)
   - PDF export for analytics reports
 - Documentation for Connections, Data Explorer, Analytics, and Backups features
+- DBAssist AI integration with Google Gemini API - natural language to SQL, query optimization, schema analysis
 
 
 ### Fixed
 - Database URL parsing for async protocols and SQLite format
-- URL field auto-clears on checkbox toggle, auto-populates fields for editing
 - Create Connection button navigation without page refresh
 - Charts dark/light mode compatibility
 - Connection management performance - reuse connections instead of creating new ones (5-10x faster queries)
@@ -29,6 +27,5 @@ This file tracks changes during development before they are added to CHANGELOG.m
 - Frontend performance optimizations: React.memo, virtualized lists, request deduplication (50% render reduction, 90% DOM reduction)
 - Route-based code splitting with lazy loading (40-60% faster initial load, smaller bundle chunks)
 - Operation lock conflicts with timeouts, expiration, and read-only operations (prevents "operation in progress" errors)
-- DBAssist AI integration with Google Gemini API - natural language to SQL, query optimization, schema analysis
 
 ### Removed
