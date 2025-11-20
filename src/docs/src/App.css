@@ -54,6 +54,9 @@ body {
   text-decoration: none;
   font-weight: 500;
   transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .header-links a:hover {
@@ -113,6 +116,9 @@ body {
   color: #4b5563;
   transition: all 0.2s;
   border-left: 3px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .nav-item:hover {
