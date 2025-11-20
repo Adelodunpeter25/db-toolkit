@@ -16,7 +16,20 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1800);
+    const timer = setTimeout(() => {
+      setLoading(false);
+      
+      // Auto-navigate to dashboard on first open
+      const sessionState = JSON.parse(localStorage.getItem('session-state') || '{}');
+      if (!sessionState.has_opened_before) {
+        localStorage.setItem('session-state', JSON.stringify({ 
+          ...sessionState, 
+          has_opened_before: true,
+          last_active: new Date().toISOString()
+        }));
+        window.location.href = '/';
+      }
+    }, 1800);
     return () => clearTimeout(timer);
   }, []);
 
