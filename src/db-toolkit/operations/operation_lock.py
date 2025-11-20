@@ -46,6 +46,15 @@ class OperationLock:
             except RuntimeError:
                 pass
             del self._locks[connection_id]
+    
+    def force_unlock(self, connection_id: str):
+        """Force unlock a connection (use with caution)."""
+        if connection_id in self._locks:
+            try:
+                if self._locks[connection_id].locked():
+                    self._locks[connection_id].release()
+            except RuntimeError:
+                pass
 
 
 operation_lock = OperationLock()

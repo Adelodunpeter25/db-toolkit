@@ -143,12 +143,18 @@ async def get_pool_stats(connection_id: str):
 @router.get("/connections/{connection_id}/export-pdf")
 async def export_pdf(connection_id: str):
     """Export analytics to PDF."""
+    from operations.operation_lock import operation_lock
+    
     try:
         connection_info = await connection_manager.get_connection(connection_id)
         if not connection_info:
             raise HTTPException(status_code=404, detail="Connection not found")
         
-        connector = await connection_manager.get_connector(connection_id)
+        # Check if locked and force unlock if needed for read-only operation
+        if operation_lock.is_locked(connection_id):
+            operation_lock.force_unlock(connection_id)
+        
+        connector = await connection_manager.get_connector(connection_id, auto_reconnect=False)
         if not connector:
             raise HTTPException(status_code=404, detail="Connection not active")
             
@@ -168,6 +174,8 @@ async def export_pdf(connection_id: str):
             }
         )
     except Exception as e:
+        if "operation is in progress" in str(e).lower():
+            raise HTTPException(status_code=409, detail="Another operation is in progress. Please try again.")
         raise HTTPException(status_code=500, detail=str(e))
 
 
