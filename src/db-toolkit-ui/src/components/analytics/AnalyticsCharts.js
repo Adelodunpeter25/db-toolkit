@@ -2,8 +2,21 @@
  * Analytics charts with Recharts
  */
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from 'react';
 
 export function AnalyticsCharts({ history, timeRange }) {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   if (history.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
@@ -24,27 +37,34 @@ export function AnalyticsCharts({ history, timeRange }) {
     connections: item.connections
   }));
 
+  const gridColor = isDark ? '#374151' : '#E5E7EB';
+  const axisColor = isDark ? '#9CA3AF' : '#6B7280';
+  const tooltipBg = isDark ? '#1F2937' : '#FFFFFF';
+  const tooltipBorder = isDark ? '#374151' : '#E5E7EB';
+  const tooltipText = isDark ? '#F3F4F6' : '#111827';
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">CPU Usage (%)</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
             <XAxis 
               dataKey="time" 
-              stroke="#9CA3AF" 
-              tick={{ fontSize: 10 }}
+              stroke={axisColor} 
+              tick={{ fontSize: 10, fill: axisColor }}
               interval="preserveStartEnd"
             />
-            <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} domain={[0, 100]} />
+            <YAxis stroke={axisColor} tick={{ fontSize: 10, fill: axisColor }} domain={[0, 100]} />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px'
+                backgroundColor: tooltipBg, 
+                border: `1px solid ${tooltipBorder}`,
+                borderRadius: '8px',
+                color: tooltipText
               }}
-              labelStyle={{ color: '#F3F4F6' }}
+              labelStyle={{ color: tooltipText }}
             />
             <Line 
               type="monotone" 
@@ -61,21 +81,22 @@ export function AnalyticsCharts({ history, timeRange }) {
         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Memory Usage (%)</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
             <XAxis 
               dataKey="time" 
-              stroke="#9CA3AF" 
-              tick={{ fontSize: 10 }}
+              stroke={axisColor} 
+              tick={{ fontSize: 10, fill: axisColor }}
               interval="preserveStartEnd"
             />
-            <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} domain={[0, 100]} />
+            <YAxis stroke={axisColor} tick={{ fontSize: 10, fill: axisColor }} domain={[0, 100]} />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px'
+                backgroundColor: tooltipBg, 
+                border: `1px solid ${tooltipBorder}`,
+                borderRadius: '8px',
+                color: tooltipText
               }}
-              labelStyle={{ color: '#F3F4F6' }}
+              labelStyle={{ color: tooltipText }}
             />
             <Line 
               type="monotone" 
@@ -92,21 +113,22 @@ export function AnalyticsCharts({ history, timeRange }) {
         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Active Connections</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
             <XAxis 
               dataKey="time" 
-              stroke="#9CA3AF" 
-              tick={{ fontSize: 10 }}
+              stroke={axisColor} 
+              tick={{ fontSize: 10, fill: axisColor }}
               interval="preserveStartEnd"
             />
-            <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+            <YAxis stroke={axisColor} tick={{ fontSize: 10, fill: axisColor }} />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px'
+                backgroundColor: tooltipBg, 
+                border: `1px solid ${tooltipBorder}`,
+                borderRadius: '8px',
+                color: tooltipText
               }}
-              labelStyle={{ color: '#F3F4F6' }}
+              labelStyle={{ color: tooltipText }}
             />
             <Line 
               type="monotone" 
