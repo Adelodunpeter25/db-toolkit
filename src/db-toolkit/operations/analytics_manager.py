@@ -11,6 +11,14 @@ from operations.analytics import (
     get_mongodb_analytics,
     get_sqlite_analytics
 )
+from operations.analytics.slow_query_log import log_slow_query, get_slow_queries
+from operations.analytics.table_stats import (
+    get_table_stats_postgresql,
+    get_table_stats_mysql,
+    get_table_stats_mongodb,
+    get_table_stats_sqlite
+)
+from operations.analytics.pdf_export import generate_analytics_pdf
 
 # Store historical metrics (in-memory, last 3 hours)
 historical_metrics = defaultdict(list)
@@ -43,6 +51,15 @@ class AnalyticsManager:
         if result.get('success'):
             result['system_stats'] = self._get_system_stats()
             self._store_historical_data(connection_id, result)
+            
+            # Log slow queries
+            for query in result.get('long_running_queries', []):
+                log_slow_query(
+                    connection_id,
+                    query.get('query', ''),
+                    query.get('duration', 0),
+                    query.get('usename')
+                )
         
         return result
     
@@ -77,6 +94,46 @@ class AnalyticsManager:
             m for m in historical_metrics.get(key, [])
             if datetime.fromisoformat(m['timestamp']) > cutoff
         ]
+    
+    def get_slow_query_log(self, connection_id: int, hours: int = 24) -> List[Dict[str, Any]]:
+        """Get slow query log."""
+        return get_slow_queries(connection_id, hours)
+    
+    async def get_table_statistics(self, config: DatabaseConnection) -> List[Dict[str, Any]]:
+        """Get table-level statistics."""
+        db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
+        
+        if db_type == 'postgresql':
+            return await get_table_stats_postgresql(self.connection)
+        elif db_type == 'mysql':
+            return await get_table_stats_mysql(self.connection)
+        elif db_type == 'mongodb':
+            return await get_table_stats_mongodb(self.connection)
+        elif db_type == 'sqlite':
+            return await get_table_stats_sqlite(self.connection)
+        return []
+    
+    async def export_to_pdf(self, connection_id: int, connection_name: str, config: DatabaseConnection) -> bytes:
+        """Export analytics to PDF."""
+        # Get current metrics
+        metrics = await self.get_analytics(config, connection_id)
+        
+        # Get historical data
+        historical = self.get_historical_data(connection_id, 3)
+        
+        # Get slow queries
+        slow_queries = self.get_slow_query_log(connection_id, 24)
+        
+        # Get table stats
+        table_stats = await self.get_table_statistics(config)
+        
+        return generate_analytics_pdf(
+            connection_name,
+            metrics,
+            historical,
+            slow_queries,
+            table_stats
+        )
 
 
 
@@ -108,6 +165,29 @@ class AnalyticsManager:
                 "error": str(e)
             }
 
+    def get_connection_pool_stats(self) -> Dict[str, Any]:
+        """Get connection pool statistics."""
+        # Basic pool stats from historical metrics
+        all_connections = []
+        for key, metrics in historical_metrics.items():
+            if metrics:
+                all_connections.extend([m.get('connections', 0) for m in metrics])
+        
+        if not all_connections:
+            return {
+                "avg_connections": 0,
+                "max_connections": 0,
+                "min_connections": 0,
+                "current_connections": 0
+            }
+        
+        return {
+            "avg_connections": sum(all_connections) / len(all_connections),
+            "max_connections": max(all_connections),
+            "min_connections": min(all_connections),
+            "current_connections": all_connections[-1] if all_connections else 0
+        }
+    
     async def get_query_plan(self, query: str, config: DatabaseConnection) -> Dict[str, Any]:
         """Get query execution plan."""
         db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
