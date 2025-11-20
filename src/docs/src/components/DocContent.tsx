@@ -14,13 +14,13 @@ export default function DocContent({ data, prevSection, nextSection, onNavigate 
   const handleNavigate = (id: string) => {
     if (onNavigate) {
       onNavigate(id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
   };
 
   return (
     <motion.main 
-      className="flex-1 p-12 max-w-4xl"
+      className="flex-1 p-12 max-w-4xl min-h-[calc(100vh-124px)]"
       variants={staggerContainer}
       initial="initial"
       animate="animate"
