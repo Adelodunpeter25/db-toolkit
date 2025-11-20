@@ -12,16 +12,13 @@ export default function DownloadsPage() {
       url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-win-x64.exe'
     },
     {
-      name: 'macOS Intel',
+      name: 'macOS',
       icon: <Apple size={48} />,
-      version: 'Latest (x64)',
-      url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-mac-x64.dmg'
-    },
-    {
-      name: 'macOS Apple Silicon',
-      icon: <Apple size={48} />,
-      version: 'Latest (ARM64)',
-      url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-mac-arm64.dmg'
+      version: 'Latest',
+      downloads: [
+        { label: 'Intel (x64)', url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-mac-x64.dmg' },
+        { label: 'Apple Silicon (ARM64)', url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-mac-arm64.dmg' }
+      ]
     },
     {
       name: 'Linux',
@@ -43,7 +40,7 @@ export default function DownloadsPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-12">
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {platforms.map((platform) => (
             <div
               key={platform.name}
@@ -58,13 +55,28 @@ export default function DownloadsPage() {
               <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
                 {platform.version}
               </p>
-              <a
-                href={platform.url}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold"
-              >
-                <Download size={20} />
-                Download
-              </a>
+              {platform.downloads ? (
+                <div className="space-y-3">
+                  {platform.downloads.map((download) => (
+                    <a
+                      key={download.label}
+                      href={download.url}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold"
+                    >
+                      <Download size={20} />
+                      {download.label}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <a
+                  href={platform.url}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-teal-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold"
+                >
+                  <Download size={20} />
+                  Download
+                </a>
+              )}
             </div>
           ))}
         </div>
