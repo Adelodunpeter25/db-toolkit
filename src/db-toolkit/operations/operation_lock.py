@@ -25,7 +25,11 @@ class OperationLock:
     def release(self, connection_id: str):
         """Release lock for connection."""
         if connection_id in self._locks:
-            self._locks[connection_id].release()
+            try:
+                self._locks[connection_id].release()
+            except RuntimeError:
+                # Lock was already released
+                pass
 
     def is_locked(self, connection_id: str) -> bool:
         """Check if connection is locked."""
@@ -36,6 +40,11 @@ class OperationLock:
     def cleanup(self, connection_id: str):
         """Remove lock for disconnected connection."""
         if connection_id in self._locks:
+            try:
+                if self._locks[connection_id].locked():
+                    self._locks[connection_id].release()
+            except RuntimeError:
+                pass
             del self._locks[connection_id]
 
 

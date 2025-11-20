@@ -4,6 +4,7 @@ import asyncio
 from fastapi import WebSocket, WebSocketDisconnect
 from operations.analytics_manager import AnalyticsManager
 from operations.connection_manager import connection_manager
+from operations.operation_lock import operation_lock
 
 
 async def websocket_analytics(websocket: WebSocket):
@@ -12,44 +13,37 @@ async def websocket_analytics(websocket: WebSocket):
     connection_id = None
     
     try:
-        # Receive connection ID
-        data = await websocket.receive_json()
+        # Receive connection ID with timeout
+        data = await asyncio.wait_for(websocket.receive_json(), timeout=10.0)
         connection_id = data.get('connection_id')
         
         if not connection_id:
             await websocket.send_json({"error": "connection_id required"})
-            await websocket.close()
             return
         
         connection_info = await connection_manager.get_connection(connection_id)
         if not connection_info:
             await websocket.send_json({"error": "Connection not found"})
-            await websocket.close()
             return
         
         connector = await connection_manager.get_connector(connection_id)
         if not connector:
             await websocket.send_json({"error": "Connection not active"})
-            await websocket.close()
             return
             
         analytics_manager = AnalyticsManager(connector.connection)
         
-        # Send analytics every 2 seconds
-        while True:
-            result = await analytics_manager.get_analytics(connection_info, connection_id)
-            await websocket.send_json(result)
-            await asyncio.sleep(2)
+        # Send analytics every 3 seconds with connection check
+        while websocket.client_state.name == 'CONNECTED':
+            try:
+                result = await analytics_manager.get_analytics(connection_info, connection_id)
+                await websocket.send_json(result)
+                await asyncio.sleep(3)
+            except Exception as e:
+                await websocket.send_json({"error": str(e)})
+                break
             
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, asyncio.TimeoutError):
         pass
-    except Exception as e:
-        try:
-            await websocket.send_json({"error": str(e)})
-        except:
-            pass
-    finally:
-        try:
-            await websocket.close()
-        except:
-            pass
+    except Exception:
+        pass
