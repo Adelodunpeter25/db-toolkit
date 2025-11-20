@@ -4,7 +4,8 @@ When bumping version, update the following files:
 
 ## Backend
 - [ ] `src/db-toolkit/pyproject.toml` - Line 7: `version = "X.X.X"`
-- [ ] `src/db-toolkit/main.py` - Line 28: `version="X.X.X"` (FastAPI app)
+- [ ] `src/db-toolkit/main.py` - Line 38: `version="X.X.X"` (FastAPI app)
+- [ ] `src/db-toolkit/__init__.py` - Line 3: `__version__ = "X.X.X"`
 
 ## Frontend (Desktop App)
 - [ ] `src/db-toolkit-ui/package.json` - Line 4: `"version": "X.X.X"`

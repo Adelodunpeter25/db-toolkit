@@ -32,6 +32,7 @@ echo ""
 echo "Updating backend..."
 sed -i '' "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" src/db-toolkit/pyproject.toml
 sed -i '' "s/version=\"$CURRENT_VERSION\"/version=\"$NEW_VERSION\"/" src/db-toolkit/main.py
+sed -i '' "s/__version__ = \"$CURRENT_VERSION\"/__version__ = \"$NEW_VERSION\"/" src/db-toolkit/__init__.py
 
 # Update Frontend (Desktop App)
 echo "Updating frontend..."
