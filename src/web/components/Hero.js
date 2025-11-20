@@ -61,8 +61,11 @@ export default function Hero() {
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.8, type: "spring" }}
-          className="flex justify-center mb-8"
+          className="flex flex-col items-center mb-8"
         >
+          <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold rounded-full mb-4">
+            v0.3.0
+          </span>
           <div className="p-6 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl shadow-2xl">
             <Database className="w-16 h-16 text-white" />
           </div>
@@ -122,33 +125,7 @@ export default function Hero() {
           </a>
         </motion.div>
 
-        {/* Version badge */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-8"
-        >
-          <span className="inline-block px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-600 dark:text-gray-300">
-            Latest version: v0.3.0
-          </span>
-        </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 10, 0] }}
-        transition={{ 
-          opacity: { delay: 1 },
-          y: { duration: 2, repeat: Infinity }
-        }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <div className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-gray-400 dark:bg-gray-600 rounded-full mt-2" />
-        </div>
-      </motion.div>
     </section>
   );
 }
