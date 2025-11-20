@@ -35,9 +35,11 @@ function AppContent() {
   return (
     <Layout>
       <Suspense fallback={
-        <div className="flex items-center justify-center h-64">
-          <Spinner size="lg" />
-          <span className="ml-2 text-gray-600">Loading page...</span>
+        <div className="flex items-center justify-center h-screen">
+          <div className="flex flex-col items-center">
+            <Spinner size={20} className="text-blue-500" />
+            <span className="mt-2 text-sm text-gray-500">Loading...</span>
+          </div>
         </div>
       }>
         <Routes>
