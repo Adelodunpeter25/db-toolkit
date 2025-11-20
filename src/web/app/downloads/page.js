@@ -9,7 +9,10 @@ export default function DownloadsPage() {
       name: 'Windows',
       icon: <Monitor size={48} />,
       version: 'Latest',
-      url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-win-x64.exe'
+      downloads: [
+        { label: '64-bit (x64)', url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-win-x64.exe' },
+        { label: '32-bit (ia32)', url: 'https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/DB.Toolkit-win-ia32.exe' }
+      ]
     },
     {
       name: 'macOS',
