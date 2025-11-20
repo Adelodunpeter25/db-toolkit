@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import LoadingSpinner from './LoadingSpinner';
 
-export default function NavigationLoader() {
+function NavigationLoaderContent() {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -21,4 +21,12 @@ export default function NavigationLoader() {
 
   if (!loading) return null;
   return <LoadingSpinner />;
+}
+
+export default function NavigationLoader() {
+  return (
+    <Suspense fallback={null}>
+      <NavigationLoaderContent />
+    </Suspense>
+  );
 }
