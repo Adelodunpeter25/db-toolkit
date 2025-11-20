@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { BookOpen, Clock } from 'lucide-react';
 import CommandPalette from '../components/CommandPalette';
 
@@ -12,6 +12,10 @@ interface DocsPageProps {
 
 export default function DocsPage({ isCommandOpen, onCommandClose }: DocsPageProps) {
   const [activeTab, setActiveTab] = useState<'guide' | 'changelog'>('guide');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab]);
 
   return (
     <>
