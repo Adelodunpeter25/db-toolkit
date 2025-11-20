@@ -1,6 +1,7 @@
 import './globals.css';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import Navbar from '@/components/Navbar';
+import NavigationLoader from '@/components/NavigationLoader';
 import { Playfair_Display } from 'next/font/google';
 
 const playfair = Playfair_Display({ 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={playfair.className}>
         <ThemeProvider>
+          <NavigationLoader />
           <Navbar />
           {children}
         </ThemeProvider>
