@@ -1,21 +1,29 @@
 /**
  * Terminal panel with xterm.js integration.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { X, Minimize2, Maximize2 } from 'lucide-react';
+import { useTerminal } from '../../hooks/useTerminal';
 import 'xterm/css/xterm.css';
 
 function TerminalPanel({ isOpen, onClose }) {
   const terminalRef = useRef(null);
   const containerRef = useRef(null);
-  const [terminal, setTerminal] = useState(null);
+  const termRef = useRef(null);
   const [fitAddon, setFitAddon] = useState(null);
-  const [ws, setWs] = useState(null);
   const [isMaximized, setIsMaximized] = useState(false);
   const [height, setHeight] = useState(384);
   const [isResizing, setIsResizing] = useState(false);
+
+  const handleData = useCallback((data, type) => {
+    if (termRef.current) {
+      termRef.current.write(data);
+    }
+  }, []);
+
+  const { sendData, isConnected } = useTerminal(handleData);
 
   useEffect(() => {
     if (!isOpen || !containerRef.current) return;
@@ -52,49 +60,21 @@ function TerminalPanel({ isOpen, onClose }) {
     term.open(terminalRef.current);
     fit.fit();
 
-    setTerminal(term);
+    termRef.current = term;
     setFitAddon(fit);
 
-    const websocket = new WebSocket('ws://localhost:8000/ws/terminal');
-
-    websocket.onopen = () => {
-      term.writeln('Terminal connected. Type commands below:\r\n');
-    };
-
-    websocket.onmessage = (event) => {
-      if (event.data instanceof Blob) {
-        event.data.arrayBuffer().then((buffer) => {
-          term.write(new Uint8Array(buffer));
-        });
-      } else {
-        term.write(event.data);
-      }
-    };
-
-    websocket.onerror = () => {
-      term.writeln('\r\n\x1b[31mWebSocket connection error\x1b[0m\r\n');
-    };
-
-    websocket.onclose = () => {
-      term.writeln('\r\n\x1b[33mTerminal disconnected\x1b[0m\r\n');
-    };
-
     term.onData((data) => {
-      if (websocket.readyState === WebSocket.OPEN) {
-        websocket.send(data);
-      }
+      sendData(data);
     });
-
-    setWs(websocket);
 
     return () => {
       term.dispose();
-      websocket.close();
+      termRef.current = null;
     };
-  }, [isOpen]);
+  }, [isOpen, sendData]);
 
   useEffect(() => {
-    if (!fitAddon || !terminal) return;
+    if (!fitAddon) return;
 
     const handleResize = () => {
       fitAddon.fit();
@@ -102,13 +82,13 @@ function TerminalPanel({ isOpen, onClose }) {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [fitAddon, terminal]);
+  }, [fitAddon]);
 
   useEffect(() => {
-    if (fitAddon && terminal && isOpen) {
+    if (fitAddon && isOpen) {
       setTimeout(() => fitAddon.fit(), 100);
     }
-  }, [height, isMaximized, fitAddon, terminal, isOpen]);
+  }, [height, isMaximized, fitAddon, isOpen]);
 
   const handleMouseDown = (e) => {
     e.preventDefault();
