@@ -157,8 +157,11 @@ function TerminalPanel({ isOpen, onClose }) {
       </div>
       <div
         ref={terminalRef}
-        className="w-full p-2 overflow-hidden"
-        style={{ height: isMaximized ? 'calc(100vh - 40px)' : `${height - 40}px` }}
+        className="w-full overflow-hidden"
+        style={{ 
+          height: isMaximized ? 'calc(100vh - 40px)' : `${height - 40}px`,
+          padding: '8px'
+        }}
         onClick={() => termRef.current?.focus()}
       />
     </div>
