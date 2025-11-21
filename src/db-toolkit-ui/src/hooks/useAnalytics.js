@@ -50,8 +50,6 @@ export function useAnalytics(connectionId) {
         setAnalytics(data);
         setHistory(prev => [...prev.slice(-19), {
           timestamp: new Date(),
-          cpu: data.system_stats.cpu_usage,
-          memory: data.system_stats.memory_usage,
           connections: data.active_connections
         }]);
         setLoading(false);
