@@ -44,6 +44,10 @@ export function useAnalytics(connectionId) {
           setTimeout(() => navigate('/connections'), 2000);
           return;
         }
+        // Ignore "operation in progress" errors during initial load
+        if (data.error.includes('operation is in progress')) {
+          return;
+        }
         toast.error(data.error);
         setLoading(false);
         return;
