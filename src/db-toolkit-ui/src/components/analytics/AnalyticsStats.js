@@ -1,7 +1,7 @@
 /**
  * Analytics statistics cards
  */
-import { Activity, Database, Cpu, HardDrive, MemoryStick } from 'lucide-react';
+import { Activity, Database } from 'lucide-react';
 
 export function AnalyticsStats({ analytics }) {
   const formatBytes = (bytes) => {
@@ -30,24 +30,6 @@ export function AnalyticsStats({ analytics }) {
       value: formatBytes(analytics.database_size),
       icon: Database,
       color: 'text-blue-600 dark:text-blue-400'
-    },
-    {
-      label: 'CPU Usage',
-      value: `${analytics.system_stats.cpu_usage.toFixed(1)}%`,
-      icon: Cpu,
-      color: 'text-orange-600 dark:text-orange-400'
-    },
-    {
-      label: 'Memory Usage',
-      value: `${analytics.system_stats.memory_usage.toFixed(1)}%`,
-      icon: MemoryStick,
-      color: 'text-purple-600 dark:text-purple-400'
-    },
-    {
-      label: 'Disk Usage',
-      value: `${analytics.system_stats.disk_usage.toFixed(1)}%`,
-      icon: HardDrive,
-      color: 'text-red-600 dark:text-red-400'
     }
   ];
 
