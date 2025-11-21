@@ -14,5 +14,6 @@ This file tracks changes during development before they are added to CHANGELOG.m
 - Query page scrolling isolated to individual sections (Results, Messages, History tabs)
 - Scroll propagation prevented with overscroll-contain
 - Auto-reconnect on QueryPage load prevents "Connection not found" errors after page refresh
+- CSV export now correctly reads data from query results (handles both rows and data keys)
 
 ### Removed
