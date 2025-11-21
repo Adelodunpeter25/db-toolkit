@@ -109,7 +109,7 @@ function QueryPage() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <div className="flex justify-between items-center px-6 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex-shrink-0 flex justify-between items-center px-6 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 flex-1 overflow-x-auto">
           {tabs.map(tab => (
             <div
@@ -164,7 +164,7 @@ function QueryPage() {
 
 
 
-      <div className="flex-1 overflow-hidden flex">
+      <div className="flex-1 min-h-0 overflow-hidden flex">
         {showAiAssistant ? (
           <Split
             sizes={[75, 25]}
