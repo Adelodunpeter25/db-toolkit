@@ -113,7 +113,7 @@ async def websocket_terminal(websocket: WebSocket):
                             # Track commands (on Enter key)
                             if text == '\r':
                                 command_history.append(text)
-            except WebSocketDisconnect:
+            except (WebSocketDisconnect, RuntimeError):
                 pass
         
         try:
