@@ -182,15 +182,8 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
       term.onData((data) => {
         if (ws && ws.readyState === WebSocket.OPEN) {
           ws.send(data);
-          
-          if (data === '\r') {
-            setTimeout(() => {
-              if (currentDir && ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(`SESSION:${currentDir}`);
-              }
-            }, 100);
-          }
         }
+        term.scrollToBottom();
       });
 
       term.onResize(({ rows, cols }) => {
@@ -280,17 +273,29 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-slate-900 to-slate-950 border-t border-cyan-500/20 z-40 shadow-2xl"
+      className={`fixed bottom-0 left-0 right-0 z-40 shadow-2xl border-t ${
+        darkMode 
+          ? 'bg-gradient-to-b from-slate-900 to-slate-950 border-cyan-500/20' 
+          : 'bg-gradient-to-b from-gray-50 to-gray-100 border-cyan-600/30'
+      }`}
       style={{ height: isMaximized ? '100vh' : `${height}px` }}
     >
       <div
         onMouseDown={handleMouseDown}
-        className="absolute top-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-cyan-500 transition-colors"
+        className={`absolute top-0 left-0 right-0 h-1 cursor-ns-resize transition-colors ${
+          darkMode ? 'hover:bg-cyan-500' : 'hover:bg-cyan-600'
+        }`}
       />
       
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50">
+      <div className={`flex items-center justify-between px-4 py-2 backdrop-blur-sm border-b ${
+        darkMode 
+          ? 'bg-slate-800/50 border-slate-700/50' 
+          : 'bg-white/50 border-gray-300/50'
+      }`}>
         <div className="flex items-center gap-3 flex-1 overflow-x-auto">
-          <div className="flex items-center gap-1 border-r border-slate-700 pr-3">
+          <div className={`flex items-center gap-1 border-r pr-3 ${
+            darkMode ? 'border-slate-700' : 'border-gray-300'
+          }`}>
             <button
               onClick={() => {
                 const ws = terminalsRef.current[activeTab]?.ws;
@@ -304,7 +309,11 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
                   }
                 }
               }}
-              className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700 transition-all flex items-center gap-1"
+              className={`px-2 py-1 text-xs rounded transition-all flex items-center gap-1 ${
+                darkMode 
+                  ? 'bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700'
+                  : 'bg-gray-200 text-gray-700 hover:text-cyan-600 hover:bg-gray-300'
+              }`}
               title="PostgreSQL CLI"
             >
               <Database size={12} />
@@ -323,7 +332,11 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
                   }
                 }
               }}
-              className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700 transition-all flex items-center gap-1"
+              className={`px-2 py-1 text-xs rounded transition-all flex items-center gap-1 ${
+                darkMode 
+                  ? 'bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700'
+                  : 'bg-gray-200 text-gray-700 hover:text-cyan-600 hover:bg-gray-300'
+              }`}
               title="MySQL CLI"
             >
               <Database size={12} />
@@ -342,7 +355,11 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
                   }
                 }
               }}
-              className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700 transition-all flex items-center gap-1"
+              className={`px-2 py-1 text-xs rounded transition-all flex items-center gap-1 ${
+                darkMode 
+                  ? 'bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700'
+                  : 'bg-gray-200 text-gray-700 hover:text-cyan-600 hover:bg-gray-300'
+              }`}
               title="MongoDB CLI"
             >
               <Database size={12} />
@@ -355,8 +372,12 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
               key={tab.id}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-t-lg cursor-pointer transition-all ${
                 activeTab === tab.id
-                  ? 'bg-slate-900 text-cyan-400 border-t-2 border-cyan-500'
-                  : 'bg-slate-800/50 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  ? darkMode 
+                    ? 'bg-slate-900 text-cyan-400 border-t-2 border-cyan-500'
+                    : 'bg-white text-cyan-600 border-t-2 border-cyan-600'
+                  : darkMode
+                    ? 'bg-slate-800/50 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    : 'bg-gray-100 text-gray-600 hover:text-gray-800 hover:bg-gray-200'
               }`}
               onClick={() => setActiveTab(tab.id)}
             >
@@ -376,7 +397,11 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
           ))}
           <button
             onClick={addTab}
-            className="p-1.5 rounded-lg bg-slate-800/50 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-all"
+            className={`p-1.5 rounded-lg transition-all ${
+              darkMode
+                ? 'bg-slate-800/50 text-slate-400 hover:text-cyan-400 hover:bg-slate-800'
+                : 'bg-gray-200 text-gray-600 hover:text-cyan-600 hover:bg-gray-300'
+            }`}
             title="New Terminal"
           >
             <Plus size={14} />
@@ -387,14 +412,22 @@ function TerminalPanel({ isOpen, onClose, darkMode }) {
         <div className="flex items-center gap-2 ml-4">
           <button
             onClick={() => setIsMaximized(!isMaximized)}
-            className="p-1.5 hover:bg-slate-700 rounded text-slate-400 hover:text-cyan-400 transition-all"
+            className={`p-1.5 rounded transition-all ${
+              darkMode
+                ? 'hover:bg-slate-700 text-slate-400 hover:text-cyan-400'
+                : 'hover:bg-gray-200 text-gray-600 hover:text-cyan-600'
+            }`}
             title={isMaximized ? 'Minimize' : 'Maximize'}
           >
             {isMaximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
           </button>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-slate-700 rounded text-slate-400 hover:text-red-400 transition-all"
+            className={`p-1.5 rounded transition-all ${
+              darkMode
+                ? 'hover:bg-slate-700 text-slate-400 hover:text-red-400'
+                : 'hover:bg-gray-200 text-gray-600 hover:text-red-500'
+            }`}
             title="Close"
           >
             <X size={16} />
