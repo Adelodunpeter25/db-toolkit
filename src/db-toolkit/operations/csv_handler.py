@@ -31,7 +31,7 @@ class CSVHandler:
 
         # Handle both dict and direct result formats
         if isinstance(result, dict):
-            rows = result.get("rows", [])
+            rows = result.get("rows") or result.get("data", [])
             columns = result.get("columns", [])
         else:
             rows = []
