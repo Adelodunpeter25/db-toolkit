@@ -28,16 +28,16 @@ async def get_postgresql_analytics(connector) -> Dict[str, Any]:
                     LIMIT 50
             """
         current_queries = await connector.fetch(current_queries_sql)
-            
-            # Group queries by type
-            query_stats = {'SELECT': 0, 'INSERT': 0, 'UPDATE': 0, 'DELETE': 0, 'OTHER': 0}
-            for q in current_queries:
-                query_stats[q['query_type']] += 1
+        
+        # Group queries by type
+        query_stats = {'SELECT': 0, 'INSERT': 0, 'UPDATE': 0, 'DELETE': 0, 'OTHER': 0}
+        for q in current_queries:
+            query_stats[q['query_type']] += 1
 
         # Idle connections
         idle_sql = "SELECT COUNT(*) as count FROM pg_stat_activity WHERE state = 'idle'"
         idle_result = await connector.fetchrow(idle_sql)
-            idle_connections = idle_result['count'] if idle_result else 0
+        idle_connections = idle_result['count'] if idle_result else 0
 
         # Long-running queries
         long_running_sql = """
@@ -84,7 +84,7 @@ async def get_postgresql_analytics(connector) -> Dict[str, Any]:
         # Database size
         size_sql = "SELECT pg_database_size(current_database()) as size"
         size_result = await connector.fetchrow(size_sql)
-            db_size = size_result['size'] if size_result else 0
+        db_size = size_result['size'] if size_result else 0
 
         # Active connections
         active_sql = "SELECT COUNT(*) as count FROM pg_stat_activity WHERE state = 'active'"
