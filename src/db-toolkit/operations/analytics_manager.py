@@ -5,6 +5,7 @@ from typing import Dict, List, Any
 from datetime import datetime, timedelta
 from collections import defaultdict
 from core.models import DatabaseConnection
+from utils.logger import logger
 from operations.analytics import (
     get_postgresql_analytics,
     get_mysql_analytics,
@@ -33,6 +34,7 @@ class AnalyticsManager:
 
     async def get_analytics(self, config: DatabaseConnection, connection_id: str) -> Dict[str, Any]:
         """Get comprehensive database analytics."""
+        logger.info(f"Fetching analytics for connection '{connection_id}'")
         db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
         
         if db_type == 'postgresql':
@@ -45,6 +47,7 @@ class AnalyticsManager:
             db_path = getattr(config, 'file_path', None) or getattr(config, 'database', None)
             result = await get_sqlite_analytics(self.connection, db_path)
         else:
+            logger.warning(f"Unsupported database type for analytics: {db_type}")
             return {"error": "Unsupported database type"}
         
         # Store historical data
@@ -218,6 +221,7 @@ class AnalyticsManager:
     
     async def kill_query(self, pid: int, config: DatabaseConnection) -> Dict[str, Any]:
         """Kill a running query by PID."""
+        logger.warning(f"Killing query PID {pid}")
         db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
         
         try:
@@ -230,6 +234,8 @@ class AnalyticsManager:
             else:
                 return {"success": False, "error": "Unsupported database type"}
             
+            logger.info(f"Query {pid} terminated successfully")
             return {"success": True, "message": f"Query {pid} terminated"}
         except Exception as e:
+            logger.error(f"Failed to kill query {pid}: {str(e)}")
             return {"success": False, "error": str(e)}

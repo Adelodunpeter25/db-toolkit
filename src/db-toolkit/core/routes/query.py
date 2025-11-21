@@ -5,6 +5,7 @@ from core.storage import ConnectionStorage
 from core.schemas import QueryRequest, QueryResponse
 from operations.query_executor import QueryExecutor
 from operations.query_history import QueryHistory
+from utils.logger import logger
 
 router = APIRouter()
 storage = ConnectionStorage()
@@ -28,6 +29,7 @@ async def execute_query(connection_id: str, request: QueryRequest):
 
     lock = operation_lock.get_lock(connection_id)
     async with lock:
+        logger.info(f"Executing query on '{connection.name}': {request.query[:100]}...")
         result = await executor.execute_query(
             connection=connection,
             query=request.query,
@@ -35,6 +37,11 @@ async def execute_query(connection_id: str, request: QueryRequest):
             offset=request.offset,
             timeout=request.timeout,
         )
+        
+        if result["success"]:
+            logger.info(f"Query executed successfully ({result['total_rows']} rows, {result['execution_time']:.2f}s)")
+        else:
+            logger.error(f"Query failed: {result.get('error', 'Unknown error')}")
     
         # Save to history
         history.add_query(
@@ -85,7 +92,9 @@ async def search_query_history(connection_id: str, q: str):
 @router.post("/query/history/cleanup")
 async def cleanup_query_history(retention_days: int = 30):
     """Cleanup old query history based on retention days."""
+    logger.info(f"Cleaning up query history older than {retention_days} days")
     removed = history.cleanup_old_history(retention_days)
+    logger.info(f"Removed {removed} old queries from history")
     return {"success": True, "removed_count": removed, "message": f"Removed {removed} old queries"}
 
 

@@ -9,6 +9,7 @@ from typing import Optional, List
 from core.models import DatabaseConnection, BackupType, BackupStatus, Backup, BackupSchedule
 from core.backup_storage import BackupStorage
 from ws.backup_notifier import backup_notifier
+from utils.logger import logger
 
 
 class BackupManager:
@@ -28,6 +29,7 @@ class BackupManager:
         compress: bool = True,
     ) -> Backup:
         """Create database backup."""
+        logger.info(f"Creating backup '{name}' for connection '{connection.name}'")
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{connection.name}_{timestamp}.sql"
         if compress:
@@ -144,12 +146,14 @@ class BackupManager:
                 file_size=file_size,
                 file_path=final_path,
             )
+            logger.info(f"Backup '{backup.name}' completed successfully ({file_size} bytes)")
             await backup_notifier.notify_backup_update(
                 backup.id, 
                 BackupStatus.COMPLETED.value, 
                 {"file_size": file_size, "connection_name": connection.name, "progress": 100}
             )
         except Exception as e:
+            logger.error(f"Backup '{backup.name}' failed: {str(e)}")
             await self.storage.update_backup(
                 backup.id,
                 status=BackupStatus.FAILED,

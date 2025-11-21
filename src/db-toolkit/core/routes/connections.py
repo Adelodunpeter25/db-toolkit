@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException
 from core.storage import ConnectionStorage
 from core.models import DatabaseConnection
 from core.schemas import ConnectionRequest
+from utils.logger import logger
 
 router = APIRouter()
 storage = ConnectionStorage()
@@ -21,8 +22,10 @@ async def get_connections():
 async def create_connection(request: ConnectionRequest):
     """Create new connection."""
     try:
+        logger.info(f"Creating connection '{request.name}' ({request.db_type})")
         return await storage.add_connection(**request.model_dump())
     except Exception as e:
+        logger.error(f"Failed to create connection '{request.name}': {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -43,6 +46,7 @@ async def update_connection(connection_id: str, request: ConnectionRequest):
 @router.delete("/connections/{connection_id}")
 async def delete_connection(connection_id: str):
     """Delete connection."""
+    logger.info(f"Deleting connection '{connection_id}'")
     if await storage.remove_connection(connection_id):
         return {"success": True}
     raise HTTPException(status_code=404, detail="Connection not found")
@@ -79,11 +83,14 @@ async def connect_to_database(connection_id: str):
     if not connection:
         raise HTTPException(status_code=404, detail="Connection not found")
     
+    logger.info(f"Connecting to database '{connection.name}'")
     success = await connection_manager.connect(connection)
     
     if success:
+        logger.info(f"Successfully connected to '{connection.name}'")
         return {"success": True, "message": "Connected successfully"}
     else:
+        logger.error(f"Failed to connect to '{connection.name}'")
         raise HTTPException(status_code=400, detail="Failed to connect. Please check your credentials and database server.")
 
 
