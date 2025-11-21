@@ -14,7 +14,7 @@ async def get_postgresql_analytics(connection) -> Dict[str, Any]:
                    state, query, 
                    query_start::TEXT as query_start, 
                    state_change::TEXT as state_change,
-                   EXTRACT(EPOCH FROM (NOW() - query_start)) as duration,
+                   CAST(EXTRACT(EPOCH FROM (NOW() - query_start)) AS FLOAT) as duration,
                    CASE 
                      WHEN query ILIKE 'SELECT%' THEN 'SELECT'
                      WHEN query ILIKE 'INSERT%' THEN 'INSERT'
@@ -42,7 +42,7 @@ async def get_postgresql_analytics(connection) -> Dict[str, Any]:
         # Long-running queries
         long_running_sql = """
             SELECT pid, usename, application_name, 
-                   EXTRACT(EPOCH FROM (NOW() - query_start)) as duration,
+                   CAST(EXTRACT(EPOCH FROM (NOW() - query_start)) AS FLOAT) as duration,
                    query, query_start::TEXT as query_start
             FROM pg_stat_activity
             WHERE state = 'active' 
