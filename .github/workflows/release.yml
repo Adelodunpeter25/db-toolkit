@@ -58,6 +58,15 @@ jobs:
         with:
           python-version: '3.11'
       
+      - name: Install uv (Python package manager)
+        run: pip install uv
+      
+      - name: Install Python dependencies
+        working-directory: src/db-toolkit
+        run: |
+          uv pip install --system -e .
+          uv pip install --system pyinstaller
+      
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y libarchive-tools
@@ -72,20 +81,32 @@ jobs:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_CUSTOM_DIR: '{{ version }}'
       
+      - name: Build backend
+        working-directory: src/db-toolkit
+        run: |
+          pyinstaller backend.spec --clean --noconfirm
+        shell: bash
+      
       - name: Build for macOS
         if: matrix.os == 'macos-latest'
         working-directory: src/db-toolkit-ui
-        run: npm run package:mac
+        run: |
+          npm run build
+          npx electron-builder --mac
       
       - name: Build for Windows
         if: matrix.os == 'windows-latest'
         working-directory: src/db-toolkit-ui
-        run: npm run package:win
+        run: |
+          npm run build
+          npx electron-builder --win
       
       - name: Build for Linux
         if: matrix.os == 'ubuntu-latest'
         working-directory: src/db-toolkit-ui
-        run: npm run package:linux
+        run: |
+          npm run build
+          npx electron-builder --linux
       
       - name: Upload Release Assets
         if: always()
