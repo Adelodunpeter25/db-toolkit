@@ -23,7 +23,10 @@ function fetchLatestRelease() {
     const options = {
       hostname: 'api.github.com',
       path: `/repos/${GITHUB_REPO}/releases/latest`,
-      headers: { 'User-Agent': 'DB-Toolkit' }
+      headers: { 
+        'User-Agent': 'DB-Toolkit',
+        'Authorization': 'token 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'
+      }
     };
 
     https.get(options, (res) => {
@@ -58,7 +61,12 @@ function downloadFile(url, destPath, progressCallback) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(destPath);
     
-    https.get(url, { headers: { 'User-Agent': 'DB-Toolkit' } }, (response) => {
+    https.get(url, { 
+      headers: { 
+        'User-Agent': 'DB-Toolkit',
+        'Authorization': 'token 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'
+      } 
+    }, (response) => {
       if (response.statusCode === 302 || response.statusCode === 301) {
         return downloadFile(response.headers.location, destPath, progressCallback)
           .then(resolve)
