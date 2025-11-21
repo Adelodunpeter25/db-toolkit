@@ -21,7 +21,12 @@ export default function Hero() {
 
   const handleDownload = (url) => {
     setDownloading(true);
-    window.location.href = url;
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     setTimeout(() => setDownloading(false), 2000);
   };
 
