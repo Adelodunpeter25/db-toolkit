@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Settings } from 'lucide-react';
 import Sidebar from './Sidebar';
 import StatusBar from './StatusBar';
@@ -9,6 +10,7 @@ import { Tooltip } from './Tooltip';
 import TerminalPanel from '../terminal/TerminalPanel';
 
 function Layout({ children }) {
+  const { theme } = useTheme();
   const [showSettings, setShowSettings] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showTerminal, setShowTerminal] = useState(false);
@@ -56,7 +58,7 @@ function Layout({ children }) {
         <StatusBar onTerminalClick={() => setShowTerminal(!showTerminal)} />
       </div>
       <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
-      <TerminalPanel isOpen={showTerminal} onClose={() => setShowTerminal(false)} />
+      <TerminalPanel isOpen={showTerminal} onClose={() => setShowTerminal(false)} darkMode={theme === 'dark'} />
       <CommandPalette 
         isOpen={showCommandPalette} 
         onClose={() => setShowCommandPalette(false)}

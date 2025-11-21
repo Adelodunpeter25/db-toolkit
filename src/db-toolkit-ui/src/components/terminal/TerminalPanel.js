@@ -8,7 +8,7 @@ import { X, Minimize2, Maximize2, Plus, Database } from 'lucide-react';
 import { WS_ENDPOINTS } from '../../services/websocket';
 import '@xterm/xterm/css/xterm.css';
 
-function TerminalPanel({ isOpen, onClose }) {
+function TerminalPanel({ isOpen, onClose, darkMode }) {
   const [tabs, setTabs] = useState(() => {
     const saved = localStorage.getItem('terminal-tabs');
     return saved ? JSON.parse(saved) : [{ id: 1, title: 'Terminal 1' }];
@@ -79,7 +79,7 @@ function TerminalPanel({ isOpen, onClose }) {
         fontSize: 14,
         fontFamily: 'JetBrains Mono, Menlo, Monaco, "Courier New", monospace',
         scrollback: 10000,
-        theme: {
+        theme: darkMode ? {
           background: '#0f172a',
           foreground: '#e2e8f0',
           cursor: '#06b6d4',
@@ -100,6 +100,27 @@ function TerminalPanel({ isOpen, onClose }) {
           brightMagenta: '#c084fc',
           brightCyan: '#22d3ee',
           brightWhite: '#f1f5f9',
+        } : {
+          background: '#ffffff',
+          foreground: '#1e293b',
+          cursor: '#0891b2',
+          cursorAccent: '#ffffff',
+          black: '#1e293b',
+          red: '#dc2626',
+          green: '#059669',
+          yellow: '#d97706',
+          blue: '#2563eb',
+          magenta: '#9333ea',
+          cyan: '#0891b2',
+          white: '#475569',
+          brightBlack: '#64748b',
+          brightRed: '#ef4444',
+          brightGreen: '#10b981',
+          brightYellow: '#f59e0b',
+          brightBlue: '#3b82f6',
+          brightMagenta: '#a855f7',
+          brightCyan: '#06b6d4',
+          brightWhite: '#0f172a',
         },
       });
 
@@ -233,6 +254,11 @@ function TerminalPanel({ isOpen, onClose }) {
       if (!isResizing) return;
       const newHeight = window.innerHeight - e.clientY;
       setHeight(Math.max(200, Math.min(newHeight, window.innerHeight - 100)));
+      
+      // Fit terminal on resize
+      Object.values(terminalsRef.current).forEach(({ fit }) => {
+        fit?.fit();
+      });
     };
 
     const handleMouseUp = () => {
@@ -267,10 +293,15 @@ function TerminalPanel({ isOpen, onClose }) {
           <div className="flex items-center gap-1 border-r border-slate-700 pr-3">
             <button
               onClick={() => {
-                const term = terminalsRef.current[activeTab]?.term;
                 const ws = terminalsRef.current[activeTab]?.ws;
-                if (term && ws && ws.readyState === WebSocket.OPEN) {
-                  ws.send('psql\r');
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                  const conn = JSON.parse(localStorage.getItem('last-connection') || '{}');
+                  if (conn.type === 'postgresql') {
+                    const cmd = `psql -h ${conn.host || 'localhost'} -p ${conn.port || 5432} -U ${conn.username || 'postgres'} -d ${conn.database || 'postgres'}\r`;
+                    ws.send(cmd);
+                  } else {
+                    ws.send('psql\r');
+                  }
                 }
               }}
               className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700 transition-all flex items-center gap-1"
@@ -281,10 +312,15 @@ function TerminalPanel({ isOpen, onClose }) {
             </button>
             <button
               onClick={() => {
-                const term = terminalsRef.current[activeTab]?.term;
                 const ws = terminalsRef.current[activeTab]?.ws;
-                if (term && ws && ws.readyState === WebSocket.OPEN) {
-                  ws.send('mysql\r');
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                  const conn = JSON.parse(localStorage.getItem('last-connection') || '{}');
+                  if (conn.type === 'mysql') {
+                    const cmd = `mysql -h ${conn.host || 'localhost'} -P ${conn.port || 3306} -u ${conn.username || 'root'} -p ${conn.database || ''}\r`;
+                    ws.send(cmd);
+                  } else {
+                    ws.send('mysql\r');
+                  }
                 }
               }}
               className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700 transition-all flex items-center gap-1"
@@ -295,10 +331,15 @@ function TerminalPanel({ isOpen, onClose }) {
             </button>
             <button
               onClick={() => {
-                const term = terminalsRef.current[activeTab]?.term;
                 const ws = terminalsRef.current[activeTab]?.ws;
-                if (term && ws && ws.readyState === WebSocket.OPEN) {
-                  ws.send('mongo\r');
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                  const conn = JSON.parse(localStorage.getItem('last-connection') || '{}');
+                  if (conn.type === 'mongodb') {
+                    const cmd = `mongosh "mongodb://${conn.username || ''}${conn.username ? ':' + (conn.password || '') + '@' : ''}${conn.host || 'localhost'}:${conn.port || 27017}/${conn.database || 'test'}"\r`;
+                    ws.send(cmd);
+                  } else {
+                    ws.send('mongo\r');
+                  }
                 }
               }}
               className="px-2 py-1 text-xs rounded bg-slate-700/50 text-slate-300 hover:text-cyan-400 hover:bg-slate-700 transition-all flex items-center gap-1"
