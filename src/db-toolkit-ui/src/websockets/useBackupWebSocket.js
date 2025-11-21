@@ -26,6 +26,17 @@ export function useBackupWebSocket(onUpdate) {
             message: `Backup for ${data.connection_name || 'database'} completed successfully`,
             action: { label: 'View', path: '/backups' }
           });
+          
+          // Platform notification with sound
+          if (Notification.permission === 'granted') {
+            new Notification('Backup Complete', {
+              body: `Backup for ${data.connection_name || 'database'} completed successfully`,
+              icon: '/icon.png',
+              tag: 'backup-complete',
+              requireInteraction: false,
+              silent: false
+            });
+          }
         } else if (data.status === 'failed') {
           addNotification({
             type: 'error',
@@ -33,6 +44,17 @@ export function useBackupWebSocket(onUpdate) {
             message: data.error || 'Backup operation failed',
             action: { label: 'View', path: '/backups' }
           });
+          
+          // Platform notification with sound
+          if (Notification.permission === 'granted') {
+            new Notification('Backup Failed', {
+              body: data.error || 'Backup operation failed',
+              icon: '/icon.png',
+              tag: 'backup-failed',
+              requireInteraction: false,
+              silent: false
+            });
+          }
         }
       }
     };

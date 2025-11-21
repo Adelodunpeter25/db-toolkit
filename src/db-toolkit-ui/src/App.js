@@ -30,6 +30,11 @@ function AppContent() {
       }));
       navigate('/', { replace: true });
     }
+    
+    // Request notification permission on first navigation
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
   }, [navigate]);
 
   return (
@@ -63,6 +68,12 @@ function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1800);
+    
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+    
     return () => clearTimeout(timer);
   }, []);
 

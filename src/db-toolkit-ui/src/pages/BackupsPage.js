@@ -35,10 +35,6 @@ function BackupsPage() {
 
   useEffect(() => {
     fetchSchedules();
-    
-    if (Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
   }, []);
 
   const fetchSchedules = async () => {
