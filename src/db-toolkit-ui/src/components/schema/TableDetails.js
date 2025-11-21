@@ -1,12 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Columns, Key } from 'lucide-react';
+import { Columns, Key, Sparkles } from 'lucide-react';
 import { useSchema } from '../../hooks';
+import { useSchemaAI } from '../../hooks/useSchemaAI';
+import { useToast } from '../../contexts/ToastContext';
 import { LoadingState } from '../common/LoadingState';
+import { Button } from '../common/Button';
+import { TableAiInsights } from './TableAiInsights';
 
 export function TableDetails({ connectionId, schemaName, tableName }) {
   const { fetchTableInfo } = useSchema(connectionId);
+  const { analyzeTable, loading: aiLoading } = useSchemaAI(connectionId);
+  const toast = useToast();
   const [tableInfo, setTableInfo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [tableAnalysis, setTableAnalysis] = useState(null);
+  const [showAiInsights, setShowAiInsights] = useState(false);
 
   useEffect(() => {
     if (schemaName && tableName) {
@@ -26,14 +34,40 @@ export function TableDetails({ connectionId, schemaName, tableName }) {
     }
   };
 
+  const handleAnalyzeTable = async (forceRefresh = false) => {
+    try {
+      setShowAiInsights(true);
+      const result = await analyzeTable(schemaName, tableName, forceRefresh);
+      setTableAnalysis(result);
+      toast.success('Table analysis complete');
+    } catch (err) {
+      toast.error('Failed to analyze table');
+    }
+  };
+
   if (loading) return <LoadingState message="Loading table details..." />;
   if (!tableInfo) return null;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        {schemaName}.{tableName}
-      </h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {schemaName}.{tableName}
+        </h3>
+        <Button
+          variant="secondary"
+          size="sm"
+          icon={<Sparkles size={16} />}
+          onClick={() => handleAnalyzeTable()}
+          disabled={aiLoading}
+        >
+          {aiLoading ? 'Analyzing...' : 'Analyze with AI'}
+        </Button>
+      </div>
+
+      {showAiInsights && (
+        <TableAiInsights analysis={tableAnalysis} loading={aiLoading} />
+      )}
 
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">

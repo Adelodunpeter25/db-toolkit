@@ -147,4 +147,15 @@ export const migratorAPI = {
   getVersion: () => api.get('/version'),
 };
 
+export const schemaAiAPI = {
+  analyzeSchema: (connectionId, schemaName) => 
+    api.post(`/ai/schema/analyze`, { connection_id: connectionId, schema_name: schemaName }),
+  analyzeTable: (connectionId, schemaName, tableName) => 
+    api.post(`/ai/schema/analyze-table`, { 
+      connection_id: connectionId, 
+      schema_name: schemaName, 
+      table_name: tableName 
+    }),
+};
+
 export default api;
