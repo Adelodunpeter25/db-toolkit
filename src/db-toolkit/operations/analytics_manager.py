@@ -47,9 +47,8 @@ class AnalyticsManager:
         else:
             return {"error": "Unsupported database type"}
         
-        # Add system stats
+        # Store historical data
         if result.get('success'):
-            result['system_stats'] = self._get_system_stats()
             self._store_historical_data(connection_id, result)
             
             # Log slow queries
@@ -70,9 +69,6 @@ class AnalyticsManager:
         
         historical_metrics[key].append({
             'timestamp': timestamp.isoformat(),
-            'cpu': data['system_stats']['cpu_usage'],
-            'memory': data['system_stats']['memory_usage'],
-            'disk': data['system_stats']['disk_usage'],
             'connections': data['active_connections'],
             'idle_connections': data['idle_connections'],
             'database_size': data['database_size']
@@ -120,14 +116,13 @@ class AnalyticsManager:
         
         # Debug: Ensure we have valid metrics
         if not metrics.get('success'):
-            # If analytics failed, create basic metrics with system stats
+            # If analytics failed, create basic metrics
             metrics = {
                 'success': True,
                 'active_connections': 1,
                 'idle_connections': 0,
                 'database_size': 0,
                 'query_stats': {'SELECT': 0, 'INSERT': 0, 'UPDATE': 0, 'DELETE': 0, 'OTHER': 0},
-                'system_stats': self._get_system_stats(),
                 'current_queries': [],
                 'long_running_queries': [],
                 'blocked_queries': []
