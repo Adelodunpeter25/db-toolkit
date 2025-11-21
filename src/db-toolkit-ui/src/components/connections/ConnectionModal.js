@@ -87,11 +87,13 @@ export function ConnectionModal({ isOpen, onClose, onSave, connection }) {
   const handleTest = async () => {
     setTesting(true);
     try {
-      const savedConnection = connection
-        ? await api.put(`/connections/${connection.id}`, formData)
-        : await api.post('/connections', formData);
+      // For existing connections, update first
+      if (connection) {
+        await api.put(`/connections/${connection.id}`, formData);
+      }
       
-      const response = await api.post(`/connections/${savedConnection.data.id}/test`);
+      // Test connection without creating duplicate
+      const response = await api.post('/connections/test', formData);
       
       if (response.data.success) {
         toast.success('Connection test successful!');

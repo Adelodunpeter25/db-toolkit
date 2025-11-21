@@ -48,16 +48,25 @@ async def delete_connection(connection_id: str):
     raise HTTPException(status_code=404, detail="Connection not found")
 
 
-@router.post("/connections/{connection_id}/test")
-async def test_connection(connection_id: str):
-    """Test database connection."""
+@router.post("/connections/test")
+async def test_connection(request: ConnectionRequest):
+    """Test database connection config without saving."""
     from utils.validation import validate_connection
+    from core.models import DatabaseType
     
-    connection = await storage.get_connection(connection_id)
-    if not connection:
-        raise HTTPException(status_code=404, detail="Connection not found")
+    # Create temporary connection object for testing
+    temp_connection = DatabaseConnection(
+        id="temp",
+        name=request.name,
+        db_type=DatabaseType(request.db_type),
+        host=request.host,
+        port=request.port,
+        database=request.database,
+        username=request.username,
+        password=request.password
+    )
     
-    result = await validate_connection(connection)
+    result = await validate_connection(temp_connection)
     return result
 
 
