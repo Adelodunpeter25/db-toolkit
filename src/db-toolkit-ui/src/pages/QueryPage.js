@@ -259,6 +259,7 @@ function QueryPage() {
         onClose={() => setShowExport(false)}
         connectionId={connectionId}
         query={query}
+        result={result}
       />
 
       <ExplainPlanModal

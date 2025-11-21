@@ -12,6 +12,8 @@ class ExportCSVRequest(BaseModel):
     table: str
     schema_name: Optional[str] = Field(default=None, alias="schema")
     query: Optional[str] = None
+    delimiter: str = Field(default=",")
+    include_headers: bool = Field(default=True)
 
 
 class ExportCSVResponse(BaseModel):

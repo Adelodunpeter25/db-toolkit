@@ -29,6 +29,8 @@ async def export_csv(request: ExportCSVRequest):
             table=request.table,
             schema=request.schema_name,
             query=request.query,
+            delimiter=request.delimiter,
+            include_headers=request.include_headers,
         )
 
         row_count = len(csv_content.split("\n")) - 2 if csv_content else 0

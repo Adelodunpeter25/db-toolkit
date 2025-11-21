@@ -16,6 +16,8 @@ class CSVHandler:
         table: str,
         schema: Optional[str] = None,
         query: Optional[str] = None,
+        delimiter: str = ",",
+        include_headers: bool = True,
     ) -> str:
         """Export table or query results to CSV string."""
         if query:
@@ -31,8 +33,10 @@ class CSVHandler:
             return ""
 
         output = io.StringIO()
-        writer = csv.DictWriter(output, fieldnames=result["columns"])
-        writer.writeheader()
+        writer = csv.DictWriter(output, fieldnames=result["columns"], delimiter=delimiter)
+        
+        if include_headers:
+            writer.writeheader()
 
         for row in result["rows"]:
             row_dict = dict(zip(result["columns"], row))

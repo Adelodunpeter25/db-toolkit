@@ -6,7 +6,7 @@ import { Input } from '../common/Input';
 import { csvAPI } from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
 
-export function CsvExportModal({ isOpen, onClose, connectionId, query }) {
+export function CsvExportModal({ isOpen, onClose, connectionId, query, result }) {
   const [filename, setFilename] = useState('export.csv');
   const [delimiter, setDelimiter] = useState(',');
   const [includeHeaders, setIncludeHeaders] = useState(true);
@@ -30,6 +30,8 @@ export function CsvExportModal({ isOpen, onClose, connectionId, query }) {
         connection_id: connectionId,
         query,
         table: '',
+        delimiter,
+        include_headers: includeHeaders,
       });
 
       const blob = new Blob([response.data.csv_content], { type: 'text/csv' });
@@ -53,6 +55,14 @@ export function CsvExportModal({ isOpen, onClose, connectionId, query }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Export to CSV">
       <div className="space-y-4">
+        {result && (
+          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              Exporting {result.total_rows || result.rows?.length || 0} rows × {result.columns?.length || 0} columns
+            </p>
+          </div>
+        )}
+
         <Input
           label="Filename"
           value={filename}
@@ -77,6 +87,10 @@ export function CsvExportModal({ isOpen, onClose, connectionId, query }) {
           />
           <span className="text-sm text-gray-700 dark:text-gray-300">Include headers</span>
         </label>
+
+        <div className="text-xs text-gray-500 dark:text-gray-400">
+          <p>The current query results will be exported to CSV format.</p>
+        </div>
 
         <div className="flex justify-end space-x-2 pt-4">
           <Button variant="secondary" onClick={onClose}>
