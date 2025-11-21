@@ -78,17 +78,6 @@ function AnalyticsPage() {
 
 
 
-  if (loading && connectionId) {
-    return (
-      <motion.div className="h-screen flex items-center justify-center" {...pageTransition}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
-        </div>
-      </motion.div>
-    );
-  }
-
   if (!connectionId) {
     if (connections.length === 0) {
       return (
@@ -147,6 +136,15 @@ function AnalyticsPage() {
 
   return (
     <motion.div className="h-screen flex flex-col" {...pageTransition}>
+      {loading ? (
+        <div className="h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
+          </div>
+        </div>
+      ) : (
+        <>
       <div className="px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div>
@@ -220,6 +218,8 @@ function AnalyticsPage() {
           </>
         ) : null}
       </div>
+        </>
+      )}
     </motion.div>
   );
 }
