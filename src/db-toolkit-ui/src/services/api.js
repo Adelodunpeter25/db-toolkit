@@ -3,7 +3,18 @@ import { localStorageService } from '../utils/localStorage';
 import { CACHE_TTL, CACHE_KEYS } from '../utils/constants';
 import { cacheService } from './indexedDB';
 
-const API_BASE_URL = 'http://localhost:8001/api/v1';
+// Get backend URL from Electron or fallback to default
+let API_BASE_URL = 'http://localhost:8000/api/v1';
+
+if (window.electron?.getBackendUrl) {
+  window.electron.getBackendUrl().then(url => {
+    API_BASE_URL = `${url}/api/v1`;
+    api.defaults.baseURL = API_BASE_URL;
+    console.log('Backend URL configured:', API_BASE_URL);
+  }).catch(err => {
+    console.error('Failed to get backend URL:', err);
+  });
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,

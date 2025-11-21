@@ -16,10 +16,11 @@
     "preview": "vite preview",
     "electron": "electron .",
     "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "package": "npm run build && electron-builder",
-    "package:mac": "npm run build && electron-builder --mac",
-    "package:win": "npm run build && electron-builder --win",
-    "package:linux": "npm run build && electron-builder --linux"
+    "build:backend": "cd ../../db-toolkit && ./build-backend.sh",
+    "package": "npm run build:backend && npm run build && electron-builder",
+    "package:mac": "npm run build:backend && npm run build && electron-builder --mac",
+    "package:win": "npm run build:backend && npm run build && electron-builder --win",
+    "package:linux": "npm run build:backend && npm run build && electron-builder --linux"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -66,6 +67,13 @@
       "dist/**/*",
       "electron/**/*",
       "build/icons/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../../db-toolkit/dist/db-toolkit-backend${/*}",
+        "to": "backend",
+        "filter": ["**/*"]
+      }
     ],
     "directories": {
       "buildResources": "build",

@@ -4,9 +4,12 @@ const os = require('os');
 const fs = require('fs').promises;
 const { exec } = require('child_process');
 const { checkForUpdates } = require('./updater');
+const backendManager = require('./backend-manager');
 
 // Set app name before anything else
 app.name = 'DB Toolkit';
+
+let mainWindow = null;
 
 function createMenu() {
   const isDev = !app.isPackaged;
@@ -90,14 +93,15 @@ function createMenu() {
   Menu.setApplicationMenu(menu);
 }
 
-function createWindow() {
+async function createWindow() {
   const iconPath = path.join(__dirname, '../build/icons/icon.png');
   
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     title: 'DB Toolkit',
     icon: iconPath,
+    show: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -106,17 +110,35 @@ function createWindow() {
     },
   });
   
-  win.on('page-title-updated', (event) => {
+  mainWindow.on('page-title-updated', (event) => {
     event.preventDefault();
   });
 
   const isDev = !app.isPackaged;
   
-  if (isDev) {
-    win.loadURL('http://localhost:5173');
-    win.webContents.openDevTools();
-  } else {
-    win.loadFile(path.join(__dirname, '../dist/index.html'));
+  try {
+    // Start backend and get URL
+    const backendUrl = await backendManager.start();
+    console.log('Backend URL:', backendUrl);
+    
+    // Store backend URL for renderer process
+    global.backendUrl = backendUrl;
+    
+    if (isDev) {
+      mainWindow.loadURL('http://localhost:5173');
+      mainWindow.webContents.openDevTools();
+    } else {
+      mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    }
+    
+    mainWindow.show();
+  } catch (error) {
+    console.error('Failed to start backend:', error);
+    dialog.showErrorBox(
+      'Backend Error',
+      `Failed to start database backend: ${error.message}\n\nPlease restart the application.`
+    );
+    app.quit();
   }
 }
 
@@ -230,12 +252,17 @@ ipcMain.handle('get-system-metrics', async () => {
   });
 });
 
+ipcMain.handle('get-backend-url', () => {
+  return global.backendUrl || 'http://127.0.0.1:8000';
+});
+
 app.whenReady().then(() => {
   createMenu();
   createWindow();
 });
 
 app.on('window-all-closed', () => {
+  backendManager.stop();
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -245,4 +272,8 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+app.on('before-quit', () => {
+  backendManager.stop();
 });
