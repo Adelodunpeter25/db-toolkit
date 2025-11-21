@@ -1,6 +1,5 @@
 """MySQL database connector."""
 
-import asyncio
 import aiomysql
 from typing import Dict, List, Any
 from connectors.base import BaseConnector
@@ -9,10 +8,6 @@ from core.models import DatabaseConnection
 
 class MySQLConnector(BaseConnector):
     """MySQL database connector."""
-    
-    def __init__(self):
-        super().__init__()
-        self._query_lock = asyncio.Lock()
     
     async def connect(self, config: DatabaseConnection) -> bool:
         """Connect to MySQL database."""
@@ -57,30 +52,27 @@ class MySQLConnector(BaseConnector):
     
     async def get_schemas(self) -> List[str]:
         """Get MySQL schemas."""
-        async with self._query_lock:
-            async with self.connection.cursor() as cursor:
-                await cursor.execute("SHOW DATABASES")
-                rows = await cursor.fetchall()
+        async with self.connection.cursor() as cursor:
+            await cursor.execute("SHOW DATABASES")
+            rows = await cursor.fetchall()
         return [row[0] for row in rows if row[0] not in ('information_schema', 'performance_schema', 'mysql', 'sys')]
     
     async def get_tables(self, schema: str = None) -> List[str]:
         """Get MySQL tables."""
-        async with self._query_lock:
-            async with self.connection.cursor() as cursor:
-                if schema:
-                    await cursor.execute(f"USE {schema}")
-                await cursor.execute("SHOW TABLES")
-                rows = await cursor.fetchall()
+        async with self.connection.cursor() as cursor:
+            if schema:
+                await cursor.execute(f"USE {schema}")
+            await cursor.execute("SHOW TABLES")
+            rows = await cursor.fetchall()
         return [row[0] for row in rows]
     
     async def get_columns(self, table: str, schema: str = None) -> List[Dict[str, Any]]:
         """Get MySQL table columns."""
-        async with self._query_lock:
-            async with self.connection.cursor() as cursor:
-                if schema:
-                    await cursor.execute(f"USE {schema}")
-                await cursor.execute(f"DESCRIBE {table}")
-                rows = await cursor.fetchall()
+        async with self.connection.cursor() as cursor:
+            if schema:
+                await cursor.execute(f"USE {schema}")
+            await cursor.execute(f"DESCRIBE {table}")
+            rows = await cursor.fetchall()
         return [
             {
                 "column_name": row[0],
@@ -94,11 +86,10 @@ class MySQLConnector(BaseConnector):
     async def execute_query(self, query: str) -> Dict[str, Any]:
         """Execute MySQL query."""
         try:
-            async with self._query_lock:
-                async with self.connection.cursor() as cursor:
-                    await cursor.execute(query)
-                    rows = await cursor.fetchall()
-                    columns = [desc[0] for desc in cursor.description] if cursor.description else []
+            async with self.connection.cursor() as cursor:
+                await cursor.execute(query)
+                rows = await cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description] if cursor.description else []
             return {
                 "success": True,
                 "columns": columns,

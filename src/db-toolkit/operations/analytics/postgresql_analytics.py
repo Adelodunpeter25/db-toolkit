@@ -7,11 +7,8 @@ from datetime import datetime
 async def get_postgresql_analytics(connector) -> Dict[str, Any]:
     """Get PostgreSQL analytics with full support."""
     try:
-        query_lock = getattr(connector, '_query_lock', None)
-        
-        async def execute_queries():
-            # Current queries with timing and cost
-            current_queries_sql = """
+        # Current queries with timing and cost
+        current_queries_sql = """
                 SELECT pid, usename, application_name, 
                        CAST(client_addr AS TEXT) as client_addr, 
                        state, query, 
@@ -30,20 +27,20 @@ async def get_postgresql_analytics(connector) -> Dict[str, Any]:
                     ORDER BY query_start DESC
                     LIMIT 50
             """
-            current_queries = await connector.connection.fetch(current_queries_sql)
+        current_queries = await connector.fetch(current_queries_sql)
             
             # Group queries by type
             query_stats = {'SELECT': 0, 'INSERT': 0, 'UPDATE': 0, 'DELETE': 0, 'OTHER': 0}
             for q in current_queries:
                 query_stats[q['query_type']] += 1
 
-            # Idle connections
-            idle_sql = "SELECT COUNT(*) as count FROM pg_stat_activity WHERE state = 'idle'"
-            idle_result = await connector.connection.fetchrow(idle_sql)
+        # Idle connections
+        idle_sql = "SELECT COUNT(*) as count FROM pg_stat_activity WHERE state = 'idle'"
+        idle_result = await connector.fetchrow(idle_sql)
             idle_connections = idle_result['count'] if idle_result else 0
 
-            # Long-running queries
-            long_running_sql = """
+        # Long-running queries
+        long_running_sql = """
             SELECT pid, usename, application_name, 
                    CAST(EXTRACT(EPOCH FROM (NOW() - query_start)) AS FLOAT) as duration,
                    query, query_start::TEXT as query_start
@@ -54,10 +51,10 @@ async def get_postgresql_analytics(connector) -> Dict[str, Any]:
                 ORDER BY query_start
                 LIMIT 20
             """
-            long_running = await connector.connection.fetch(long_running_sql)
+        long_running = await connector.fetch(long_running_sql)
 
-            # Blocked queries
-            blocked_sql = """
+        # Blocked queries
+        blocked_sql = """
             SELECT blocked_locks.pid AS blocked_pid,
                    blocked_activity.usename AS blocked_user,
                    blocking_locks.pid AS blocking_pid,
@@ -82,35 +79,29 @@ async def get_postgresql_analytics(connector) -> Dict[str, Any]:
                 WHERE NOT blocked_locks.granted
                 LIMIT 20
             """
-            blocked_queries = await connector.connection.fetch(blocked_sql)
+        blocked_queries = await connector.fetch(blocked_sql)
 
-            # Database size
-            size_sql = "SELECT pg_database_size(current_database()) as size"
-            size_result = await connector.connection.fetchrow(size_sql)
+        # Database size
+        size_sql = "SELECT pg_database_size(current_database()) as size"
+        size_result = await connector.fetchrow(size_sql)
             db_size = size_result['size'] if size_result else 0
 
-            # Active connections
-            active_sql = "SELECT COUNT(*) as count FROM pg_stat_activity WHERE state = 'active'"
-            active_result = await connector.connection.fetchrow(active_sql)
-            active_connections = active_result['count'] if active_result else 0
-            
-            return {
-                "success": True,
-                "current_queries": [dict(row) for row in current_queries],
-                "idle_connections": idle_connections,
-                "long_running_queries": [dict(row) for row in long_running],
-                "blocked_queries": [dict(row) for row in blocked_queries],
-                "database_size": db_size,
-                "active_connections": active_connections,
-                "query_stats": query_stats,
-                "timestamp": datetime.utcnow().isoformat()
-            }
+        # Active connections
+        active_sql = "SELECT COUNT(*) as count FROM pg_stat_activity WHERE state = 'active'"
+        active_result = await connector.fetchrow(active_sql)
+        active_connections = active_result['count'] if active_result else 0
         
-        if query_lock:
-            async with query_lock:
-                return await execute_queries()
-        else:
-            return await execute_queries()
+        return {
+            "success": True,
+            "current_queries": [dict(row) for row in current_queries],
+            "idle_connections": idle_connections,
+            "long_running_queries": [dict(row) for row in long_running],
+            "blocked_queries": [dict(row) for row in blocked_queries],
+            "database_size": db_size,
+            "active_connections": active_connections,
+            "query_stats": query_stats,
+            "timestamp": datetime.utcnow().isoformat()
+        }
             
     except Exception as e:
         return {"success": False, "error": str(e)}

@@ -1,6 +1,5 @@
 """PostgreSQL database connector."""
 
-import asyncio
 import asyncpg
 from typing import Dict, List, Any
 from connectors.base import BaseConnector
@@ -9,10 +8,6 @@ from core.models import DatabaseConnection
 
 class PostgreSQLConnector(BaseConnector):
     """PostgreSQL database connector."""
-    
-    def __init__(self):
-        super().__init__()
-        self._query_lock = asyncio.Lock()
     
     async def connect(self, config: DatabaseConnection) -> bool:
         """Connect to PostgreSQL database."""
@@ -63,8 +58,7 @@ class PostgreSQLConnector(BaseConnector):
         WHERE schema_name NOT IN ('information_schema', 'pg_catalog', 'pg_toast')
         ORDER BY schema_name
         """
-        async with self._query_lock:
-            rows = await self.connection.fetch(query)
+        rows = await self.connection.fetch(query)
         return [row['schema_name'] for row in rows]
     
     async def get_tables(self, schema: str = "public") -> List[str]:
@@ -75,8 +69,7 @@ class PostgreSQLConnector(BaseConnector):
         WHERE table_schema = $1 AND table_type = 'BASE TABLE'
         ORDER BY table_name
         """
-        async with self._query_lock:
-            rows = await self.connection.fetch(query, schema)
+        rows = await self.connection.fetch(query, schema)
         return [row['table_name'] for row in rows]
     
     async def get_columns(self, table: str, schema: str = "public") -> List[Dict[str, Any]]:
@@ -87,15 +80,13 @@ class PostgreSQLConnector(BaseConnector):
         WHERE table_schema = $1 AND table_name = $2
         ORDER BY ordinal_position
         """
-        async with self._query_lock:
-            rows = await self.connection.fetch(query, schema, table)
+        rows = await self.connection.fetch(query, schema, table)
         return [dict(row) for row in rows]
     
     async def execute_query(self, query: str) -> Dict[str, Any]:
         """Execute PostgreSQL query."""
         try:
-            async with self._query_lock:
-                rows = await self.connection.fetch(query)
+            rows = await self.connection.fetch(query)
             if rows:
                 columns = list(rows[0].keys())
                 data = [list(row.values()) for row in rows]
