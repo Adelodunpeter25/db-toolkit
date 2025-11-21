@@ -2,6 +2,28 @@
 
 All notable changes to DB Toolkit will be documented in this file. Only the last two version changes are documented here. For complete changelog, visit [Documentation](https://docs-dbtoolkit.vercel.app).
 
+## [0.5.1] - 2025-01-23
+
+### Added
+- Schema Explorer AI with schema-level and table-level analysis
+- Per-tab AI chat history in Query Editor (10 message limit)
+- IndexedDB caching system for AI analysis results (24-hour expiration)
+- Password visibility toggle in connection modal
+- Connection active status indicator (green dot for last 10 minutes)
+- Terminal maximize/minimize functionality
+- Terminal light/dark mode support
+
+### Fixed
+- Terminal height resizing and content display issues
+- Terminal WebSocket disconnect errors
+- Infinite re-render in useConnections hook
+- Query page auto-reconnect on load
+- CSV export with custom delimiters and headers
+
+### Changed
+- Migrated query tabs, schema cache, and table info from localStorage to IndexedDB
+- Removed query explain analyzer (replaced by AI Assistant)
+
 ## [0.5.0] - 2025-01-22
 
 ### Added
@@ -13,9 +35,6 @@ All notable changes to DB Toolkit will be documented in this file. Only the last
   - Schema Explorer AI insights for table analysis
 - **Database Analytics Dashboard**
   - Real-time monitoring with WebSocket updates (5s interval)
-  - Query monitoring: active, long-running (>30s), blocked queries
-  - Query execution plan visualization and type classification
-  - System metrics: CPU, memory, disk, connections, database size
   - Historical data storage (3 hours) with time range selector
   - Slow query log with 24h retention
   - PDF export for analytics reports
@@ -41,37 +60,3 @@ All notable changes to DB Toolkit will be documented in this file. Only the last
 - Charts dark/light mode compatibility
 - Connection management performance issues
 - Frontend performance bottlenecks
-
-## [0.4.1] Bug Fixes - 2025-01-21
-
-### Fixed
-- White screen flash on backups page loading
-- Overview tab not auto-selected on app startup in production
-- HashRouter implementation for proper Electron routing
-- Navigation issues in packaged application
-
-## [0.4.0] - 2025-01-20
-
-### Added
-- **Terminal Enhancements**
-  - Multiple terminal tabs with + button
-  - Session persistence (restores tabs, height, active tab, working directory)
-  - Auto-reconnection with exponential backoff (1s to 30s)
-  - Database CLI shortcuts (psql, mysql, mongo buttons)
-  - Resizable terminal panel
-- **Migration File Browser**
-  - View migration files
-  - Open files in system editor
-  - Edit migraton files
-  - Open migrations folder button
-  - Drag divider to resize sidebar (250px-600px)
-- **Migration UX Improvements**
-  - Clear output button
-  - Split layout with file browser
-  - Better project management
-
-### Improved
-- Terminal starts in home directory by default
-- Terminal properly restores last working directory on reconnect
-- Migration documentation updated with new features
-- Terminal documentation simplified and focused
