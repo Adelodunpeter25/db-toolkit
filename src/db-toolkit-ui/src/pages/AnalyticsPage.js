@@ -78,6 +78,17 @@ function AnalyticsPage() {
 
 
 
+  if (loading && connectionId) {
+    return (
+      <motion.div className="h-screen flex items-center justify-center" {...pageTransition}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
+        </div>
+      </motion.div>
+    );
+  }
+
   if (!connectionId) {
     if (connections.length === 0) {
       return (
@@ -180,26 +191,12 @@ function AnalyticsPage() {
       </div>
 
       <div className="flex-1 overflow-auto p-6">
-        {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
-            </div>
-          </div>
-        ) : connectionLost ? (
+        {connectionLost ? (
           <div className="text-center py-12">
             <Database className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Connection Lost</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">Database connection was lost. Redirecting to connections...</p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          </div>
-        ) : loading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
-            </div>
           </div>
         ) : analytics ? (
           <>
