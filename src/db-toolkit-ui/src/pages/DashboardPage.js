@@ -6,7 +6,7 @@ import { Button } from '../components/common/Button';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const { connections } = useConnections();
+  const { connections, loading } = useConnections();
   const [stats, setStats] = useState({ queries: 0, backups: 0 });
   const [recentActivity, setRecentActivity] = useState([]);
 
@@ -39,6 +39,17 @@ export default function DashboardPage() {
   };
 
   const activeConnections = connections.filter(c => c.status === 'connected');
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">

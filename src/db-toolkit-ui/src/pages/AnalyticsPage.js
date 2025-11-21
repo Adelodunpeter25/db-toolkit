@@ -8,7 +8,7 @@ import { Database, Download } from 'lucide-react';
 import { useConnections, useAnalytics } from '../hooks';
 import { useToast } from '../contexts/ToastContext';
 import { Button } from '../components/common/Button';
-import { LoadingState } from '../components/common/LoadingState';
+
 import { AnalyticsStats } from '../components/analytics/AnalyticsStats';
 import { AnalyticsCharts } from '../components/analytics/AnalyticsCharts';
 import { QueryStats } from '../components/analytics/QueryStats';
@@ -181,8 +181,13 @@ function AnalyticsPage() {
             <p className="text-gray-600 dark:text-gray-400 mb-4">Database connection was lost. Redirecting to connections...</p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
           </div>
-        ) : loading && !analytics ? (
-          <LoadingState message="Loading analytics..." />
+        ) : loading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
+            </div>
+          </div>
         ) : analytics ? (
           <>
             <div className="space-y-6">
