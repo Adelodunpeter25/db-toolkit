@@ -144,6 +144,28 @@ function DataExplorerPage() {
     }
   };
 
+  const handleCellUpdate = async (row, column, newValue) => {
+    try {
+      const rowId = { [columns[0]]: row[0] };
+      const response = await api.put(`/connections/${connectionId}/data/row`, {
+        schema_name: selectedTable.schema,
+        table_name: selectedTable.table,
+        column_name: column,
+        row_identifier: rowId,
+        new_value: newValue,
+      });
+      
+      if (response.data.success) {
+        toast.success('Cell updated successfully');
+        // Refresh data to show updated value
+        loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, sortColumn, sortOrder, filters);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to update cell');
+      throw err;
+    }
+  };
+
   const exportToCSV = () => {
     if (!data || data.length === 0) return;
     
@@ -407,6 +429,7 @@ function DataExplorerPage() {
                   sortColumn={sortColumn}
                   sortOrder={sortOrder}
                   onCellClick={handleCellClick}
+                  onCellUpdate={handleCellUpdate}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
