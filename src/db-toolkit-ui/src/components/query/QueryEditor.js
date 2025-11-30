@@ -45,11 +45,17 @@ export function QueryEditor({ query, onChange, onExecute, loading, schema, error
       }
     );
 
-    // Clear editor: Ctrl+K
+    // Clear editor: Ctrl+C (when no selection)
     editor.addCommand(
-      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC,
       () => {
-        editor.setValue('');
+        const selection = editor.getSelection();
+        if (selection.isEmpty()) {
+          editor.setValue('');
+        } else {
+          // Let default copy behavior work
+          document.execCommand('copy');
+        }
       }
     );
 
