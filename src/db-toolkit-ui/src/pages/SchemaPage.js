@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { RefreshCw, Code, FolderTree, Upload, Sparkles } from 'lucide-react';
+import { RefreshCw, Code, FolderTree, Upload, Sparkles, Network } from 'lucide-react';
 import { useSchema } from '../hooks';
 import { useSchemaAI } from '../hooks/useSchemaAI';
 import { useToast } from '../contexts/ToastContext';
@@ -12,6 +12,7 @@ import { SchemaTree } from '../components/schema/SchemaTree';
 import { TableDetails } from '../components/schema/TableDetails';
 import { CsvImportModal } from '../components/csv';
 import { SchemaAiPanel } from '../components/schema/SchemaAiPanel';
+import { ERDiagram } from '../components/schema/ERDiagram';
 
 function SchemaPage() {
   const { connectionId } = useParams();
@@ -23,6 +24,7 @@ function SchemaPage() {
   const [showImport, setShowImport] = useState(false);
   const [showAiPanel, setShowAiPanel] = useState(false);
   const [schemaAnalysis, setSchemaAnalysis] = useState(null);
+  const [showERDiagram, setShowERDiagram] = useState(false);
 
   useEffect(() => {
     fetchSchemaTree().catch((err) => {
@@ -83,6 +85,13 @@ function SchemaPage() {
               Import CSV
             </Button>
           )}
+          <Button
+            variant="secondary"
+            icon={<Network size={20} />}
+            onClick={() => setShowERDiagram(true)}
+          >
+            ER Diagram
+          </Button>
           <Button
             variant="secondary"
             icon={<Sparkles size={20} />}
@@ -160,6 +169,13 @@ function SchemaPage() {
           loading={aiLoading}
           onClose={() => setShowAiPanel(false)}
           onRefresh={() => handleAnalyzeSchema(true)}
+        />
+      )}
+
+      {showERDiagram && (
+        <ERDiagram
+          schema={schema}
+          onClose={() => setShowERDiagram(false)}
         />
       )}
     </div>
