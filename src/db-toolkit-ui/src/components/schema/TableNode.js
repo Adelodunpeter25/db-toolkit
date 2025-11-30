@@ -6,11 +6,7 @@ import { Handle, Position } from 'reactflow';
 import { Key, Link } from 'lucide-react';
 
 function TableNode({ data }) {
-  console.log('TableNode rendering with data:', data);
-  
-  if (!data) {
-    return <div className="bg-red-500 text-white p-4">No data</div>;
-  }
+  if (!data) return null;
   
   const { label, columns = [], schema } = data;
 

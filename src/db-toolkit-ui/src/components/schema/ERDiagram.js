@@ -33,14 +33,8 @@ const defaultEdgeOptions = {
 };
 
 export function ERDiagram({ schema, onClose }) {
-  console.log('ERDiagram schema:', schema);
-  
   // Generate nodes and edges from schema
-  const initialNodes = useMemo(() => {
-    const nodes = schemaToNodes(schema);
-    console.log('Generated nodes:', nodes);
-    return nodes;
-  }, [schema]);
+  const initialNodes = useMemo(() => schemaToNodes(schema), [schema]);
   const relationships = useMemo(() => detectRelationships(schema), [schema]);
   const initialEdges = useMemo(() => relationshipsToEdges(relationships), [relationships]);
 
@@ -52,9 +46,6 @@ export function ERDiagram({ schema, onClose }) {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
-  
-  console.log('Final nodes for ReactFlow:', nodes);
-  console.log('Node types:', nodeTypes);
 
   // Highlight connected nodes on click
   const onNodeClick = useCallback((event, node) => {
@@ -166,8 +157,6 @@ export function ERDiagram({ schema, onClose }) {
           minZoom={0.1}
           maxZoom={2}
           attributionPosition="bottom-left"
-          zoomOnScroll={false}
-          panOnScroll={true}
         >
           <Background color="#94a3b8" gap={16} />
           <Controls />
