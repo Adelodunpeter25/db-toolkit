@@ -166,6 +166,8 @@ export function ERDiagram({ schema, onClose }) {
           minZoom={0.1}
           maxZoom={2}
           attributionPosition="bottom-left"
+          zoomOnScroll={false}
+          panOnScroll={true}
         >
           <Background color="#94a3b8" gap={16} />
           <Controls />
