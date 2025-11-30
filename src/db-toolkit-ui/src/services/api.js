@@ -194,7 +194,7 @@ export const migratorAPI = {
 export const schemaAiAPI = {
   analyzeSchema: async (connectionId, schemaName) => {
     // Get schema info first
-    const schemaResponse = await api.get(`/schema/${connectionId}/tree`);
+    const schemaResponse = await api.get(`/connections/${connectionId}/schema`);
     const schemaData = schemaResponse.data;
     
     // Get first table from schema to analyze
