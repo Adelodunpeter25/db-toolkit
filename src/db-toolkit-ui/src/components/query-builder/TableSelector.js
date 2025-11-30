@@ -11,12 +11,12 @@ export function TableSelector({ schema, onAddTable, addedTables }) {
 
   const allTables = [];
   if (schema?.schemas) {
-    Object.entries(schema.schemas).forEach(([schemaName, tables]) => {
-      if (Array.isArray(tables)) {
-        tables.forEach(table => {
+    Object.entries(schema.schemas).forEach(([schemaName, schemaData]) => {
+      if (schemaData.tables) {
+        Object.entries(schemaData.tables).forEach(([tableName, table]) => {
           allTables.push({
             schema: schemaName,
-            name: table.name,
+            name: tableName,
             columns: table.columns || []
           });
         });

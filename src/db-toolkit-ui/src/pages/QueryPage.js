@@ -307,7 +307,7 @@ function QueryPage() {
         result={result}
       />
 
-      {showQueryBuilder && (
+      {showQueryBuilder && schema && (
         <QueryBuilder
           schema={schema}
           onClose={() => setShowQueryBuilder(false)}
