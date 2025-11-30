@@ -192,9 +192,28 @@ export const migratorAPI = {
 };
 
 export const schemaAiAPI = {
-  analyzeSchema: (connectionId, schemaName) => 
-    api.post(`/ai/schema/analyze`, { connection_id: connectionId, schema_name: schemaName }),
-  analyzeTable: (connectionId, schemaName, tableName, columns) => 
+  analyzeSchema: async (connectionId, schemaName) => {
+    // Get schema info first
+    const schemaResponse = await api.get(`/schema/${connectionId}/tree`);
+    const schemaData = schemaResponse.data;
+    
+    // Get first table from schema to analyze
+    if (schemaData.schemas && schemaData.schemas[schemaName]) {
+      const tables = schemaData.schemas[schemaName].tables;
+      if (tables && Object.keys(tables).length > 0) {
+        const firstTableName = Object.keys(tables)[0];
+        const firstTable = tables[firstTableName];
+        
+        return api.post(`/ai/schema/analyze`, { 
+          connection_id: connectionId, 
+          table_name: firstTableName,
+          columns: firstTable.columns || []
+        });
+      }
+    }
+    throw new Error('No tables found in schema');
+  },
+  analyzeTable: (connectionId, tableName, columns) => 
     api.post(`/ai/schema/analyze`, { 
       connection_id: connectionId, 
       table_name: tableName,

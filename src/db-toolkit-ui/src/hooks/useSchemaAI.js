@@ -54,13 +54,13 @@ export function useSchemaAI(connectionId) {
     }
   }, [connectionId]);
 
-  const analyzeTable = useCallback(async (schemaName, tableName, forceRefresh = false) => {
-    if (!connectionId || !schemaName || !tableName) {
-      setError('Connection ID, schema name, and table name required');
+  const analyzeTable = useCallback(async (tableName, columns, forceRefresh = false) => {
+    if (!connectionId || !tableName) {
+      setError('Connection ID and table name required');
       return null;
     }
 
-    const cacheKey = `${connectionId}_${schemaName}_${tableName}`;
+    const cacheKey = `${connectionId}_${tableName}`;
 
     try {
       setLoading(true);
@@ -79,7 +79,7 @@ export function useSchemaAI(connectionId) {
       }
 
       // Fetch from API
-      const response = await schemaAiAPI.analyzeTable(connectionId, schemaName, tableName);
+      const response = await schemaAiAPI.analyzeTable(connectionId, tableName, columns);
       const result = response.data;
 
       // Cache the result
