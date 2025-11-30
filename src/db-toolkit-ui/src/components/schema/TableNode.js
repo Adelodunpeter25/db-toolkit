@@ -15,11 +15,11 @@ function TableNode({ data }) {
   const { label, columns = [], schema } = data;
 
   const primaryKeys = columns.filter(col => 
-    col.primary_key || col.name === 'id'
+    col && (col.primary_key || col.name === 'id')
   );
   
   const foreignKeys = columns.filter(col => 
-    col.foreign_key || col.name.endsWith('_id')
+    col && col.name && (col.foreign_key || col.name.endsWith('_id'))
   );
 
   return (
