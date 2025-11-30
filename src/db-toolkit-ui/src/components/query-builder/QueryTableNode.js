@@ -38,13 +38,17 @@ function QueryTableNode({ data, selected }) {
           </div>
         ) : (
           <div className="space-y-1">
-            {columns.map((column) => {
-              const isSelected = selectedColumns.includes(`${tableName}.${column.name}`);
+            {columns.map((column, idx) => {
+              const columnName = column.name || column.column_name || `col_${idx}`;
+              const isSelected = selectedColumns.includes(`${tableName}.${columnName}`);
               
               return (
                 <button
-                  key={column.name}
-                  onClick={() => onColumnToggle?.(tableName, column)}
+                  key={`${tableName}-${columnName}-${idx}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onColumnToggle?.(tableName, { ...column, name: columnName });
+                  }}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm transition ${
                     isSelected
                       ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
@@ -58,7 +62,7 @@ function QueryTableNode({ data, selected }) {
                   }`}>
                     {isSelected && <Check size={12} className="text-white" />}
                   </div>
-                  <span className="flex-1 text-left font-medium">{column.name}</span>
+                  <span className="flex-1 text-left font-medium">{columnName}</span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
                     {column.data_type || column.type}
                   </span>

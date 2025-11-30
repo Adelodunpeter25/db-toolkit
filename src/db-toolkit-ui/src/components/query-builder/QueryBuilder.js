@@ -100,7 +100,10 @@ export function QueryBuilder({ schema, onClose, onExecuteQuery }) {
 
   // Toggle column selection
   const handleColumnToggle = useCallback((tableName, column) => {
-    const colId = `${tableName}.${column.name}`;
+    const columnName = column.name || column.column_name;
+    if (!columnName) return;
+    
+    const colId = `${tableName}.${columnName}`;
     setSelectedColumns(prev => {
       const exists = prev.find(c => `${c.table}.${c.name}` === colId);
       if (exists) {
@@ -108,7 +111,7 @@ export function QueryBuilder({ schema, onClose, onExecuteQuery }) {
       } else {
         return [...prev, {
           table: tableName,
-          name: column.name,
+          name: columnName,
           type: column.data_type || column.type,
           aggregate: null,
           alias: null
