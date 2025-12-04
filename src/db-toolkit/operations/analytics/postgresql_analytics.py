@@ -8,7 +8,7 @@ from datetime import datetime
 async def get_postgresql_analytics(connector) -> Dict[str, Any]:
     """Get PostgreSQL analytics with full support."""
     try:
-        # Current queries with timing and cost
+        # Execute all queries sequentially to avoid "another operation is in progress" error
         current_queries_sql = """
                 SELECT pid, usename, application_name, 
                        CAST(client_addr AS TEXT) as client_addr, 

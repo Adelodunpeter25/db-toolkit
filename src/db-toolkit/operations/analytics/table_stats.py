@@ -10,16 +10,16 @@ async def get_table_stats_postgresql(connection) -> List[Dict[str, Any]]:
         query = """
             SELECT 
                 schemaname,
-                tablename,
-                pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size,
-                pg_total_relation_size(schemaname||'.'||tablename) as size_bytes,
+                relname as tablename,
+                pg_size_pretty(pg_total_relation_size(quote_ident(schemaname)||'.'||quote_ident(relname))) as size,
+                pg_total_relation_size(quote_ident(schemaname)||'.'||quote_ident(relname)) as size_bytes,
                 n_tup_ins as inserts,
                 n_tup_upd as updates,
                 n_tup_del as deletes,
                 seq_scan + idx_scan as total_scans,
                 n_live_tup as row_count
             FROM pg_stat_user_tables
-            ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC
+            ORDER BY pg_total_relation_size(quote_ident(schemaname)||'.'||quote_ident(relname)) DESC
             LIMIT 20
         """
         result = await connection.fetch(query)

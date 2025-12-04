@@ -1,5 +1,6 @@
 """Database analytics and monitoring operations."""
 
+import asyncio
 import psutil
 from typing import Dict, List, Any
 from datetime import datetime, timedelta
@@ -31,24 +32,26 @@ class AnalyticsManager:
     def __init__(self, connection):
         """Initialize analytics manager."""
         self.connection = connection
+        self._lock = asyncio.Lock()
 
     async def get_analytics(self, config: DatabaseConnection, connection_id: str) -> Dict[str, Any]:
         """Get comprehensive database analytics."""
-        logger.info(f"Fetching analytics for connection '{connection_id}'")
-        db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
-        
-        if db_type == 'postgresql':
-            result = await get_postgresql_analytics(self.connection)
-        elif db_type == 'mysql':
-            result = await get_mysql_analytics(self.connection)
-        elif db_type == 'mongodb':
-            result = await get_mongodb_analytics(self.connection)
-        elif db_type == 'sqlite':
-            db_path = getattr(config, 'file_path', None) or getattr(config, 'database', None)
-            result = await get_sqlite_analytics(self.connection, db_path)
-        else:
-            logger.warning(f"Unsupported database type for analytics: {db_type}")
-            return {"error": "Unsupported database type"}
+        async with self._lock:
+            logger.info(f"Fetching analytics for connection '{connection_id}'")
+            db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
+            
+            if db_type == 'postgresql':
+                result = await get_postgresql_analytics(self.connection)
+            elif db_type == 'mysql':
+                result = await get_mysql_analytics(self.connection)
+            elif db_type == 'mongodb':
+                result = await get_mongodb_analytics(self.connection)
+            elif db_type == 'sqlite':
+                db_path = getattr(config, 'file_path', None) or getattr(config, 'database', None)
+                result = await get_sqlite_analytics(self.connection, db_path)
+            else:
+                logger.warning(f"Unsupported database type for analytics: {db_type}")
+                return {"error": "Unsupported database type"}
         
         # Store historical data
         if result.get('success'):
@@ -100,17 +103,18 @@ class AnalyticsManager:
     
     async def get_table_statistics(self, config: DatabaseConnection) -> List[Dict[str, Any]]:
         """Get table-level statistics."""
-        db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
-        
-        if db_type == 'postgresql':
-            return await get_table_stats_postgresql(self.connection)
-        elif db_type == 'mysql':
-            return await get_table_stats_mysql(self.connection)
-        elif db_type == 'mongodb':
-            return await get_table_stats_mongodb(self.connection)
-        elif db_type == 'sqlite':
-            return await get_table_stats_sqlite(self.connection)
-        return []
+        async with self._lock:
+            db_type = config.db_type.value if hasattr(config.db_type, 'value') else config.db_type
+            
+            if db_type == 'postgresql':
+                return await get_table_stats_postgresql(self.connection)
+            elif db_type == 'mysql':
+                return await get_table_stats_mysql(self.connection)
+            elif db_type == 'mongodb':
+                return await get_table_stats_mongodb(self.connection)
+            elif db_type == 'sqlite':
+                return await get_table_stats_sqlite(self.connection)
+            return []
     
     async def export_to_pdf(self, connection_id: str, connection_name: str, config: DatabaseConnection) -> bytes:
         """Export analytics to PDF."""
