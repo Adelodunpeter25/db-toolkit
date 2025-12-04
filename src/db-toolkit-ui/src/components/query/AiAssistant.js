@@ -1,7 +1,7 @@
 /**
  * AI Assistant panel for Query Editor
  */
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bot, 
@@ -28,9 +28,17 @@ export function AiAssistant({
 }) {
   const [naturalLanguage, setNaturalLanguage] = useState('');
   const [copiedStates, setCopiedStates] = useState({});
+  const chatContainerRef = useRef(null);
   
   const { generateQuery, optimizeQuery, explainQuery, fixQueryError, isLoading, error, clearError } = useAiAssistant(connectionId);
   const toast = useToast();
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   const copyToClipboard = async (text, key) => {
     try {
@@ -74,11 +82,12 @@ export function AiAssistant({
       return;
     }
 
-    const userMessage = { role: 'user', content: naturalLanguage, type: 'text' };
+    const input = naturalLanguage.trim();
+    const userMessage = { role: 'user', content: input, type: 'text' };
     onChatUpdate([...chatHistory, userMessage]);
 
     // Check if it's a conversational input
-    if (!isQueryRequest(naturalLanguage)) {
+    if (!isQueryRequest(input)) {
       const responses = {
         'hi': 'Hello! I can help you generate SQL queries. Try asking me to "show all users" or "find orders from last week".',
         'hello': 'Hi there! Describe what data you want to query and I\'ll generate the SQL for you.',
@@ -90,7 +99,7 @@ export function AiAssistant({
         'thank you': 'Happy to help! Feel free to ask for more queries anytime.'
       };
       
-      const lowerInput = naturalLanguage.toLowerCase().trim();
+      const lowerInput = input.toLowerCase();
       let response = responses[lowerInput] || 'I\'m here to help you generate SQL queries. Try describing what data you want to retrieve from your database.';
       
       const assistantMessage = { role: 'assistant', content: response, type: 'text' };
@@ -101,7 +110,8 @@ export function AiAssistant({
 
     // Generate SQL for query requests
     try {
-      const result = await generateQuery(naturalLanguage, schemaContext);
+      console.log('Generating query with schema:', schemaContext);
+      const result = await generateQuery(input, schemaContext);
       if (result.success && result.sql) {
         const assistantMessage = { role: 'assistant', content: result.sql, type: 'sql' };
         onChatUpdate([...chatHistory, userMessage, assistantMessage]);
@@ -138,8 +148,8 @@ export function AiAssistant({
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+      <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto">
+        <div className="space-y-3 mb-4">
           {chatHistory.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm py-8">
               Start by describing what you want to query
