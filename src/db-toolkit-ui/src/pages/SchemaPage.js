@@ -59,14 +59,22 @@ function SchemaPage() {
   
   if (error) return (
     <div className="p-8">
-      <ErrorMessage message="Failed to load schema. Please ensure you are connected to the database." />
-      <Button
-        variant="secondary"
-        className="mt-4"
-        onClick={() => navigate('/')}
-      >
-        Back to Connections
-      </Button>
+      <ErrorMessage message={error.message || "Failed to load schema. Please ensure you are connected to the database."} />
+      <div className="flex gap-2 mt-4">
+        <Button
+          variant="primary"
+          icon={<RefreshCw size={16} />}
+          onClick={() => fetchSchemaTree()}
+        >
+          Retry Connection
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => navigate('/')}
+        >
+          Back to Connections
+        </Button>
+      </div>
     </div>
   );
 
@@ -126,9 +134,14 @@ function SchemaPage() {
               title="No schema data"
               description={schema?.error || "Unable to load database schema. Please connect to the database first."}
               action={
-                <Button onClick={() => navigate('/')}>
-                  Back to Connections
-                </Button>
+                <div className="flex gap-2">
+                  <Button icon={<RefreshCw size={16} />} onClick={() => fetchSchemaTree()}>
+                    Retry Connection
+                  </Button>
+                  <Button variant="secondary" onClick={() => navigate('/')}>
+                    Back to Connections
+                  </Button>
+                </div>
               }
             />
           )}
