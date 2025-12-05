@@ -72,7 +72,3 @@ A modern, cross-platform desktop database management application built with **Ta
 ## License
 
 MIT License
-
----
-
-**Built with ❤️ using Rust, Python, and React**
