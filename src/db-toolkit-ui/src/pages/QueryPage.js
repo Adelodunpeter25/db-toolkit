@@ -277,37 +277,35 @@ function QueryPage() {
             </div>
           </Split>
         ) : (
-          <div className="flex-1">
-            <Split
-              direction="vertical"
-              sizes={[50, 50]}
-              minSize={200}
-              gutterSize={8}
-              className="flex flex-col h-full"
-            >
-              <div className="overflow-hidden">
-                <QueryEditor
-                  query={query}
-                  onChange={setQuery}
-                  onExecute={handleExecute}
-                  loading={loading}
-                  schema={schema}
-                  error={error}
-                />
-              </div>
+          <Split
+            direction="vertical"
+            sizes={[50, 50]}
+            minSize={200}
+            gutterSize={8}
+            className="flex flex-col h-full w-full"
+          >
+            <div className="overflow-hidden">
+              <QueryEditor
+                query={query}
+                onChange={setQuery}
+                onExecute={handleExecute}
+                loading={loading}
+                schema={schema}
+                error={error}
+              />
+            </div>
 
-              <div className="overflow-hidden">
-                <QueryResultsPanel
-                  connectionId={connectionId}
-                  result={result}
-                  executionTime={executionTime}
-                  onSelectQuery={setQuery}
-                  onRefresh={handleExecute}
-                  currentQuery={query}
-                />
-              </div>
-            </Split>
-          </div>
+            <div className="overflow-hidden">
+              <QueryResultsPanel
+                connectionId={connectionId}
+                result={result}
+                executionTime={executionTime}
+                onSelectQuery={setQuery}
+                onRefresh={handleExecute}
+                currentQuery={query}
+              />
+            </div>
+          </Split>
         )}
       </div>
 
