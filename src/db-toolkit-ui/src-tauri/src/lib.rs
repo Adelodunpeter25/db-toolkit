@@ -80,7 +80,18 @@ async fn check_for_updates(app: tauri::AppHandle) -> Result<(), String> {
 async fn get_system_metrics() -> Result<serde_json::Value, String> {
     use std::process::Command;
     
-    let load_avg = if cfg!(target_os = "linux") || cfg!(target_os = "macos") {
+    let load_avg = if cfg!(target_os = "macos") {
+        // macOS doesn't have /proc/loadavg, use sysctl
+        Command::new("sysctl")
+            .args(["-n", "vm.loadavg"])
+            .output()
+            .ok()
+            .and_then(|output| {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                stdout.split_whitespace().nth(1).and_then(|n| n.parse::<f64>().ok())
+            })
+            .unwrap_or(0.0)
+    } else if cfg!(target_os = "linux") {
         std::fs::read_to_string("/proc/loadavg")
             .ok()
             .and_then(|s| s.split_whitespace().next().and_then(|n| n.parse::<f64>().ok()))
