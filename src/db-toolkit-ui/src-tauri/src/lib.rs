@@ -16,10 +16,64 @@ fn get_backend_port(state: tauri::State<BackendState>) -> Result<u16, String> {
 }
 
 #[tauri::command]
-async fn select_folder() -> Result<Option<String>, String> {
-    use tauri_plugin_dialog::DialogExt;
-    // Dialog will be called from frontend using @tauri-apps/plugin-dialog
-    Ok(None)
+async fn read_file(file_path: String) -> Result<String, String> {
+    std::fs::read_to_string(&file_path)
+        .map_err(|_| "Failed to read file".to_string())
+}
+
+#[tauri::command]
+async fn delete_file(file_path: String) -> Result<(), String> {
+    std::fs::remove_file(&file_path)
+        .map_err(|_| "Failed to delete file".to_string())
+}
+
+#[tauri::command]
+async fn rename_file(old_path: String, new_name: String) -> Result<(), String> {
+    let path = std::path::Path::new(&old_path);
+    let dir = path.parent().ok_or("Invalid path")?;
+    let new_path = dir.join(new_name);
+    std::fs::rename(&old_path, &new_path)
+        .map_err(|_| "Failed to rename file".to_string())
+}
+
+#[tauri::command]
+async fn open_in_editor(file_path: String) -> Result<(), String> {
+    opener::open(&file_path)
+        .map_err(|_| "Failed to open file".to_string())
+}
+
+#[tauri::command]
+async fn open_folder(folder_path: String) -> Result<(), String> {
+    opener::open(&folder_path)
+        .map_err(|_| "Failed to open folder".to_string())
+}
+
+#[tauri::command]
+async fn list_migration_files(project_path: String) -> Result<Vec<serde_json::Value>, String> {
+    let migrations_path = std::path::Path::new(&project_path).join("migrations");
+    
+    match std::fs::read_dir(&migrations_path) {
+        Ok(entries) => {
+            let files: Vec<serde_json::Value> = entries
+                .filter_map(|entry| entry.ok())
+                .filter(|entry| {
+                    if let Some(name) = entry.file_name().to_str() {
+                        name.ends_with(".py") && name != "__init__.py"
+                    } else {
+                        false
+                    }
+                })
+                .map(|entry| {
+                    serde_json::json!({
+                        "name": entry.file_name().to_string_lossy(),
+                        "path": entry.path().to_string_lossy()
+                    })
+                })
+                .collect();
+            Ok(files)
+        }
+        Err(_) => Ok(vec![])
+    }
 }
 
 fn start_backend(app_handle: tauri::AppHandle) -> Result<u16, String> {
@@ -99,7 +153,15 @@ pub fn run() {
       
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![get_backend_port, select_folder])
+    .invoke_handler(tauri::generate_handler![
+        get_backend_port,
+        read_file,
+        delete_file,
+        rename_file,
+        open_in_editor,
+        open_folder,
+        list_migration_files
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
