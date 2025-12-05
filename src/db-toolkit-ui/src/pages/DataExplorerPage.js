@@ -56,14 +56,12 @@ function DataExplorerPage() {
 
   useEffect(() => {
     if (connectionId) {
-      alert(`Fetching schema for connection: ${connectionId}`);
-      fetchSchemaTree().then(() => {
-        alert('Schema fetch complete');
-      }).catch(err => {
-        alert(`Schema fetch error: ${err.message}`);
+      fetchSchemaTree().catch(err => {
+        console.error('Schema fetch failed:', err);
+        toast.error(`Failed to load schema: ${err.message}`);
       });
     }
-  }, [connectionId, fetchSchemaTree]);
+  }, [connectionId, fetchSchemaTree, toast]);
 
   const loadTableData = async (schema, table, offset = 0, sort = null, order = 'ASC', filterData = {}) => {
     setLoading(true);
@@ -95,7 +93,6 @@ function DataExplorerPage() {
   };
 
   const handleSelectTable = (schema, table) => {
-    alert(`Selected table: ${table}, schema: ${schema}`);
     setSelectedTable({ schema, table });
     setPage(0);
     setSortColumn(null);
@@ -153,7 +150,6 @@ function DataExplorerPage() {
   const handleCellUpdate = async (row, column, newValue) => {
     try {
       const rowId = { [columns[0]]: row[0] };
-      alert(`Updating: table=${selectedTable.table}, schema=${selectedTable.schema}`);
       const payload = {
         table: selectedTable.table,
         schema_name: selectedTable.schema,
