@@ -14,6 +14,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { Download, Minimize2, ArrowDown, ArrowRight, ArrowUp, ArrowLeft, Search, RotateCcw } from 'lucide-react';
 import { toPng } from 'html-to-image';
+import { getNodesBounds, getViewportForBounds } from 'reactflow';
 import TableNode from './TableNode';
 import { 
   schemaToNodes, 
@@ -135,24 +136,40 @@ export function ERDiagram({ schema, onClose }) {
 
   // Export diagram as PNG
   const exportToPng = useCallback(() => {
-    const element = document.querySelector('.react-flow');
-    if (element) {
-      toPng(element, {
-        backgroundColor: '#ffffff',
-        width: element.offsetWidth,
-        height: element.offsetHeight,
+    const nodesBounds = getNodesBounds(nodes);
+    const viewport = getViewportForBounds(
+      nodesBounds,
+      1200,
+      800,
+      0.5,
+      2,
+      0.1
+    );
+
+    const element = document.querySelector('.react-flow__viewport');
+    if (!element) return;
+
+    toPng(element, {
+      backgroundColor: '#ffffff',
+      width: 1200,
+      height: 800,
+      style: {
+        width: '1200px',
+        height: '800px',
+        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
+      },
+    })
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = `er-diagram-${Date.now()}.png`;
+        link.href = dataUrl;
+        link.click();
       })
-        .then((dataUrl) => {
-          const link = document.createElement('a');
-          link.download = `er-diagram-${Date.now()}.png`;
-          link.href = dataUrl;
-          link.click();
-        })
-        .catch((err) => {
-          console.error('Failed to export diagram:', err);
-        });
-    }
-  }, []);
+      .catch((err) => {
+        console.error('Failed to export diagram:', err);
+        alert('Export failed. Try with fewer tables or use browser screenshot.');
+      });
+  }, [nodes]);
 
   return (
     <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
