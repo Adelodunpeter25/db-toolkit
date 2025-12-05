@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
+import './services/tauri';
 import App from './App';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
