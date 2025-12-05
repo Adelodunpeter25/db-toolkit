@@ -92,11 +92,17 @@ export function useMenuActions() {
           break;
 
         // Help Menu
+        case 'documentation':
+          navigate('/documentation');
+          break;
         case 'keyboard-shortcuts':
           window.dispatchEvent(new CustomEvent('menu:keyboard-shortcuts'));
           break;
         case 'report-issue':
           window.dispatchEvent(new CustomEvent('menu:report-issue'));
+          break;
+        case 'about':
+          window.dispatchEvent(new CustomEvent('menu:about'));
           break;
 
         default:
