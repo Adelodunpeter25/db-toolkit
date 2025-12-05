@@ -249,7 +249,7 @@ pub fn run() {
           if let Some(mut child) = process.take() {
             let _ = child.kill();
           }
-        }
+        };
       }
     })
     .invoke_handler(tauri::generate_handler![
