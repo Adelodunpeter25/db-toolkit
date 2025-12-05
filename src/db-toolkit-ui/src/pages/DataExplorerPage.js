@@ -42,7 +42,7 @@ function DataExplorerPage() {
   const handleConnect = async (id) => {
     setConnecting(id);
     try {
-      await connectToDatabase(id);
+      await connectToDatabase(id, true);
       const conn = connections.find(c => c.id === id);
       setConnectionId(id);
       setConnectionName(conn?.name || '');
@@ -56,11 +56,8 @@ function DataExplorerPage() {
 
   useEffect(() => {
     if (connectionId) {
-      console.log('DataExplorer: Fetching schema for connection:', connectionId);
-      fetchSchemaTree(false).then(() => {
-        console.log('DataExplorer: Schema loaded successfully');
-      }).catch(err => {
-        console.error('DataExplorer: Schema fetch failed:', err);
+      fetchSchemaTree().catch(err => {
+        console.error('Schema fetch failed:', err);
         toast.error(`Failed to load schema: ${err.message}`);
       });
     }

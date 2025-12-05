@@ -64,19 +64,21 @@ export function useConnections() {
     }
   }, []);
 
-  const connectToDatabase = useCallback(async (id) => {
+  const connectToDatabase = useCallback(async (id, silent = false) => {
     try {
       const response = await connectionsAPI.connect(id);
       setConnectedIds(prev => new Set(prev).add(id));
       // Store connection timestamp
       localStorage.setItem(`connection_time_${id}`, Date.now().toString());
-      const conn = connections.find(c => c.id === id);
-      addNotification({
-        type: 'success',
-        title: 'Connected',
-        message: `Successfully connected to ${conn?.name || 'database'}`,
-        action: { label: 'View Schema', path: `/schema/${id}` }
-      });
+      if (!silent) {
+        const conn = connections.find(c => c.id === id);
+        addNotification({
+          type: 'success',
+          title: 'Connected',
+          message: `Successfully connected to ${conn?.name || 'database'}`,
+          action: { label: 'View Schema', path: `/schema/${id}` }
+        });
+      }
       return response.data;
     } catch (err) {
       const conn = connections.find(c => c.id === id);

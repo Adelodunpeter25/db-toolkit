@@ -64,7 +64,7 @@ function AnalyticsPage() {
   const handleConnect = async (id) => {
     setConnecting(id);
     try {
-      await connectToDatabase(id);
+      await connectToDatabase(id, true);
       const conn = connections.find(c => c.id === id);
       setConnectionId(id);
       setConnectionName(conn?.name || '');
