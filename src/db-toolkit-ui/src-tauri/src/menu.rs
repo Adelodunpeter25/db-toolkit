@@ -4,6 +4,28 @@ use tauri::{Manager, Emitter};
 pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Error> {
     let menu = Menu::new(app)?;
     
+    // App Menu (macOS only)
+    #[cfg(target_os = "macos")]
+    {
+        let app_menu = Submenu::with_items(
+            app,
+            "DB Toolkit",
+            true,
+            &[
+                &MenuItem::with_id(app, "about", "About DB Toolkit", true, None::<&str>)?,
+                &PredefinedMenuItem::separator(app)?,
+                &PredefinedMenuItem::services(app, None)?,
+                &PredefinedMenuItem::separator(app)?,
+                &PredefinedMenuItem::hide(app, None)?,
+                &PredefinedMenuItem::hide_others(app, None)?,
+                &PredefinedMenuItem::show_all(app, None)?,
+                &PredefinedMenuItem::separator(app)?,
+                &PredefinedMenuItem::quit(app, None)?,
+            ],
+        )?;
+        menu.append(&app_menu)?;
+    }
+    
     // File Menu
     let file_menu = Submenu::with_items(
         app,
@@ -108,8 +130,6 @@ pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Er
             &MenuItem::with_id(app, "documentation", "Documentation", true, Some("F1"))?,
             &MenuItem::with_id(app, "keyboard-shortcuts", "Keyboard Shortcuts", true, Some("CmdOrCtrl+/"))?,
             &MenuItem::with_id(app, "report-issue", "Report Issue", true, None::<&str>)?,
-            &PredefinedMenuItem::separator(app)?,
-            &MenuItem::with_id(app, "about", "About DB Toolkit", true, None::<&str>)?,
         ],
     )?;
     

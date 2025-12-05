@@ -93,7 +93,7 @@ export function useMenuActions() {
 
         // Help Menu
         case 'documentation':
-          navigate('/documentation');
+          navigate('/docs');
           break;
         case 'keyboard-shortcuts':
           window.dispatchEvent(new CustomEvent('menu:keyboard-shortcuts'));
