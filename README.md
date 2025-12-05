@@ -4,7 +4,7 @@
 
 ![DB Toolkit](https://img.shields.io/badge/version-0.1.0-blue) ![Python](https://img.shields.io/badge/python-3.11+-green) ![Node](https://img.shields.io/badge/node-18+-green) ![License](https://img.shields.io/badge/license-MIT-green)
 
-A modern, cross-platform desktop database management application built with **Electron + React** frontend and **Python FastAPI** backend.
+A modern, cross-platform desktop database management application built with **Tauri + React** frontend and **Python FastAPI** backend.
 
 </div>
 
@@ -60,7 +60,7 @@ A modern, cross-platform desktop database management application built with **El
 ## Tech Stack
 
 **Backend:** FastAPI, SQLAlchemy, AsyncPG, AIOMySQL, Motor, WebSockets, UV  
-**Frontend:** Electron, React 18, Tailwind CSS, Monaco Editor, Framer Motion, Vite
+**Frontend:** Tauri, React 18, Tailwind CSS, Monaco Editor, Framer Motion, Vite, Rust
 
 ## Keyboard Shortcuts
 
@@ -75,4 +75,4 @@ MIT License
 
 ---
 
-**Built with ❤️ using Python, React, and Electron**
+**Built with ❤️ using Rust, Python, and React**
