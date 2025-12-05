@@ -49,6 +49,75 @@ async fn open_folder(folder_path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+async fn get_system_metrics() -> Result<serde_json::Value, String> {
+    use std::process::Command;
+    
+    let load_avg = if cfg!(target_os = "linux") || cfg!(target_os = "macos") {
+        std::fs::read_to_string("/proc/loadavg")
+            .ok()
+            .and_then(|s| s.split_whitespace().next().and_then(|n| n.parse::<f64>().ok()))
+            .unwrap_or(0.0)
+    } else {
+        0.0
+    };
+    
+    let disk = if cfg!(target_os = "macos") || cfg!(target_os = "linux") {
+        Command::new("df")
+            .args(["-k", "/"])
+            .output()
+            .ok()
+            .and_then(|output| {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let lines: Vec<&str> = stdout.lines().collect();
+                if lines.len() > 1 {
+                    let parts: Vec<&str> = lines[1].split_whitespace().collect();
+                    if parts.len() >= 4 {
+                        let used_kb = parts[2].parse::<f64>().ok()?;
+                        let avail_kb = parts[3].parse::<f64>().ok()?;
+                        return Some(serde_json::json!({
+                            "used": used_kb / 1024.0 / 1024.0,
+                            "free": avail_kb / 1024.0 / 1024.0,
+                            "total": (used_kb + avail_kb) / 1024.0 / 1024.0
+                        }));
+                    }
+                }
+                None
+            })
+            .unwrap_or_else(|| serde_json::json!({"used": 0, "free": 0, "total": 0}))
+    } else if cfg!(target_os = "windows") {
+        Command::new("wmic")
+            .args(["logicaldisk", "get", "size,freespace,caption"])
+            .output()
+            .ok()
+            .and_then(|output| {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let lines: Vec<&str> = stdout.lines().collect();
+                if lines.len() > 1 {
+                    let parts: Vec<&str> = lines[1].split_whitespace().collect();
+                    if parts.len() >= 2 {
+                        let free_bytes = parts[1].parse::<f64>().ok()?;
+                        let total_bytes = parts[2].parse::<f64>().ok()?;
+                        return Some(serde_json::json!({
+                            "free": free_bytes / 1024.0 / 1024.0 / 1024.0,
+                            "total": total_bytes / 1024.0 / 1024.0 / 1024.0,
+                            "used": (total_bytes - free_bytes) / 1024.0 / 1024.0 / 1024.0
+                        }));
+                    }
+                }
+                None
+            })
+            .unwrap_or_else(|| serde_json::json!({"used": 0, "free": 0, "total": 0}))
+    } else {
+        serde_json::json!({"used": 0, "free": 0, "total": 0})
+    };
+    
+    Ok(serde_json::json!({
+        "loadAvg": load_avg,
+        "disk": disk
+    }))
+}
+
+#[tauri::command]
 async fn list_migration_files(project_path: String) -> Result<Vec<serde_json::Value>, String> {
     let migrations_path = std::path::Path::new(&project_path).join("migrations");
     
@@ -160,7 +229,8 @@ pub fn run() {
         rename_file,
         open_in_editor,
         open_folder,
-        list_migration_files
+        list_migration_files,
+        get_system_metrics
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
