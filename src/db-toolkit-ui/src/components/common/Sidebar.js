@@ -50,7 +50,7 @@ function Sidebar() {
       <aside
         className={`
           fixed md:static inset-y-0 left-0 z-40
-          w-64 md:w-56 lg:w-64
+          w-64 md:w-full
           bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white
           h-screen flex flex-col border-r border-gray-200 dark:border-gray-900
           transform transition-transform duration-300 ease-in-out
