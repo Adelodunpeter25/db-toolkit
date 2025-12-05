@@ -56,7 +56,12 @@ function DataExplorerPage() {
 
   useEffect(() => {
     if (connectionId) {
-      fetchSchemaTree();
+      alert(`Fetching schema for connection: ${connectionId}`);
+      fetchSchemaTree().then(() => {
+        alert('Schema fetch complete');
+      }).catch(err => {
+        alert(`Schema fetch error: ${err.message}`);
+      });
     }
   }, [connectionId, fetchSchemaTree]);
 
