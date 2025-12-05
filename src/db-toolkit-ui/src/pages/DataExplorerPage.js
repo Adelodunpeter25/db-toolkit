@@ -148,18 +148,15 @@ function DataExplorerPage() {
     try {
       const rowId = { [columns[0]]: row[0] };
       const response = await api.put(`/connections/${connectionId}/data/row`, {
+        table: selectedTable.table,
         schema_name: selectedTable.schema,
-        table_name: selectedTable.table,
-        column_name: column,
-        row_identifier: rowId,
-        new_value: newValue,
+        primary_key: rowId,
+        changes: { [column]: newValue },
       });
       
-      if (response.data.success) {
-        toast.success('Cell updated successfully');
-        // Refresh data to show updated value
-        loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, sortColumn, sortOrder, filters);
-      }
+      toast.success('Cell updated successfully');
+      // Refresh data to show updated value
+      loadTableData(selectedTable.schema, selectedTable.table, page * pageSize, sortColumn, sortOrder, filters);
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Failed to update cell');
       throw err;
