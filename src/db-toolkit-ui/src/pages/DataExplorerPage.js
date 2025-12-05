@@ -25,7 +25,7 @@ function DataExplorerPage() {
   const [connectionId, setConnectionId] = useState(null);
   const [connectionName, setConnectionName] = useState('');
   const [connecting, setConnecting] = useState(null);
-  const { schema, loading: schemaLoading, fetchSchemaTree } = useSchema(connectionId);
+  const { schema, loading: schemaLoading, error: schemaError, fetchSchemaTree } = useSchema(connectionId);
   const [selectedTable, setSelectedTable] = useState(null);
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -48,7 +48,7 @@ function DataExplorerPage() {
       setConnectionName(conn?.name || '');
       toast.success('Connected successfully');
     } catch (err) {
-      toast.error('Failed to connect');
+      toast.error(err.message || 'Failed to connect');
     } finally {
       setConnecting(null);
     }
@@ -56,12 +56,15 @@ function DataExplorerPage() {
 
   useEffect(() => {
     if (connectionId) {
-      fetchSchemaTree().catch(err => {
-        console.error('Schema fetch failed:', err);
+      console.log('DataExplorer: Fetching schema for connection:', connectionId);
+      fetchSchemaTree(false).then(() => {
+        console.log('DataExplorer: Schema loaded successfully');
+      }).catch(err => {
+        console.error('DataExplorer: Schema fetch failed:', err);
         toast.error(`Failed to load schema: ${err.message}`);
       });
     }
-  }, [connectionId, fetchSchemaTree, toast]);
+  }, [connectionId]);
 
   const loadTableData = async (schema, table, offset = 0, sort = null, order = 'ASC', filterData = {}) => {
     setLoading(true);
