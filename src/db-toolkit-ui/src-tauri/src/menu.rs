@@ -145,6 +145,18 @@ pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Er
 }
 
 pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) {
+    let event_id = event.id().as_ref();
+    
+    // Handle About dialog directly in Rust
+    if event_id == "about" {
+        use tauri_plugin_dialog::DialogExt;
+        let _ = app.dialog()
+            .message("DB Toolkit\n\nVersion: 0.1.0\nA modern database management tool\n\nBuilt with Tauri, React, and Python FastAPI\n\n© 2025 DB Toolkit")
+            .title("About DB Toolkit")
+            .blocking_show();
+        return;
+    }
+    
     let window = app.get_webview_window("main").unwrap();
-    let _ = window.emit("menu-action", event.id().as_ref());
+    let _ = window.emit("menu-action", event_id);
 }
