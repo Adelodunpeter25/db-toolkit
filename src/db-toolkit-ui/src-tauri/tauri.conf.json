@@ -33,9 +33,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": [
-      "../resources/backend/**"
-    ],
     "category": "DeveloperTool",
     "shortDescription": "Modern database management tool",
     "longDescription": "A modern, cross-platform desktop database management application."
