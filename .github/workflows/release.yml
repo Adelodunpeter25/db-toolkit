@@ -121,6 +121,18 @@ jobs:
           echo "Verifying resources directory exists:"
           ls -la ../../../resources/backend/ | head -5
       
+      - name: Debug paths before build
+        working-directory: src/db-toolkit-ui/src-tauri
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Checking ../../../resources/backend:"
+          ls -la ../../../resources/backend/ | head -5 || echo "Not found"
+          echo "Checking ../../resources/backend:"
+          ls -la ../../resources/backend/ | head -5 || echo "Not found"
+          echo "Checking ../resources/backend:"
+          ls -la ../resources/backend/ | head -5 || echo "Not found"
+      
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
