@@ -1,12 +1,11 @@
-const { app } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
-const fs = require('fs');
+const fsSync = require('fs');
 
 let backendProcess = null;
 let backendPort = null;
 
-function startBackend() {
+function startBackend(app) {
   return new Promise((resolve, reject) => {
     const isDev = !app.isPackaged;
     const backendPath = isDev
@@ -28,7 +27,7 @@ function startBackend() {
       if (match) {
         backendPort = parseInt(match[1]);
         const portFile = path.join(app.getPath('userData'), 'backend-port.txt');
-        fs.writeFileSync(portFile, backendPort.toString());
+        fsSync.writeFileSync(portFile, backendPort.toString());
         console.log('Backend started on port:', backendPort);
         resolve(backendPort);
       }

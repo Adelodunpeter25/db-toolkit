@@ -1,4 +1,4 @@
-const { Menu, dialog, shell, ipcMain } = require('electron');
+const { Menu, dialog, shell } = require('electron');
 const { checkForUpdates } = require('./updater');
 
 let currentTheme = 'light';

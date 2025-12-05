@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const os = require('os');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const { exec } = require('child_process');
 const { createMenu, updateRecentConnections } = require('./menu');
 const { startBackend, stopBackend, getBackendPort } = require('./backend');
@@ -153,7 +154,7 @@ ipcMain.handle('get-system-metrics', async () => {
 
 app.whenReady().then(async () => {
   try {
-    await startBackend();
+    await startBackend(app);
     const mainWindow = createWindow();
     createMenu(mainWindow);
   } catch (err) {
