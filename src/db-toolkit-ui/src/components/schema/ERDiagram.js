@@ -139,36 +139,31 @@ export function ERDiagram({ schema, onClose }) {
     fitView({ padding: 0.2, duration: 300 });
   }, [onPaneClick, fitView]);
 
-  // Export diagram as SVG (instant, vector format)
-  const exportToPng = useCallback(() => {
-    const svgElement = document.querySelector('.react-flow__renderer svg');
+  // Export diagram as PNG (optimized)
+  const exportToPng = useCallback(async () => {
+    const flowElement = document.querySelector('.react-flow__viewport');
     
-    if (!svgElement) {
+    if (!flowElement) {
       alert('Unable to export. Please try browser screenshot instead.');
       return;
     }
 
     try {
-      // Clone SVG to avoid modifying original
-      const clonedSvg = svgElement.cloneNode(true);
+      const { toBlob } = await import('html-to-image');
       const isDark = document.documentElement.classList.contains('dark');
       
-      // Set background
-      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      rect.setAttribute('width', '100%');
-      rect.setAttribute('height', '100%');
-      rect.setAttribute('fill', isDark ? '#111827' : '#ffffff');
-      clonedSvg.insertBefore(rect, clonedSvg.firstChild);
+      const blob = await toBlob(flowElement, {
+        backgroundColor: isDark ? '#111827' : '#ffffff',
+        pixelRatio: 1,
+        cacheBust: false,
+        skipFonts: true,
+      });
       
-      // Get SVG string
-      const serializer = new XMLSerializer();
-      const svgString = serializer.serializeToString(clonedSvg);
-      const blob = new Blob([svgString], { type: 'image/svg+xml' });
+      if (!blob) throw new Error('Failed to create image');
+      
       const url = URL.createObjectURL(blob);
-      
-      // Download
       const link = document.createElement('a');
-      link.download = `er-diagram-${Date.now()}.svg`;
+      link.download = `er-diagram-${Date.now()}.png`;
       link.href = url;
       link.click();
       
@@ -243,7 +238,7 @@ export function ERDiagram({ schema, onClose }) {
             icon={<Download size={16} />}
             onClick={exportToPng}
           >
-            Export SVG
+            Export PNG
           </Button>
           <Button
             variant="secondary"
