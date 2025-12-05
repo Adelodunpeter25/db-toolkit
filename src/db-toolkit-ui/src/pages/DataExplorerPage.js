@@ -90,6 +90,8 @@ function DataExplorerPage() {
   };
 
   const handleSelectTable = (schema, table) => {
+    console.log('Selected table:', { schema, table });
+    console.log('Schema structure:', JSON.stringify(schema, null, 2));
     setSelectedTable({ schema, table });
     setPage(0);
     setSortColumn(null);
