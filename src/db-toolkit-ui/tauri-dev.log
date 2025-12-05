@@ -1,15 +1,0 @@
-
-> db-toolkit@0.1.0 dev
-> tauri dev
-
-    Running BeforeDevCommand (`vite`)
-    Warn Waiting for your frontend dev server to start on http://localhost:5173/...
-
-  VITE v7.2.2  ready in 2394 ms
-
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-    Info Watching /Users/peteradelodun/Documents/python-projects/db-toolkit/src/db-toolkit-ui/src-tauri for changes...
-[1m[92m   Compiling[0m db-toolkit v0.1.0 (/Users/peteradelodun/Documents/python-projects/db-toolkit/src/db-toolkit-ui/src-tauri)
-[1m[96m    Building[0m [=======================> ] 476/479: db-toolkit(build)           [1m[96m    Building[0m [=======================> ] 477/479: db-toolkit                      Info File src-tauri/src/lib.rs changed. Rebuilding application...
-[1m[96m       Fetch[0m [==>                              ] 0 complete; 0 pending        

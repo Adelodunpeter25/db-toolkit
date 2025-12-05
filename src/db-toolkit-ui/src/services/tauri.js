@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 export const tauri = {
   getSystemMetrics: () => invoke('get_system_metrics'),
@@ -13,7 +14,8 @@ export const tauri = {
   listMigrationFiles: (projectPath) => invoke('list_migration_files', { projectPath }),
   
   onMenuAction: (callback) => {
-    return listen('menu-action', (event) => {
+    const webview = getCurrentWebviewWindow();
+    return webview.listen('menu-action', (event) => {
       callback(event.payload);
     });
   },
