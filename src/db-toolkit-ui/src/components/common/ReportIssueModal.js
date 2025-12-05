@@ -66,28 +66,16 @@ export function ReportIssueModal({ isOpen, onClose }) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Issue Type
             </label>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { value: 'bug', label: 'Bug Report', icon: <Bug size={20} /> },
-                { value: 'feature', label: 'Feature Request', icon: <Lightbulb size={20} /> },
-                { value: 'question', label: 'Question', icon: <HelpCircle size={20} /> },
-                { value: 'documentation', label: 'Documentation', icon: <FileText size={20} /> }
-              ].map((type) => (
-                <button
-                  key={type.value}
-                  type="button"
-                  onClick={() => setIssueType(type.value)}
-                  className={`flex items-center gap-2 px-4 py-3 border rounded-lg transition ${
-                    issueType === type.value
-                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-gray-100'
-                  }`}
-                >
-                  {type.icon}
-                  <span className="text-sm font-medium">{type.label}</span>
-                </button>
-              ))}
-            </div>
+            <select
+              value={issueType}
+              onChange={(e) => setIssueType(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            >
+              <option value="bug">🐛 Bug Report</option>
+              <option value="feature">💡 Feature Request</option>
+              <option value="question">❓ Question</option>
+              <option value="documentation">📄 Documentation</option>
+            </select>
           </div>
 
           <div>
