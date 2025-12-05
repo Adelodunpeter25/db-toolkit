@@ -48,9 +48,16 @@ export function ThemeProvider({ children }) {
     setSettingsTheme(newTheme);
   };
 
-  const toggleTheme = () => {
+  const toggleTheme = async () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setSettingsTheme(newTheme);
+    
+    // Save to backend
+    try {
+      await settingsAPI.update({ theme: newTheme });
+    } catch (err) {
+      console.error('Failed to save theme:', err);
+    }
     
     // Notify Electron immediately
     if (window.electron?.sendThemeChange) {
