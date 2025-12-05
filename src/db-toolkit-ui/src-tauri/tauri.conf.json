@@ -1,13 +1,13 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "db-toolkit",
+  "productName": "DB Toolkit",
   "version": "0.1.0",
   "identifier": "com.dbtoolkit.app",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeDevCommand": "vite",
+    "beforeBuildCommand": "vite build"
   },
   "app": {
     "windows": [
@@ -32,6 +32,12 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": [
+      "../resources/backend/**"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "Modern database management tool",
+    "longDescription": "A modern, cross-platform desktop database management application."
   }
 }

@@ -9,17 +9,10 @@
   },
   "homepage": "https://github.com/Adelodunpeter25/db-toolkit",
   "private": true,
-  "main": "electron/main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "electron": "electron .",
-    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "tauri": "tauri",
-    "tauri-dev": "tauri dev",
-    "tauri-build": "tauri build",
-    "package": "npm run build && tauri build"
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -45,97 +38,8 @@
     "@tauri-apps/cli": "^2.1.0",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.16",
-    "concurrently": "^8.2.2",
-    "electron": "^39.2.1",
-    "electron-builder": "^26.0.12",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
-    "vite": "^7.2.2",
-    "wait-on": "^7.2.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "build": {
-    "appId": "com.dbtoolkit.app",
-    "productName": "DB Toolkit",
-    "files": [
-      "dist/**/*",
-      "electron/**/*",
-      "build/icons/**/*",
-      "resources/backend/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "resources/backend",
-        "to": "backend",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "directories": {
-      "buildResources": "build",
-      "output": "release"
-    },
-    "mac": {
-      "icon": "build/icons/icon.icns",
-      "category": "public.app-category.developer-tools",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "minimumSystemVersion": "10.13",
-      "artifactName": "${productName}-mac-${arch}.${ext}"
-    },
-    "win": {
-      "icon": "build/icons/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "artifactName": "${productName}-win-${arch}.${ext}"
-    },
-    "linux": {
-      "icon": "build/icons/icon.png",
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "artifactName": "${productName}-linux.${ext}"
-    }
+    "vite": "^7.2.2"
   }
 }
