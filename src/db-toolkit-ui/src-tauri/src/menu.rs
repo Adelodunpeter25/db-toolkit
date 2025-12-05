@@ -180,17 +180,13 @@ pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) 
         return;
     }
     
-    // Handle About window
+    // Handle About dialog
     if event_id == "about" {
-        use tauri::{WebviewUrl, WebviewWindowBuilder};
-        let _ = WebviewWindowBuilder::new(app, "about", WebviewUrl::App("about.html".into()))
+        use tauri_plugin_dialog::DialogExt;
+        let _ = app.dialog()
+            .message("DB Toolkit\n\nVersion: 0.1.0\nA modern database management tool\n\n© 2025 DB Toolkit")
             .title("About DB Toolkit")
-            .inner_size(350.0, 300.0)
-            .resizable(false)
-            .minimizable(false)
-            .maximizable(false)
-            .center()
-            .build();
+            .blocking_show();
         return;
     }
     
