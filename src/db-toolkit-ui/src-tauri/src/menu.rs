@@ -151,7 +151,7 @@ pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) 
     if event_id == "about" {
         use tauri_plugin_dialog::DialogExt;
         let _ = app.dialog()
-            .message("DB Toolkit\n\nVersion: 0.1.0\nA modern database management tool\n\nBuilt with Tauri, React, and Python FastAPI\n\n© 2025 DB Toolkit")
+            .message("DB Toolkit\n\nVersion: 0.1.0\nA modern database management tool\n\n© 2025 DB Toolkit")
             .title("About DB Toolkit")
             .blocking_show();
         return;

@@ -1,5 +1,5 @@
 [package]
-name = "DB Toolkit"
+name = "db-toolkit"
 version = "0.1.0"
 description = "Modern cross-platform database management application"
 authors = ["Peter Adelodun <adelodunpeter24@gmail.com>"]
