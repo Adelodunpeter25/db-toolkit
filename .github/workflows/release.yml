@@ -79,9 +79,14 @@ jobs:
         run: npm ci
       
       - name: Update tauri.conf.json with backend resources
+        working-directory: src/db-toolkit-ui/src-tauri
+        shell: bash
         run: |
-          cd src/db-toolkit-ui/src-tauri
-          sed -i.bak 's/"icon": \[/"resources": ["...\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+          if [ "$RUNNER_OS" == "macOS" ] || [ "$RUNNER_OS" == "Linux" ]; then
+            sed -i.bak 's/"icon": \[/"resources": ["..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+          else
+            sed -i 's/"icon": \[/"resources": ["..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+          fi
       
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
