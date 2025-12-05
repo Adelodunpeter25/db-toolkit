@@ -24,7 +24,7 @@ async fn select_folder(app: tauri::AppHandle) -> Result<Option<String>, String> 
         .file()
         .blocking_pick_folder();
     
-    Ok(folder.map(|p| p.as_path().unwrap().to_string_lossy().to_string()))
+    Ok(folder.map(|p| p.to_string()))
 }
 
 #[tauri::command]
