@@ -4,6 +4,8 @@ use std::io::{BufRead, BufReader};
 use std::thread;
 use tauri::Manager;
 
+mod menu;
+
 struct BackendState {
     process: Mutex<Option<Child>>,
     port: Mutex<Option<u16>>,
@@ -219,6 +221,10 @@ pub fn run() {
               eprintln!("Failed to start backend: {}", e);
           }
       });
+      
+      let menu = menu::create_menu(&app.handle())?;
+      app.set_menu(menu)?;
+      app.on_menu_event(menu::handle_menu_event);
       
       Ok(())
     })
