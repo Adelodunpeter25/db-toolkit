@@ -66,8 +66,10 @@ jobs:
         run: |
           pip install uv
           cd src/db-toolkit
-          uv pip install --system pyinstaller
-          uv pip install --system -e .
+          uv venv
+          source .venv/bin/activate || . .venv/Scripts/activate
+          uv pip install pyinstaller
+          uv pip install -e .
           pyinstaller build.spec
           echo "Checking build output:"
           ls -la dist/
