@@ -62,12 +62,22 @@ jobs:
           echo "ISSUE_EMAIL=${{ secrets.ISSUE_EMAIL }}" >> .env
       
       - name: Install uv and build Python backend
+        shell: bash
         run: |
           pip install uv
           cd src/db-toolkit
           uv pip install --system pyinstaller
           uv pip install --system -e .
           pyinstaller build.spec
+          echo "Checking build output:"
+          ls -la dist/
+          if [ -d "dist/db-toolkit-backend" ]; then
+            echo "Backend built successfully"
+            ls -la dist/db-toolkit-backend/
+          else
+            echo "ERROR: Backend build failed - dist/db-toolkit-backend not found"
+            exit 1
+          fi
       
       - name: Copy backend to resources
         shell: bash
