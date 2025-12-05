@@ -84,15 +84,15 @@ jobs:
       - name: Copy backend to resources
         shell: bash
         run: |
-          echo "Creating resources directory..."
-          mkdir -p src/db-toolkit-ui/resources/backend
+          echo "Creating resources directory relative to src-tauri..."
+          mkdir -p resources/backend
           echo "Checking backend build output..."
           ls -la src/db-toolkit/dist/ || echo "dist directory not found"
           if [ -d "src/db-toolkit/dist/db-toolkit-backend" ]; then
             echo "Copying backend files..."
-            cp -r src/db-toolkit/dist/db-toolkit-backend/* src/db-toolkit-ui/resources/backend/
+            cp -r src/db-toolkit/dist/db-toolkit-backend/* resources/backend/
             echo "Backend copied successfully:"
-            ls -la src/db-toolkit-ui/resources/backend/
+            ls -la resources/backend/
           else
             echo "ERROR: Backend build directory not found at src/db-toolkit/dist/db-toolkit-backend"
             echo "Contents of src/db-toolkit/:"
@@ -111,9 +111,9 @@ jobs:
           echo "Before sed:"
           grep -A2 '"icon":' tauri.conf.json
           if [ "$RUNNER_OS" == "macOS" ] || [ "$RUNNER_OS" == "Linux" ]; then
-            sed -i.bak 's/"icon": \[/"resources": ["..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+            sed -i.bak 's/"icon": \[/"resources": ["..\/..\/..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
           else
-            sed -i 's/"icon": \[/"resources": ["..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+            sed -i 's/"icon": \[/"resources": ["..\/..\/..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
           fi
           echo "After sed:"
           grep -A2 '"icon":' tauri.conf.json
