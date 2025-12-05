@@ -5,46 +5,29 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-  release:
-    types: [created]
 
 permissions:
   contents: write
 
 jobs:
-  create-release:
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-
-  build-and-upload:
-    needs: create-release
+  publish-tauri:
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        include:
+          - platform: 'macos-latest'
+            args: '--target universal-apple-darwin'
+          - platform: 'ubuntu-22.04'
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
     
-    runs-on: ${{ matrix.os }}
-    continue-on-error: true
+    runs-on: ${{ matrix.platform }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -53,47 +36,30 @@ jobs:
           cache: 'npm'
           cache-dependency-path: src/db-toolkit-ui/package-lock.json
       
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
         with:
-          python-version: '3.11'
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
       
       - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y libarchive-tools
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       
       - name: Install frontend dependencies
         working-directory: src/db-toolkit-ui
-        run: |
-          npm config set fetch-retry-mintimeout 20000
-          npm config set fetch-retry-maxtimeout 120000
-          npm ci --prefer-offline --no-audit
+        run: npm ci
+      
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
         env:
-          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
-          ELECTRON_CUSTOM_DIR: '{{ version }}'
-      
-      - name: Build for macOS
-        if: matrix.os == 'macos-latest'
-        working-directory: src/db-toolkit-ui
-        run: npm run package:mac
-      
-      - name: Build for Windows
-        if: matrix.os == 'windows-latest'
-        working-directory: src/db-toolkit-ui
-        run: npm run package:win
-      
-      - name: Build for Linux
-        if: matrix.os == 'ubuntu-latest'
-        working-directory: src/db-toolkit-ui
-        run: npm run package:linux
-      
-      - name: Upload Release Assets
-        if: always()
-        uses: softprops/action-gh-release@v1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            src/db-toolkit-ui/release/*.dmg
-            src/db-toolkit-ui/release/*.zip
-            src/db-toolkit-ui/release/*.exe
-            src/db-toolkit-ui/release/*.AppImage
-            src/db-toolkit-ui/release/*.deb
+          projectPath: src/db-toolkit-ui
+          tagName: ${{ github.ref_name }}
+          releaseName: 'DB Toolkit ${{ github.ref_name }}'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
