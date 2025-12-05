@@ -54,13 +54,12 @@ jobs:
       
       - name: Create .env file for backend
         working-directory: src/db-toolkit
+        shell: bash
         run: |
-          cat > .env << EOF
-          CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}
-          RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
-          ISSUE_EMAIL=${{ secrets.ISSUE_EMAIL }}
-          EOF
+          echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" > .env
+          echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> .env
+          echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> .env
+          echo "ISSUE_EMAIL=${{ secrets.ISSUE_EMAIL }}" >> .env
       
       - name: Install uv and build Python backend
         run: |
