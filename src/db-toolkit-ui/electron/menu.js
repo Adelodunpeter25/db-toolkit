@@ -58,6 +58,12 @@ function createMenu(mainWindow) {
         },
         { type: 'separator' },
         {
+          label: 'Preferences',
+          accelerator: 'CmdOrCtrl+,',
+          click: () => mainWindow.webContents.send('menu-action', 'preferences')
+        },
+        { type: 'separator' },
+        {
           label: 'Recent Connections',
           submenu: recentConnections.length > 0 
             ? recentConnections.map(conn => ({
@@ -65,12 +71,6 @@ function createMenu(mainWindow) {
                 click: () => mainWindow.webContents.send('menu-action', 'connect-recent', conn.id)
               }))
             : [{ label: 'No recent connections', enabled: false }]
-        },
-        { type: 'separator' },
-        {
-          label: 'Preferences',
-          accelerator: 'CmdOrCtrl+,',
-          click: () => mainWindow.webContents.send('menu-action', 'preferences')
         }
       ]
     },
