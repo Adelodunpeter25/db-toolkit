@@ -242,7 +242,7 @@ function QueryPage() {
                   />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="h-full overflow-hidden">
                   <QueryResultsPanel
                     connectionId={connectionId}
                     result={result}
@@ -254,7 +254,7 @@ function QueryPage() {
               </Split>
             </div>
             
-            <div className="flex flex-col h-full">
+            <div className="h-full overflow-hidden">
               <AiAssistant
                 connectionId={connectionId}
                 currentQuery={query}
@@ -295,7 +295,7 @@ function QueryPage() {
                 />
               </div>
 
-              <div className="flex flex-col">
+              <div className="h-full overflow-hidden">
                 <QueryResultsPanel
                   connectionId={connectionId}
                   result={result}
