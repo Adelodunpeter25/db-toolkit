@@ -69,6 +69,11 @@ jobs:
         working-directory: src/db-toolkit-ui
         run: npm ci
       
+      - name: Update tauri.conf.json with backend resources
+        run: |
+          cd src/db-toolkit-ui/src-tauri
+          sed -i.bak 's/"icon": \[/"resources": ["...\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+      
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
