@@ -180,13 +180,17 @@ pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) 
         return;
     }
     
-    // Handle About dialog directly in Rust
+    // Handle About window
     if event_id == "about" {
-        use tauri_plugin_dialog::DialogExt;
-        let _ = app.dialog()
-            .message("DB Toolkit\n\nVersion: 0.1.0\nA modern database management tool\n\n© 2025 DB Toolkit")
+        use tauri::{WebviewUrl, WebviewWindowBuilder};
+        let _ = WebviewWindowBuilder::new(app, "about", WebviewUrl::App("about.html".into()))
             .title("About DB Toolkit")
-            .blocking_show();
+            .inner_size(350.0, 300.0)
+            .resizable(false)
+            .minimizable(false)
+            .maximizable(false)
+            .center()
+            .build();
         return;
     }
     
