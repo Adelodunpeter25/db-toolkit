@@ -13,6 +13,7 @@ pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Er
             true,
             &[
                 &MenuItem::with_id(app, "about", "About DB Toolkit", true, None::<&str>)?,
+                &MenuItem::with_id(app, "check-updates", "Check for Updates...", true, None::<&str>)?,
                 &PredefinedMenuItem::separator(app)?,
                 &PredefinedMenuItem::services(app, None)?,
                 &PredefinedMenuItem::separator(app)?,
@@ -130,6 +131,8 @@ pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Er
             &MenuItem::with_id(app, "documentation", "Documentation", true, Some("F1"))?,
             &MenuItem::with_id(app, "keyboard-shortcuts", "Keyboard Shortcuts", true, Some("CmdOrCtrl+/"))?,
             &MenuItem::with_id(app, "report-issue", "Report Issue", true, None::<&str>)?,
+            &PredefinedMenuItem::separator(app)?,
+            &MenuItem::with_id(app, "check-updates", "Check for Updates", true, None::<&str>)?,
         ],
     )?;
     
@@ -146,6 +149,36 @@ pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Er
 
 pub fn handle_menu_event(app: &tauri::AppHandle, event: tauri::menu::MenuEvent) {
     let event_id = event.id().as_ref();
+    
+    // Handle Check for Updates
+    if event_id == "check-updates" {
+        let app_clone = app.clone();
+        tauri::async_runtime::spawn(async move {
+            use tauri_plugin_updater::UpdaterExt;
+            if let Ok(updater) = app_clone.updater_builder().build() {
+                match updater.check().await {
+                    Ok(Some(update)) => {
+                        let _ = update.download_and_install(|_, _| {}, || {}).await;
+                    }
+                    Ok(None) => {
+                        use tauri_plugin_dialog::DialogExt;
+                        let _ = app_clone.dialog()
+                            .message("You're up to date!\n\nDB Toolkit 0.1.0 is the latest version.")
+                            .title("No Updates")
+                            .blocking_show();
+                    }
+                    Err(_) => {
+                        use tauri_plugin_dialog::DialogExt;
+                        let _ = app_clone.dialog()
+                            .message("Unable to check for updates.\n\nPlease check your internet connection and try again.")
+                            .title("Update Check Failed")
+                            .blocking_show();
+                    }
+                }
+            }
+        });
+        return;
+    }
     
     // Handle About dialog directly in Rust
     if event_id == "about" {

@@ -61,6 +61,22 @@ async fn open_folder(folder_path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+async fn check_for_updates(app: tauri::AppHandle) -> Result<(), String> {
+    use tauri_plugin_updater::UpdaterExt;
+    
+    let updater = app.updater_builder().build().map_err(|e| e.to_string())?;
+    
+    match updater.check().await {
+        Ok(Some(update)) => {
+            let _ = update.download_and_install(|_, _| {}, || {}).await;
+            Ok(())
+        }
+        Ok(None) => Ok(()),
+        Err(e) => Err(e.to_string())
+    }
+}
+
+#[tauri::command]
 async fn get_system_metrics() -> Result<serde_json::Value, String> {
     use std::process::Command;
     
@@ -227,6 +243,7 @@ pub fn run() {
       
       app.handle().plugin(tauri_plugin_dialog::init())?;
       app.handle().plugin(tauri_plugin_shell::init())?;
+      app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
       
       let app_handle = app.handle().clone();
       thread::spawn(move || {
@@ -261,7 +278,8 @@ pub fn run() {
         open_in_editor,
         open_folder,
         list_migration_files,
-        get_system_metrics
+        get_system_metrics,
+        check_for_updates
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

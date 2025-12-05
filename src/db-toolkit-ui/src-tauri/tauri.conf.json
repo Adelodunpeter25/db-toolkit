@@ -27,6 +27,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Peter Adelodun",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -37,5 +38,15 @@
     "category": "DeveloperTool",
     "shortDescription": "Modern database management tool",
     "longDescription": "A modern, cross-platform desktop database management application."
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://github.com/Adelodunpeter25/db-toolkit/releases/latest/download/latest.json"
+      ],
+      "dialog": true,
+      "pubkey": ""
+    }
   }
 }

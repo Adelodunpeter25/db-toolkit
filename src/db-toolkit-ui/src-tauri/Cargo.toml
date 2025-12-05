@@ -8,8 +8,6 @@ repository = "https://github.com/Adelodunpeter25/db-toolkit"
 edition = "2021"
 rust-version = "1.77.2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [lib]
 name = "db_toolkit_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
@@ -25,4 +23,5 @@ tauri = { version = "2.1.0", features = [] }
 tauri-plugin-log = "2.0.0-rc"
 tauri-plugin-dialog = "2.0.0-rc"
 tauri-plugin-shell = "2.0.0-rc"
+tauri-plugin-updater = "2.0.0-rc"
 opener = "0.7"
