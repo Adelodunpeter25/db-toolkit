@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { X, Github } from 'lucide-react';
+import { X, Bug, Lightbulb, HelpCircle, FileText, Github} from 'lucide-react';
 import { Button } from './Button';
+import { useToast } from '../../contexts/ToastContext';
 
 export function ReportIssueModal({ isOpen, onClose }) {
   const [title, setTitle] = useState('');
@@ -9,11 +10,44 @@ export function ReportIssueModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    const body = `**Issue Type:** ${issueType}\n\n**Description:**\n${description}\n\n**Environment:**\n- OS: ${navigator.platform}\n- Version: 0.1.0`;
-    const url = `https://github.com/yourusername/db-toolkit/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
-    window.open(url, '_blank');
-    onClose();
+  const toast = useToast();
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('http://localhost:8001/api/v1/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          description,
+          issue_type: issueType,
+          environment: {
+            os: navigator.platform,
+            version: '0.1.0',
+            user_agent: navigator.userAgent
+          }
+        })
+      });
+      
+      if (response.ok) {
+        toast.success('Issue submitted successfully');
+        setTitle('');
+        setDescription('');
+        setIssueType('bug');
+        onClose();
+      } else {
+        toast.error('Failed to submit issue');
+      }
+    } catch (err) {
+      toast.error('Failed to submit issue');
+    }
+  };
+
+  const issueTypeIcons = {
+    bug: <Bug size={16} className="text-red-500" />,
+    feature: <Lightbulb size={16} className="text-yellow-500" />,
+    question: <HelpCircle size={16} className="text-blue-500" />,
+    documentation: <FileText size={16} className="text-green-500" />
   };
 
   return (
@@ -39,16 +73,28 @@ export function ReportIssueModal({ isOpen, onClose }) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Issue Type
             </label>
-            <select
-              value={issueType}
-              onChange={(e) => setIssueType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-            >
-              <option value="bug">Bug Report</option>
-              <option value="feature">Feature Request</option>
-              <option value="question">Question</option>
-              <option value="documentation">Documentation</option>
-            </select>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'bug', label: 'Bug Report', icon: <Bug size={20} /> },
+                { value: 'feature', label: 'Feature Request', icon: <Lightbulb size={20} /> },
+                { value: 'question', label: 'Question', icon: <HelpCircle size={20} /> },
+                { value: 'documentation', label: 'Documentation', icon: <FileText size={20} /> }
+              ].map((type) => (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => setIssueType(type.value)}
+                  className={`flex items-center gap-2 px-4 py-3 border rounded-lg transition ${
+                    issueType === type.value
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                  }`}
+                >
+                  {type.icon}
+                  <span className="text-sm font-medium">{type.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>

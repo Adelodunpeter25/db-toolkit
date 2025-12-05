@@ -39,6 +39,7 @@ from core.routes.analytics import router as analytics_router
 from core.routes.cache import router as cache_router
 from core.routes.ai.query_ai import router as query_ai_router
 from core.routes.ai.schema_ai import router as schema_ai_router
+from core.routes.issues import router as issues_router
 from ws.websocket import websocket_backups
 from ws.terminal import websocket_terminal
 from ws.migrator import websocket_migrator
@@ -77,6 +78,7 @@ app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["Analytic
 app.include_router(cache_router, prefix="/api/v1", tags=["Cache"])
 app.include_router(query_ai_router, prefix="/api/v1/ai/query", tags=["AI Query"])
 app.include_router(schema_ai_router, prefix="/api/v1/ai/schema", tags=["AI Schema"])
+app.include_router(issues_router, prefix="/api/v1", tags=["Issues"])
 
 # WebSocket routes
 app.websocket("/ws/backups")(websocket_backups)
