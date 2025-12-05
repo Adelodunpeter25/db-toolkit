@@ -1,27 +1,27 @@
 [package]
-name = "app"
+name = "db-toolkit"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+description = "Modern cross-platform database management application"
+authors = ["Peter Adelodun <adelodunpeter24@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/Adelodunpeter25/db-toolkit"
 edition = "2021"
 rust-version = "1.77.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "app_lib"
+name = "db_toolkit_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.2" }
+tauri-build = { version = "2.0.2", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
-tauri = { version = "2.1.0" }
+tauri = { version = "2.1.0", features = [] }
 tauri-plugin-log = "2.0.0-rc"
 tauri-plugin-dialog = "2.0.0-rc"
 tauri-plugin-shell = "2.0.0-rc"
