@@ -34,9 +34,16 @@ const defaultEdgeOptions = {
 };
 
 export function ERDiagram({ schema, onClose }) {
-  const [layoutDirection, setLayoutDirection] = useState('LR');
+  const [layoutDirection, setLayoutDirection] = useState(() => {
+    return localStorage.getItem('er-diagram-layout') || 'LR';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const { fitView, getViewport } = useReactFlow();
+
+  // Save layout direction to localStorage
+  useEffect(() => {
+    localStorage.setItem('er-diagram-layout', layoutDirection);
+  }, [layoutDirection]);
 
   // Generate nodes and edges from schema
   const initialNodes = useMemo(() => schemaToNodes(schema), [schema]);
