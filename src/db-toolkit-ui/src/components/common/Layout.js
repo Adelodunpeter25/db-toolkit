@@ -78,6 +78,20 @@ function Layout({ children }) {
     const savedQueries = JSON.parse(localStorage.getItem('query-tabs') || '[]');
     setConnections(savedConnections);
     setQueries(savedQueries);
+    
+    // Update recent connections in menu
+    if (window.electron?.updateRecentConnections) {
+      const recent = savedConnections
+        .map(conn => ({
+          id: conn.id,
+          name: conn.name,
+          lastUsed: localStorage.getItem(`connection_time_${conn.id}`)
+        }))
+        .filter(conn => conn.lastUsed)
+        .sort((a, b) => parseInt(b.lastUsed) - parseInt(a.lastUsed))
+        .slice(0, 5);
+      window.electron.updateRecentConnections(recent);
+    }
   }, []);
 
   return (

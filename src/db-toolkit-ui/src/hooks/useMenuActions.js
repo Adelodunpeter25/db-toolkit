@@ -9,11 +9,14 @@ export function useMenuActions() {
   useEffect(() => {
     if (!window.electron?.onMenuAction) return;
 
-    const handleMenuAction = (action) => {
+    const handleMenuAction = (action, data) => {
       switch (action) {
         // File Menu
         case 'new-connection':
           navigate('/connections');
+          break;
+        case 'connect-recent':
+          navigate(`/query/${data}`);
           break;
         case 'new-query-tab':
           // Handled by QueryPage

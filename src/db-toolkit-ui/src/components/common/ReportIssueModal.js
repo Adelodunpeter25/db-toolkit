@@ -80,7 +80,7 @@ export function ReportIssueModal({ isOpen, onClose }) {
                   className={`flex items-center gap-2 px-4 py-3 border rounded-lg transition ${
                     issueType === type.value
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-gray-100'
                   }`}
                 >
                   {type.icon}

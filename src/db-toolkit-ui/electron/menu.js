@@ -2,12 +2,12 @@ const { Menu, dialog, shell, ipcMain } = require('electron');
 const { checkForUpdates } = require('./updater');
 
 let currentTheme = 'light';
+let recentConnections = [];
 
 function createMenu(mainWindow) {
   const isDev = !require('electron').app.isPackaged;
   
   const template = [
-    // DB Toolkit Menu (macOS only)
     {
       label: 'DB Toolkit',
       submenu: [
@@ -59,9 +59,12 @@ function createMenu(mainWindow) {
         { type: 'separator' },
         {
           label: 'Recent Connections',
-          submenu: [
-            { label: 'No recent connections', enabled: false }
-          ]
+          submenu: recentConnections.length > 0 
+            ? recentConnections.map(conn => ({
+                label: conn.name,
+                click: () => mainWindow.webContents.send('menu-action', 'connect-recent', conn.id)
+              }))
+            : [{ label: 'No recent connections', enabled: false }]
         }
       ]
     },
@@ -236,8 +239,20 @@ function updateThemeMenu(theme) {
   currentTheme = theme;
 }
 
+function updateRecentConnections(connections, mainWindow) {
+  recentConnections = connections.slice(0, 5);
+  createMenu(mainWindow);
+}
+
 ipcMain.on('theme-changed', (event, theme) => {
   currentTheme = theme;
 });
 
-module.exports = { createMenu, updateThemeMenu };
+ipcMain.on('update-recent-connections', (event, connections) => {
+  const mainWindow = require('electron').BrowserWindow.getFocusedWindow();
+  if (mainWindow) {
+    updateRecentConnections(connections, mainWindow);
+  }
+});
+
+module.exports = { createMenu, updateThemeMenu, updateRecentConnections };

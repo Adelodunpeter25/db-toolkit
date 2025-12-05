@@ -70,6 +70,20 @@ export function useConnections() {
       setConnectedIds(prev => new Set(prev).add(id));
       // Store connection timestamp
       localStorage.setItem(`connection_time_${id}`, Date.now().toString());
+      
+      // Update recent connections in menu
+      if (window.electron?.updateRecentConnections) {
+        const recent = connections
+          .map(conn => ({
+            id: conn.id,
+            name: conn.name,
+            lastUsed: conn.id === id ? Date.now().toString() : localStorage.getItem(`connection_time_${conn.id}`)
+          }))
+          .filter(conn => conn.lastUsed)
+          .sort((a, b) => parseInt(b.lastUsed) - parseInt(a.lastUsed))
+          .slice(0, 5);
+        window.electron.updateRecentConnections(recent);
+      }
       if (!silent) {
         const conn = connections.find(c => c.id === id);
         addNotification({
