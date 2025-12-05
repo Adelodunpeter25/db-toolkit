@@ -108,15 +108,17 @@ jobs:
         working-directory: src/db-toolkit-ui/src-tauri
         shell: bash
         run: |
-          echo "Before sed:"
-          grep -A2 '"icon":' tauri.conf.json
+          echo "Before modification:"
+          grep -A2 '"publisher"' tauri.conf.json
+          # Insert resources line after publisher line
           if [ "$RUNNER_OS" == "macOS" ] || [ "$RUNNER_OS" == "Linux" ]; then
-            sed -i.bak 's/"icon": \[/"resources": ["..\/..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+            sed -i.bak '/"publisher":/a\
+    "resources": ["../../../resources/backend/**"],' tauri.conf.json
           else
-            sed -i 's/"icon": \[/"resources": ["..\/..\/..\/resources\/backend\/**"],\n    "icon": [/' tauri.conf.json
+            sed -i '/"publisher":/a\    "resources": ["../../../resources/backend/**"],' tauri.conf.json
           fi
-          echo "After sed:"
-          grep -A2 '"icon":' tauri.conf.json
+          echo "After modification:"
+          grep -A3 '"publisher"' tauri.conf.json
           echo "Verifying resources directory exists:"
           ls -la ../../../resources/backend/ | head -5
       
