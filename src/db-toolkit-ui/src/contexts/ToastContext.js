@@ -39,13 +39,13 @@ function Toast({ toast, onClose }) {
   const icons = {
     success: <CheckCircle size={20} className="text-green-600" />,
     error: <XCircle size={20} className="text-red-600" />,
-    info: <AlertCircle size={20} className="text-blue-600" />,
+    info: <AlertCircle size={20} className="text-green-600" />,
   };
 
   const styles = {
     success: 'bg-green-50 border-green-200 dark:bg-green-900 dark:border-green-700',
     error: 'bg-red-50 border-red-200 dark:bg-red-900 dark:border-red-700',
-    info: 'bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-700',
+    info: 'bg-green-50 border-green-200 dark:bg-green-900 dark:border-green-700',
   };
 
   return (

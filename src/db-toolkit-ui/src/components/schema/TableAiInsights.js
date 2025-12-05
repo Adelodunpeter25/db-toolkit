@@ -33,14 +33,14 @@ export function TableAiInsights({ analysis, loading }) {
       )}
 
       {analysis.index_suggestions && analysis.index_suggestions.length > 0 && (
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
           <div className="flex items-start gap-2">
-            <Zap className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+            <Zap className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">Index Suggestions</h4>
+              <h4 className="text-sm font-semibold text-green-900 dark:text-green-100 mb-2">Index Suggestions</h4>
               <ul className="space-y-1">
                 {analysis.index_suggestions.map((suggestion, idx) => (
-                  <li key={idx} className="text-sm text-blue-700 dark:text-blue-300">• {suggestion}</li>
+                  <li key={idx} className="text-sm text-green-700 dark:text-green-300">• {suggestion}</li>
                 ))}
               </ul>
             </div>

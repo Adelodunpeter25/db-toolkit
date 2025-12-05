@@ -37,7 +37,7 @@ export function CurrentQueries({ queries, onKill, onViewPlan }) {
                 <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{query.pid}</td>
                 <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{query.usename || 'N/A'}</td>
                 <td className="px-4 py-2">
-                  <span className="px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  <span className="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                     {query.query_type || 'N/A'}
                   </span>
                 </td>

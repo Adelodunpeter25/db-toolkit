@@ -35,7 +35,7 @@ export function NotificationCenter() {
       case 'success': return <CheckCircle className="text-green-500" size={20} />;
       case 'error': return <AlertCircle className="text-red-500" size={20} />;
       case 'warning': return <AlertTriangle className="text-yellow-500" size={20} />;
-      default: return <Info className="text-blue-500" size={20} />;
+      default: return <Info className="text-green-500" size={20} />;
     }
   };
 
@@ -69,7 +69,7 @@ export function NotificationCenter() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1"
+                  className="text-xs text-green-600 hover:text-green-700 dark:text-green-400 flex items-center gap-1"
                 >
                   <CheckCheck size={14} /> Mark all read
                 </button>
@@ -97,7 +97,7 @@ export function NotificationCenter() {
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
                   className={`p-4 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition ${
-                    !notification.read ? 'bg-blue-50 dark:bg-blue-900/10' : ''
+                    !notification.read ? 'bg-green-50 dark:bg-green-900/10' : ''
                   }`}
                 >
                   <div className="flex gap-3">
@@ -110,7 +110,7 @@ export function NotificationCenter() {
                           {notification.title}
                         </p>
                         {!notification.read && (
-                          <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1" />
+                          <div className="w-2 h-2 bg-green-600 rounded-full flex-shrink-0 mt-1" />
                         )}
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -121,7 +121,7 @@ export function NotificationCenter() {
                           {getTimeAgo(notification.timestamp)}
                         </span>
                         {notification.action && (
-                          <span className="text-xs text-blue-600 dark:text-blue-400">
+                          <span className="text-xs text-green-600 dark:text-green-400">
                             {notification.action.label} →
                           </span>
                         )}

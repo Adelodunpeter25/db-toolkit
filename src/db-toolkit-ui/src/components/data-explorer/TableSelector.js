@@ -57,7 +57,7 @@ export function TableSelector({ schema, selectedTable, onSelectTable }) {
                   onClick={() => onSelectTable(schemaName, tableName)}
                   className={`w-full flex items-center gap-2 px-6 py-2 text-sm transition ${
                     selectedTable?.schema === schemaName && selectedTable?.table === tableName
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
+                      ? 'bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100'
                       : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                 >

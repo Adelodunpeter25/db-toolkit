@@ -61,7 +61,7 @@ export function TableSelector({ schema, onAddTable, addedTables }) {
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm transition ${
                   isAdded(table.name)
                     ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300'
+                    : 'hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-700 dark:text-gray-300'
                 }`}
               >
                 <Table size={16} />

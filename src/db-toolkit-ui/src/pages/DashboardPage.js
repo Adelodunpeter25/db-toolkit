@@ -56,7 +56,7 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
         </div>
       </div>
@@ -71,10 +71,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-700 transition-all cursor-pointer">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-green-300 dark:hover:border-green-700 transition-all cursor-pointer">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-              <Database className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
+              <Database className="w-6 h-6 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">{connections.length}</div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
       </div>
 
       {connections.length === 0 ? (
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800">
+        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-8 border border-green-200 dark:border-green-800">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Getting Started</h2>
           <ol className="space-y-3 text-gray-700 dark:text-gray-300 mb-6">
             <li className="flex items-start gap-2">

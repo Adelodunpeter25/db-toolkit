@@ -29,7 +29,7 @@ export function AnalyticsStats({ analytics }) {
       label: 'Database Size',
       value: formatBytes(analytics.database_size),
       icon: Database,
-      color: 'text-blue-600 dark:text-blue-400'
+      color: 'text-green-600 dark:text-green-400'
     }
   ];
 

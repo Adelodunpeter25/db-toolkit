@@ -4,7 +4,7 @@ const VirtualizedTableRow = memo(function VirtualizedTableRow({ row, columns, st
   return (
     <div 
       style={style} 
-      className={`flex border-b border-gray-200 dark:border-gray-700 ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'} hover:bg-blue-50 dark:hover:bg-blue-900/20`}
+      className={`flex border-b border-gray-200 dark:border-gray-700 ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'} hover:bg-green-50 dark:hover:bg-green-900/20`}
     >
       {row.map((cell, cellIdx) => (
         <div 
@@ -137,7 +137,7 @@ const ResultsTable = memo(function ResultsTable({ result }) {
         </h3>
         <div className="flex items-center gap-4">
           {shouldVirtualize && (
-            <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
+            <span className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
               Virtualized
             </span>
           )}

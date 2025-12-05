@@ -189,14 +189,14 @@ export function MigrationSettings() {
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         {project.path}
                       </div>
-                      <div className="text-xs text-blue-600 dark:text-blue-400">
+                      <div className="text-xs text-green-600 dark:text-green-400">
                         {connections.find(c => c.id === project.connectionId)?.name || 'No connection'}
                       </div>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(index)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                        className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded"
                       >
                         <Edit2 size={16} />
                       </button>

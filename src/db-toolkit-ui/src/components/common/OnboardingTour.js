@@ -79,9 +79,9 @@ export function OnboardingTour({ isOpen, onClose, onComplete }) {
                 key={idx}
                 className={`h-2 rounded-full transition-all ${
                   idx === currentStep
-                    ? 'w-8 bg-blue-600'
+                    ? 'w-8 bg-green-600'
                     : idx < currentStep
-                    ? 'w-2 bg-blue-400'
+                    ? 'w-2 bg-green-400'
                     : 'w-2 bg-gray-300 dark:bg-gray-600'
                 }`}
               />

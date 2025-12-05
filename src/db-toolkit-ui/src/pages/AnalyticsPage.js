@@ -104,10 +104,10 @@ function AnalyticsPage() {
           {connections.map((conn) => (
             <div
               key={conn.id}
-              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-4 hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-200"
+              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-4 hover:shadow-lg hover:border-green-400 dark:hover:border-green-500 transition-all duration-200"
             >
               <div className="flex items-start gap-3 mb-4">
-                <Database className="text-blue-600 dark:text-blue-400 mt-1" size={24} />
+                <Database className="text-green-600 dark:text-green-400 mt-1" size={24} />
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{conn.name}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{conn.db_type}</p>
@@ -139,7 +139,7 @@ function AnalyticsPage() {
       {loading ? (
         <div className="h-screen flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
           </div>
         </div>
@@ -194,7 +194,7 @@ function AnalyticsPage() {
             <Database className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Connection Lost</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">Database connection was lost. Redirecting to connections...</p>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
           </div>
         ) : analytics ? (
           <>

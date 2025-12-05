@@ -21,7 +21,7 @@ function TableNode({ data }) {
   return (
     <div className="bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg min-w-[250px]">
       {/* Table Header */}
-      <div className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-t-lg">
+      <div className="bg-green-600 dark:bg-green-700 text-white px-4 py-2 rounded-t-lg">
         <div className="font-bold text-lg">{label}</div>
         <div className="text-xs opacity-80">{schema}</div>
       </div>
@@ -42,7 +42,7 @@ function TableNode({ data }) {
                   className="flex items-center gap-2 text-sm py-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   {isPK && <Key size={14} className="text-yellow-600 dark:text-yellow-400" />}
-                  {isFK && <Link size={14} className="text-blue-600 dark:text-blue-400" />}
+                  {isFK && <Link size={14} className="text-green-600 dark:text-green-400" />}
                   <span className="font-medium text-gray-900 dark:text-gray-100">
                     {column.name}
                   </span>
@@ -57,10 +57,10 @@ function TableNode({ data }) {
       </div>
 
       {/* Connection Handles */}
-      <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-blue-500" />
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 !bg-blue-500" />
-      <Handle type="target" position={Position.Left} className="w-3 h-3 !bg-blue-500" />
-      <Handle type="source" position={Position.Right} className="w-3 h-3 !bg-blue-500" />
+      <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-green-500" />
+      <Handle type="source" position={Position.Bottom} className="w-3 h-3 !bg-green-500" />
+      <Handle type="target" position={Position.Left} className="w-3 h-3 !bg-green-500" />
+      <Handle type="source" position={Position.Right} className="w-3 h-3 !bg-green-500" />
     </div>
   );
 }

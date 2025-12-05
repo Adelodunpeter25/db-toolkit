@@ -266,10 +266,10 @@ function DataExplorerPage() {
           {connections.map((conn) => (
             <div
               key={conn.id}
-              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-4 hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-200"
+              className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-4 hover:shadow-lg hover:border-green-400 dark:hover:border-green-500 transition-all duration-200"
             >
               <div className="flex items-start gap-3 mb-4">
-                <Database className="text-blue-600 dark:text-blue-400 mt-1" size={24} />
+                <Database className="text-green-600 dark:text-green-400 mt-1" size={24} />
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{conn.name}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{conn.db_type}</p>

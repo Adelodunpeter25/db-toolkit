@@ -30,7 +30,7 @@ export function QuerySettings({ settings, onChange }) {
           id="auto-format"
           checked={settings.auto_format_on_paste}
           onChange={(e) => onChange('auto_format_on_paste', e.target.checked)}
-          className="w-4 h-4 text-blue-600 rounded"
+          className="w-4 h-4 text-green-600 rounded"
         />
         <label htmlFor="auto-format" className="text-sm text-gray-700 dark:text-gray-300">
           Auto-format SQL on paste

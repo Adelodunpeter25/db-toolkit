@@ -56,8 +56,8 @@ export function CsvExportModal({ isOpen, onClose, connectionId, query, result })
     <Modal isOpen={isOpen} onClose={onClose} title="Export to CSV">
       <div className="space-y-4">
         {result && (
-          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-700 dark:text-blue-300">
+          <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <p className="text-sm text-green-700 dark:text-green-300">
               Exporting {result.total_rows || result.rows?.length || 0} rows × {result.columns?.length || 0} columns
             </p>
           </div>

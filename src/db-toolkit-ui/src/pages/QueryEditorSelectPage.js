@@ -43,7 +43,7 @@ function QueryEditorSelectPage() {
           action={
             <button
               onClick={() => navigate('/connections')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
               Go to Connections
             </button>
@@ -57,7 +57,7 @@ function QueryEditorSelectPage() {
     <div className="p-8">
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <Code size={32} className="text-blue-600 dark:text-blue-500" />
+          <Code size={32} className="text-green-600 dark:text-green-500" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Query Editor</h2>
         </div>
         <p className="text-gray-600 dark:text-gray-400">
@@ -70,12 +70,12 @@ function QueryEditorSelectPage() {
           <button
             key={conn.id}
             onClick={() => handleSelectConnection(conn.id)}
-            className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg transition-all text-left group"
+            className="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-500 hover:shadow-lg transition-all text-left group"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <Database size={24} className="text-blue-600 dark:text-blue-500" />
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <Database size={24} className="text-green-600 dark:text-green-500" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100">
@@ -88,7 +88,7 @@ function QueryEditorSelectPage() {
               </div>
               <ChevronRight 
                 size={20} 
-                className="text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500 transition-colors" 
+                className="text-gray-400 group-hover:text-green-600 dark:group-hover:text-green-500 transition-colors" 
               />
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">

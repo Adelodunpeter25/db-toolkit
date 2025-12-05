@@ -108,7 +108,7 @@ export function DataGrid({ data, columns, onSort, sortColumn, sortOrder, onCellC
                           onBlur={() => !saving && cancelEdit()}
                           autoFocus
                           disabled={saving}
-                          className="w-full px-2 py-1 border border-blue-500 dark:border-blue-400 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                          className="w-full px-2 py-1 border border-green-500 dark:border-green-400 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400"
                         />
                         <button
                           onClick={() => saveEdit(row, colIndex)}
@@ -133,7 +133,7 @@ export function DataGrid({ data, columns, onSort, sortColumn, sortOrder, onCellC
                         {truncated && (
                           <button
                             onClick={() => onCellClick(row, column, colIndex)}
-                            className="opacity-0 group-hover:opacity-100 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                            className="opacity-0 group-hover:opacity-100 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
                             title="View full content"
                           >
                             <Eye size={14} />

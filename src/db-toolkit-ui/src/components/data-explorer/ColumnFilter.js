@@ -13,7 +13,7 @@ export function ColumnFilter({ columns, filters, onFilterChange, onClearFilters 
         {hasFilters && (
           <button
             onClick={onClearFilters}
-            className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            className="text-xs text-green-600 dark:text-green-400 hover:underline flex items-center gap-1"
           >
             <X size={12} />
             Clear All

@@ -126,7 +126,7 @@ function MigrationsPanel({ isOpen, onClose }) {
       >
         <div
           onMouseDown={handleMouseDown}
-          className="absolute top-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-blue-500 transition-colors"
+          className="absolute top-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-green-500 transition-colors"
         />
         <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-4">
@@ -148,7 +148,7 @@ function MigrationsPanel({ isOpen, onClose }) {
             <button
               onClick={handleSelectFolder}
               disabled={isRunning}
-              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
+              className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 flex items-center gap-1"
             >
               <Folder size={14} /> Browse
             </button>
@@ -201,7 +201,7 @@ function MigrationsPanel({ isOpen, onClose }) {
               <div 
                 key={idx} 
                 className={`mb-1 ${
-                  line.type === 'command' ? 'text-blue-400' :
+                  line.type === 'command' ? 'text-green-400' :
                   line.type === 'error' ? 'text-red-400' :
                   line.type === 'success' ? 'text-green-400' :
                   'text-gray-300'

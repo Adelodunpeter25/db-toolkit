@@ -149,7 +149,7 @@ export function AiAssistant({
       {/* Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bot className="w-5 h-5 text-blue-500" />
+          <Bot className="w-5 h-5 text-green-500" />
           <h3 className="font-semibold text-gray-900 dark:text-gray-100">DBAssist</h3>
         </div>
         <button
@@ -172,7 +172,7 @@ export function AiAssistant({
             chatHistory.map((msg, idx) => (
               <div key={idx} className={`p-3 rounded-lg ${
                 msg.role === 'user' 
-                  ? 'bg-blue-50 dark:bg-blue-900/20 ml-4' 
+                  ? 'bg-green-50 dark:bg-green-900/20 ml-4' 
                   : 'bg-gray-50 dark:bg-gray-900 mr-4'
               }`}>
                 <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
@@ -224,14 +224,14 @@ export function AiAssistant({
               }
             }}
             placeholder="Describe what you want to query..."
-            className="w-full h-24 px-3 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full h-24 px-3 py-2 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
           />
           <button
             onClick={handleGenerateQuery}
             disabled={isLoading || !naturalLanguage.trim()}
             className={`absolute right-2 bottom-2 p-2 rounded-lg transition-colors ${
               naturalLanguage.trim() && !isLoading
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                ? 'bg-green-600 hover:bg-green-700 text-white'
                 : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
             }`}
           >

@@ -185,28 +185,28 @@ export function ERDiagram({ schema, onClose }) {
           <div className="flex items-center gap-1">
             <button
               onClick={() => setLayoutDirection('TB')}
-              className={`p-2 rounded transition ${layoutDirection === 'TB' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              className={`p-2 rounded transition ${layoutDirection === 'TB' ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
               title="Top to Bottom"
             >
               <ArrowDown size={16} />
             </button>
             <button
               onClick={() => setLayoutDirection('LR')}
-              className={`p-2 rounded transition ${layoutDirection === 'LR' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              className={`p-2 rounded transition ${layoutDirection === 'LR' ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
               title="Left to Right"
             >
               <ArrowRight size={16} />
             </button>
             <button
               onClick={() => setLayoutDirection('BT')}
-              className={`p-2 rounded transition ${layoutDirection === 'BT' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              className={`p-2 rounded transition ${layoutDirection === 'BT' ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
               title="Bottom to Top"
             >
               <ArrowUp size={16} />
             </button>
             <button
               onClick={() => setLayoutDirection('RL')}
-              className={`p-2 rounded transition ${layoutDirection === 'RL' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              className={`p-2 rounded transition ${layoutDirection === 'RL' ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
               title="Right to Left"
             >
               <ArrowLeft size={16} />
@@ -283,11 +283,11 @@ export function ERDiagram({ schema, onClose }) {
                 <span>Primary Key</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <div className="w-3 h-3 bg-blue-600 rounded"></div>
+                <div className="w-3 h-3 bg-green-600 rounded"></div>
                 <span>Foreign Key</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <div className="w-8 h-0.5 bg-blue-600"></div>
+                <div className="w-8 h-0.5 bg-green-600"></div>
                 <span>Relationship</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">

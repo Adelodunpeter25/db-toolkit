@@ -65,12 +65,12 @@ export function SchemaAiPanel({ analysis, loading, onClose, onRefresh }) {
         {analysis.design_patterns && analysis.design_patterns.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
               <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Design Patterns</h4>
             </div>
             <ul className="space-y-2">
               {analysis.design_patterns.map((pattern, idx) => (
-                <li key={idx} className="text-sm text-gray-700 dark:text-gray-300 pl-4 border-l-2 border-blue-200 dark:border-blue-800">
+                <li key={idx} className="text-sm text-gray-700 dark:text-gray-300 pl-4 border-l-2 border-green-200 dark:border-green-800">
                   {pattern}
                 </li>
               ))}

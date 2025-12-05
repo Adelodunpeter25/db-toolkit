@@ -37,7 +37,7 @@ export function ConnectionSettings({ settings, onChange }) {
           id="auto-reconnect"
           checked={settings.auto_reconnect}
           onChange={(e) => onChange('auto_reconnect', e.target.checked)}
-          className="w-4 h-4 text-blue-600 rounded"
+          className="w-4 h-4 text-green-600 rounded"
         />
         <label htmlFor="auto-reconnect" className="text-sm text-gray-700 dark:text-gray-300">
           Auto-reconnect on failure

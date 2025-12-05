@@ -89,7 +89,7 @@ export function EditableTable({ connectionId, result, onRefresh, tableName = 'ta
               {row.map((cell, colIdx) => (
                 <td
                   key={colIdx}
-                  className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900"
+                  className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900"
                   onDoubleClick={() => startEdit(rowIdx, colIdx, cell)}
                 >
                   {editingCell?.rowIdx === rowIdx && editingCell?.colIdx === colIdx ? (

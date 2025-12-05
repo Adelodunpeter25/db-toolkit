@@ -72,7 +72,7 @@ function Sidebar() {
       >
         <div className="p-6 border-b border-gray-200 dark:border-gray-900">
           <div className="flex items-center gap-2">
-            <Database size={28} className="text-blue-600 dark:text-blue-500" />
+            <Database size={28} className="text-green-600 dark:text-green-500" />
             <h1 className="text-xl font-bold">DB Toolkit</h1>
           </div>
         </div>
@@ -85,7 +85,7 @@ function Sidebar() {
               className={`
                 flex items-center gap-3 px-4 py-3 rounded-lg transition
                 ${isActive(path)
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                  ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                   : 'hover:bg-gray-200 dark:hover:bg-gray-900'
                 }
               `}

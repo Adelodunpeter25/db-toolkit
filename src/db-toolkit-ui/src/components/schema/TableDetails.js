@@ -71,7 +71,7 @@ export function TableDetails({ connectionId, schemaName, tableName }) {
 
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <Columns size={20} className="text-blue-600 dark:text-blue-400" />
+          <Columns size={20} className="text-green-600 dark:text-green-400" />
           <h4 className="font-medium text-gray-900 dark:text-gray-100">Columns</h4>
         </div>
         <div className="overflow-x-auto">

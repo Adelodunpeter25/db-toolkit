@@ -120,7 +120,7 @@ export default function CommandPalette({ isOpen, onClose, connections, queries }
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                     index === selected
-                      ? 'bg-blue-50 dark:bg-blue-900/20'
+                      ? 'bg-green-50 dark:bg-green-900/20'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
                   }`}
                 >

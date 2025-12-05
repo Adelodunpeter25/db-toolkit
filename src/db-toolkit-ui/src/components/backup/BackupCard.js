@@ -20,7 +20,7 @@ export function BackupCard({ backup, onRestore, onDownload, onDelete }) {
       case 'failed':
         return <XCircle className="text-red-500" size={20} />;
       case 'in_progress':
-        return <Clock className="text-blue-500 animate-spin" size={20} />;
+        return <Clock className="text-green-500 animate-spin" size={20} />;
       default:
         return <Clock className="text-gray-400" size={20} />;
     }
@@ -29,7 +29,7 @@ export function BackupCard({ backup, onRestore, onDownload, onDelete }) {
   return (
     <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-4">
       <div className="flex items-start gap-3 mb-3">
-        <Database className="text-blue-600 dark:text-blue-400 mt-1" size={24} />
+        <Database className="text-green-600 dark:text-green-400 mt-1" size={24} />
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{backup.name}</h3>
@@ -40,7 +40,7 @@ export function BackupCard({ backup, onRestore, onDownload, onDelete }) {
             {formatDate(backup.created_at)} • {formatSize(backup.file_size)}
           </p>
           {backup.compressed && (
-            <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
+            <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded">
               Compressed
             </span>
           )}

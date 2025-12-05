@@ -52,7 +52,7 @@ const SchemaTree = memo(function SchemaTree({ schema, onTableClick }) {
             placeholder="Search tables..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
       </div>
@@ -86,7 +86,7 @@ const SchemaTree = memo(function SchemaTree({ schema, onTableClick }) {
                       <div
                         key={tableName}
                         className={`flex items-center gap-2 pl-9 pr-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer border-b border-gray-100 dark:border-gray-700/50 ${
-                          isSelected ? 'bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-500' : ''
+                          isSelected ? 'bg-green-50 dark:bg-green-900/20 border-l-2 border-l-green-500' : ''
                         }`}
                         onClick={() => handleTableClick(schemaName, tableName)}
                       >

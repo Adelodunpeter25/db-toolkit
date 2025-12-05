@@ -39,7 +39,7 @@ export function ReportIssueModal({ isOpen, onClose }) {
   const issueTypeIcons = {
     bug: <Bug size={16} className="text-red-500" />,
     feature: <Lightbulb size={16} className="text-yellow-500" />,
-    question: <HelpCircle size={16} className="text-blue-500" />,
+    question: <HelpCircle size={16} className="text-green-500" />,
     documentation: <FileText size={16} className="text-green-500" />
   };
 
@@ -79,7 +79,7 @@ export function ReportIssueModal({ isOpen, onClose }) {
                   onClick={() => setIssueType(type.value)}
                   className={`flex items-center gap-2 px-4 py-3 border rounded-lg transition ${
                     issueType === type.value
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
                       : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-gray-100'
                   }`}
                 >
@@ -116,8 +116,8 @@ export function ReportIssueModal({ isOpen, onClose }) {
             />
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+            <p className="text-sm text-green-800 dark:text-green-200">
               Your issue will be recorded and reviewed by the development team.
             </p>
           </div>

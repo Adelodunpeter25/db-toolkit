@@ -239,7 +239,7 @@ function MigrationsPage() {
             <div 
               key={idx} 
               className={`mb-1 ${
-                line.type === 'command' ? 'text-blue-400' :
+                line.type === 'command' ? 'text-green-400' :
                 line.type === 'error' ? 'text-red-400' :
                 line.type === 'success' ? 'text-green-400' :
                 'text-gray-300'
@@ -259,7 +259,7 @@ function MigrationsPage() {
       >
         <div
           onMouseDown={() => setIsResizing(true)}
-          className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-500 transition-colors z-10"
+          className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-green-500 transition-colors z-10"
         />
         <MigrationFileBrowser 
           projectPath={selectedProject?.path} 
