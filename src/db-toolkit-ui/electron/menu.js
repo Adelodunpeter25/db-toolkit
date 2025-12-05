@@ -58,16 +58,6 @@ function createMenu(mainWindow) {
         },
         { type: 'separator' },
         {
-          label: 'Import CSV',
-          click: () => mainWindow.webContents.send('menu-action', 'import-csv')
-        },
-        {
-          label: 'Export Results',
-          accelerator: 'CmdOrCtrl+E',
-          click: () => mainWindow.webContents.send('menu-action', 'export-results')
-        },
-        { type: 'separator' },
-        {
           label: 'Recent Connections',
           submenu: [
             { label: 'No recent connections', enabled: false }
