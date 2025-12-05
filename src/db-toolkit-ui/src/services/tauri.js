@@ -4,6 +4,7 @@ import { listen } from '@tauri-apps/api/event';
 export const tauri = {
   getSystemMetrics: () => invoke('get_system_metrics'),
   getBackendPort: () => invoke('get_backend_port'),
+  selectFolder: () => invoke('select_folder'),
   readFile: (filePath) => invoke('read_file', { filePath }),
   deleteFile: (filePath) => invoke('delete_file', { filePath }),
   renameFile: (oldPath, newName) => invoke('rename_file', { oldPath, newName }),
@@ -33,6 +34,7 @@ export const tauri = {
       const channelMap = {
         'get-system-metrics': 'get_system_metrics',
         'get-backend-port': 'get_backend_port',
+        'select-folder': 'select_folder',
         'read-file': 'read_file',
         'delete-file': 'delete_file',
         'rename-file': 'rename_file',

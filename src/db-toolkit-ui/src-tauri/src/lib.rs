@@ -3,6 +3,8 @@ use std::sync::Mutex;
 use std::io::{BufRead, BufReader};
 use std::thread;
 use tauri::Manager;
+use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
+use tauri_plugin_shell::ShellExt;
 
 mod menu;
 
@@ -15,6 +17,17 @@ struct BackendState {
 fn get_backend_port(state: tauri::State<BackendState>) -> Result<u16, String> {
     let port = state.port.lock().unwrap();
     port.ok_or_else(|| "Backend not started".to_string())
+}
+
+#[tauri::command]
+async fn select_folder(app: tauri::AppHandle) -> Result<Option<String>, String> {
+    use tauri_plugin_dialog::DialogExt;
+    
+    let folder = app.dialog()
+        .file()
+        .blocking_pick_folder();
+    
+    Ok(folder.map(|p| p.to_string_lossy().to_string()))
 }
 
 #[tauri::command]
@@ -156,7 +169,7 @@ fn start_backend(app_handle: tauri::AppHandle) -> Result<u16, String> {
             .unwrap()
             .join("../db-toolkit/dist/db-toolkit-backend/db-toolkit-backend")
     } else {
-        app_handle.path_resolver()
+        app_handle.path()
             .resource_dir()
             .unwrap()
             .join("backend/db-toolkit-backend")
@@ -215,6 +228,9 @@ pub fn run() {
         )?;
       }
       
+      app.handle().plugin(tauri_plugin_dialog::init())?;
+      app.handle().plugin(tauri_plugin_shell::init())?;
+      
       let app_handle = app.handle();
       thread::spawn(move || {
           if let Err(e) = start_backend(app_handle) {
@@ -239,6 +255,7 @@ pub fn run() {
     })
     .invoke_handler(tauri::generate_handler![
         get_backend_port,
+        select_folder,
         read_file,
         delete_file,
         rename_file,
