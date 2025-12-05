@@ -244,9 +244,11 @@ pub fn run() {
     .on_window_event(|window, event| {
       if let tauri::WindowEvent::CloseRequested { .. } = event {
         let app_handle = window.app_handle();
-        let backend_state: tauri::State<BackendState> = app_handle.state();
-        if let Some(mut child) = backend_state.process.lock().unwrap().take() {
-          let _ = child.kill();
+        let backend_state = app_handle.state::<BackendState>();
+        if let Ok(mut process) = backend_state.process.lock() {
+          if let Some(mut child) = process.take() {
+            let _ = child.kill();
+          }
         }
       }
     })
