@@ -1,6 +1,7 @@
 """FastAPI application."""
 
 import asyncio
+import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -85,3 +86,6 @@ app.websocket("/ws/backups")(websocket_backups)
 app.websocket("/ws/terminal")(websocket_terminal)
 app.websocket("/ws/migrator")(websocket_migrator)
 app.websocket("/ws/analytics")(websocket_analytics)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
