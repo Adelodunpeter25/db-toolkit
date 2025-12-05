@@ -70,9 +70,17 @@ jobs:
           pyinstaller build.spec
       
       - name: Copy backend to resources
+        shell: bash
         run: |
           mkdir -p src/db-toolkit-ui/resources/backend
-          cp -r src/db-toolkit/dist/db-toolkit-backend/* src/db-toolkit-ui/resources/backend/
+          if [ -d "src/db-toolkit/dist/db-toolkit-backend" ]; then
+            cp -r src/db-toolkit/dist/db-toolkit-backend/* src/db-toolkit-ui/resources/backend/
+            ls -la src/db-toolkit-ui/resources/backend/
+          else
+            echo "Backend build directory not found"
+            ls -la src/db-toolkit/dist/
+            exit 1
+          fi
       
       - name: Install frontend dependencies
         working-directory: src/db-toolkit-ui
