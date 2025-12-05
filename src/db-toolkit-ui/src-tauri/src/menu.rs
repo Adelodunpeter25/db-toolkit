@@ -108,6 +108,8 @@ pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Er
             &MenuItem::with_id(app, "documentation", "Documentation", true, Some("F1"))?,
             &MenuItem::with_id(app, "keyboard-shortcuts", "Keyboard Shortcuts", true, Some("CmdOrCtrl+/"))?,
             &MenuItem::with_id(app, "report-issue", "Report Issue", true, None::<&str>)?,
+            &PredefinedMenuItem::separator(app)?,
+            &MenuItem::with_id(app, "about", "About DB Toolkit", true, None::<&str>)?,
         ],
     )?;
     
