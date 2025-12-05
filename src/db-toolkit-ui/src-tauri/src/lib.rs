@@ -3,8 +3,7 @@ use std::sync::Mutex;
 use std::io::{BufRead, BufReader};
 use std::thread;
 use tauri::Manager;
-use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
-use tauri_plugin_shell::ShellExt;
+use tauri_plugin_dialog::DialogExt;
 
 mod menu;
 
@@ -21,13 +20,11 @@ fn get_backend_port(state: tauri::State<BackendState>) -> Result<u16, String> {
 
 #[tauri::command]
 async fn select_folder(app: tauri::AppHandle) -> Result<Option<String>, String> {
-    use tauri_plugin_dialog::DialogExt;
-    
     let folder = app.dialog()
         .file()
         .blocking_pick_folder();
     
-    Ok(folder.map(|p| p.to_string_lossy().to_string()))
+    Ok(folder.map(|p| p.as_path().unwrap().to_string_lossy().to_string()))
 }
 
 #[tauri::command]
