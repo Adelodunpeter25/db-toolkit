@@ -16,7 +16,10 @@
     "preview": "vite preview",
     "electron": "electron .",
     "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "package": "npm run build && electron-builder",
+    "tauri": "tauri",
+    "tauri-dev": "tauri dev",
+    "tauri-build": "tauri build",
+    "package": "npm run build && tauri build",
     "package:mac": "npm run build && electron-builder --mac",
     "package:win": "npm run build && electron-builder --win",
     "package:linux": "npm run build && electron-builder --linux"
@@ -24,6 +27,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@tanstack/react-virtual": "^3.13.12",
+    "@tauri-apps/api": "^2.1.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "axios": "^1.6.2",
@@ -41,6 +45,7 @@
     "sql-formatter": "^15.6.10"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
