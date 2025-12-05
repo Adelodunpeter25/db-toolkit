@@ -222,6 +222,15 @@ pub fn run() {
       
       Ok(())
     })
+    .on_window_event(|window, event| {
+      if let tauri::WindowEvent::CloseRequested { .. } = event {
+        let app_handle = window.app_handle();
+        let backend_state: tauri::State<BackendState> = app_handle.state();
+        if let Some(mut child) = backend_state.process.lock().unwrap().take() {
+          let _ = child.kill();
+        }
+      }
+    })
     .invoke_handler(tauri::generate_handler![
         get_backend_port,
         read_file,
