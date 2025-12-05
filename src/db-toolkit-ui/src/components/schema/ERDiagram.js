@@ -1,7 +1,7 @@
 /**
  * Interactive ER Diagram component
  */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -53,12 +53,17 @@ export function ERDiagram({ schema, onClose }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
-  // Update nodes when layout changes
-  useMemo(() => {
+  // Update nodes when layout direction changes
+  useEffect(() => {
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
-    setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 100);
-  }, [layoutedNodes, layoutedEdges, setNodes, setEdges, fitView]);
+  }, [layoutDirection, setNodes, setEdges]);
+
+  // Fit view after layout update
+  useEffect(() => {
+    const timer = setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 100);
+    return () => clearTimeout(timer);
+  }, [layoutDirection, fitView]);
 
   // Filter nodes by search
   const filteredNodes = useMemo(() => {
