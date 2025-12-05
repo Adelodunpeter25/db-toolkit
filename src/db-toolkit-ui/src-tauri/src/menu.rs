@@ -1,5 +1,5 @@
 use tauri::menu::*;
-use tauri::Manager;
+use tauri::{Manager, Emitter};
 
 pub fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Error> {
     let menu = Menu::new(app)?;

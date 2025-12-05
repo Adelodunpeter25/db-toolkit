@@ -228,7 +228,7 @@ pub fn run() {
       app.handle().plugin(tauri_plugin_dialog::init())?;
       app.handle().plugin(tauri_plugin_shell::init())?;
       
-      let app_handle = app.handle();
+      let app_handle = app.handle().clone();
       thread::spawn(move || {
           if let Err(e) = start_backend(app_handle) {
               eprintln!("Failed to start backend: {}", e);
