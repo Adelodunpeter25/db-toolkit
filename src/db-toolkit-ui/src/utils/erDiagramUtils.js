@@ -142,17 +142,24 @@ export function relationshipsToEdges(relationships) {
 /**
  * Auto-layout nodes using dagre
  */
-export function getLayoutedElements(nodes, edges, direction = 'TB') {
+export function getLayoutedElements(nodes, edges, direction = 'LR') {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   
   const nodeWidth = 250;
   const nodeHeight = 200;
+  
+  // Dynamic spacing based on number of nodes
+  const nodeCount = nodes.length;
+  const nodesep = nodeCount > 20 ? 80 : nodeCount > 10 ? 100 : 120;
+  const ranksep = nodeCount > 20 ? 120 : nodeCount > 10 ? 150 : 180;
 
   dagreGraph.setGraph({ 
     rankdir: direction,
-    nodesep: 100,
-    ranksep: 150
+    nodesep,
+    ranksep,
+    marginx: 50,
+    marginy: 50
   });
 
   nodes.forEach((node) => {
@@ -197,5 +204,19 @@ export function getForeignKeys(columns) {
   return columns.filter(col => 
     col.foreign_key || 
     col.name.endsWith('_id')
+  );
+}
+
+/**
+ * Filter nodes by search query
+ */
+export function filterNodesBySearch(nodes, searchQuery) {
+  if (!searchQuery.trim()) return nodes;
+  
+  const query = searchQuery.toLowerCase();
+  return nodes.filter(node => 
+    node.data.label.toLowerCase().includes(query) ||
+    node.data.schema.toLowerCase().includes(query) ||
+    node.data.columns.some(col => col.name.toLowerCase().includes(query))
   );
 }

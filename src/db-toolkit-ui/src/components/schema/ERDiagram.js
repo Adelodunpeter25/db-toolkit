@@ -1,24 +1,26 @@
 /**
  * Interactive ER Diagram component
  */
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
   Background,
   useNodesState,
   useEdgesState,
-  Panel
+  Panel,
+  useReactFlow
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Download, Maximize2, Minimize2 } from 'lucide-react';
+import { Download, Minimize2, ArrowDown, ArrowRight, ArrowUp, ArrowLeft, Search, RotateCcw } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import TableNode from './TableNode';
 import { 
   schemaToNodes, 
   detectRelationships, 
   relationshipsToEdges, 
-  getLayoutedElements 
+  getLayoutedElements,
+  filterNodesBySearch
 } from '../../utils/erDiagramUtils';
 import { Button } from '../common/Button';
 
@@ -33,6 +35,10 @@ const defaultEdgeOptions = {
 };
 
 export function ERDiagram({ schema, onClose }) {
+  const [layoutDirection, setLayoutDirection] = useState('LR');
+  const [searchQuery, setSearchQuery] = useState('');
+  const { fitView } = useReactFlow();
+
   // Generate nodes and edges from schema
   const initialNodes = useMemo(() => schemaToNodes(schema), [schema]);
   const relationships = useMemo(() => detectRelationships(schema), [schema]);
@@ -40,12 +46,33 @@ export function ERDiagram({ schema, onClose }) {
 
   // Apply auto-layout
   const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(
-    () => getLayoutedElements(initialNodes, initialEdges),
-    [initialNodes, initialEdges]
+    () => getLayoutedElements(initialNodes, initialEdges, layoutDirection),
+    [initialNodes, initialEdges, layoutDirection]
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+
+  // Update nodes when layout changes
+  useMemo(() => {
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
+    setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 100);
+  }, [layoutedNodes, layoutedEdges, setNodes, setEdges, fitView]);
+
+  // Filter nodes by search
+  const filteredNodes = useMemo(() => {
+    if (!searchQuery.trim()) return nodes;
+    const filtered = filterNodesBySearch(nodes, searchQuery);
+    const filteredIds = new Set(filtered.map(n => n.id));
+    return nodes.map(n => ({
+      ...n,
+      style: {
+        ...n.style,
+        opacity: filteredIds.has(n.id) ? 1 : 0.2,
+      },
+    }));
+  }, [nodes, searchQuery]);
 
   // Highlight connected nodes on click
   const onNodeClick = useCallback((event, node) => {
@@ -79,6 +106,7 @@ export function ERDiagram({ schema, onClose }) {
 
   // Reset highlight on pane click
   const onPaneClick = useCallback(() => {
+    setSearchQuery('');
     setNodes(nodes =>
       nodes.map(n => ({
         ...n,
@@ -92,6 +120,13 @@ export function ERDiagram({ schema, onClose }) {
       }))
     );
   }, [setNodes, setEdges]);
+
+  // Reset layout
+  const resetLayout = useCallback(() => {
+    setSearchQuery('');
+    onPaneClick();
+    fitView({ padding: 0.2, duration: 300 });
+  }, [onPaneClick, fitView]);
 
   // Export diagram as PNG
   const exportToPng = useCallback(() => {
@@ -118,10 +153,60 @@ export function ERDiagram({ schema, onClose }) {
     <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
       {/* Header */}
       <div className="h-14 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          Schema Diagram
-        </h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Schema Diagram
+          </h2>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setLayoutDirection('TB')}
+              className={`p-2 rounded transition ${layoutDirection === 'TB' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              title="Top to Bottom"
+            >
+              <ArrowDown size={16} />
+            </button>
+            <button
+              onClick={() => setLayoutDirection('LR')}
+              className={`p-2 rounded transition ${layoutDirection === 'LR' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              title="Left to Right"
+            >
+              <ArrowRight size={16} />
+            </button>
+            <button
+              onClick={() => setLayoutDirection('BT')}
+              className={`p-2 rounded transition ${layoutDirection === 'BT' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              title="Bottom to Top"
+            >
+              <ArrowUp size={16} />
+            </button>
+            <button
+              onClick={() => setLayoutDirection('RL')}
+              className={`p-2 rounded transition ${layoutDirection === 'RL' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+              title="Right to Left"
+            >
+              <ArrowLeft size={16} />
+            </button>
+          </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search tables..."
+              className="pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 w-64"
+            />
+          </div>
+        </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<RotateCcw size={16} />}
+            onClick={resetLayout}
+          >
+            Reset
+          </Button>
           <Button
             variant="secondary"
             size="sm"
@@ -144,7 +229,7 @@ export function ERDiagram({ schema, onClose }) {
       {/* Diagram */}
       <div className="h-[calc(100vh-3.5rem)]">
         <ReactFlow
-          nodes={nodes}
+          nodes={filteredNodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}

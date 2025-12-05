@@ -13,6 +13,7 @@ import { TableDetails } from '../components/schema/TableDetails';
 import { CsvImportModal } from '../components/csv';
 import { SchemaAiPanel } from '../components/schema/SchemaAiPanel';
 import { ERDiagram } from '../components/schema/ERDiagram';
+import { ReactFlowProvider } from 'reactflow';
 
 function SchemaPage() {
   const { connectionId } = useParams();
@@ -188,10 +189,12 @@ function SchemaPage() {
       )}
 
       {showERDiagram && (
-        <ERDiagram
-          schema={schema}
-          onClose={() => setShowERDiagram(false)}
-        />
+        <ReactFlowProvider>
+          <ERDiagram
+            schema={schema}
+            onClose={() => setShowERDiagram(false)}
+          />
+        </ReactFlowProvider>
       )}
     </div>
   );
