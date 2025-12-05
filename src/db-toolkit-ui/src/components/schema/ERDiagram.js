@@ -139,42 +139,45 @@ export function ERDiagram({ schema, onClose }) {
     fitView({ padding: 0.2, duration: 300 });
   }, [onPaneClick, fitView]);
 
-  // Export diagram as PNG (current viewport only)
+  // Export diagram as SVG (instant, vector format)
   const exportToPng = useCallback(() => {
-    const viewport = getViewport();
-    const flowElement = document.querySelector('.react-flow__renderer');
+    const svgElement = document.querySelector('.react-flow__renderer svg');
     
-    if (!flowElement) {
+    if (!svgElement) {
       alert('Unable to export. Please try browser screenshot instead.');
       return;
     }
 
-    // Get visible area dimensions
-    const width = window.innerWidth;
-    const height = window.innerHeight - 56; // Subtract header height
-
-    // Create image from current view
-    import('html-to-image').then(({ toPng }) => {
+    try {
+      // Clone SVG to avoid modifying original
+      const clonedSvg = svgElement.cloneNode(true);
       const isDark = document.documentElement.classList.contains('dark');
-      toPng(flowElement, {
-        backgroundColor: isDark ? '#111827' : '#ffffff',
-        width,
-        height,
-        pixelRatio: 2,
-        cacheBust: true,
-      })
-        .then((dataUrl) => {
-          const link = document.createElement('a');
-          link.download = `er-diagram-${Date.now()}.png`;
-          link.href = dataUrl;
-          link.click();
-        })
-        .catch((err) => {
-          console.error('Export failed:', err);
-          alert('Export failed. Use browser screenshot: Ctrl+Shift+S (Windows) or Cmd+Shift+4 (Mac)');
-        });
-    });
-  }, [getViewport]);
+      
+      // Set background
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('width', '100%');
+      rect.setAttribute('height', '100%');
+      rect.setAttribute('fill', isDark ? '#111827' : '#ffffff');
+      clonedSvg.insertBefore(rect, clonedSvg.firstChild);
+      
+      // Get SVG string
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(clonedSvg);
+      const blob = new Blob([svgString], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      
+      // Download
+      const link = document.createElement('a');
+      link.download = `er-diagram-${Date.now()}.svg`;
+      link.href = url;
+      link.click();
+      
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Export failed. Use browser screenshot: Ctrl+Shift+S (Windows) or Cmd+Shift+4 (Mac)');
+    }
+  }, []);
 
   return (
     <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
@@ -240,7 +243,7 @@ export function ERDiagram({ schema, onClose }) {
             icon={<Download size={16} />}
             onClick={exportToPng}
           >
-            Export PNG
+            Export SVG
           </Button>
           <Button
             variant="secondary"
