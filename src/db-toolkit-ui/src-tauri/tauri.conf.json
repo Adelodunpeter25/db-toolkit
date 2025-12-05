@@ -8,8 +8,7 @@
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "vite",
-    "beforeBuildCommand": "vite build",
-    "resources": ["about.html"]
+    "beforeBuildCommand": "vite build"
   },
   "app": {
     "windows": [
@@ -29,6 +28,7 @@
     "active": true,
     "targets": "all",
     "publisher": "Peter Adelodun",
+    "resources": ["about.html"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
