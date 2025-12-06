@@ -84,15 +84,15 @@ jobs:
       - name: Copy backend to resources
         shell: bash
         run: |
-          echo "Creating resources directory relative to src-tauri..."
-          mkdir -p resources/backend
+          echo "Creating resources directory next to src-tauri..."
+          mkdir -p src/db-toolkit-ui/resources/backend
           echo "Checking backend build output..."
           ls -la src/db-toolkit/dist/ || echo "dist directory not found"
           if [ -d "src/db-toolkit/dist/db-toolkit-backend" ]; then
             echo "Copying backend files..."
-            cp -r src/db-toolkit/dist/db-toolkit-backend/* resources/backend/
+            cp -r src/db-toolkit/dist/db-toolkit-backend/* src/db-toolkit-ui/resources/backend/
             echo "Backend copied successfully:"
-            ls -la resources/backend/
+            ls -la src/db-toolkit-ui/resources/backend/
           else
             echo "ERROR: Backend build directory not found at src/db-toolkit/dist/db-toolkit-backend"
             echo "Contents of src/db-toolkit/:"
@@ -112,7 +112,7 @@ jobs:
           import json
           with open('tauri.conf.json', 'r') as f:
               config = json.load(f)
-          config['bundle']['resources'] = ['../../../resources/backend/**']
+          config['bundle']['resources'] = ['../resources/backend/**']
           with open('tauri.conf.json', 'w') as f:
               json.dump(config, f, indent=2)
           EOF
