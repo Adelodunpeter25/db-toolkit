@@ -108,10 +108,12 @@ jobs:
         working-directory: src/db-toolkit-ui/src-tauri
         shell: bash
         run: |
-          jq '.bundle.resources = ["resources/backend/**"]' tauri.conf.json > tauri.conf.json.tmp
+          FULL_PATH="$(pwd)/resources/backend"
+          echo "Full resources path: $FULL_PATH"
+          jq --arg path "$FULL_PATH/**" '.bundle.resources = [$path]' tauri.conf.json > tauri.conf.json.tmp
           mv tauri.conf.json.tmp tauri.conf.json
           echo "Updated tauri.conf.json:"
-          grep -A3 '"resources"' tauri.conf.json
+          jq '.bundle.resources' tauri.conf.json
           echo "Verifying resources directory exists:"
           ls -la resources/backend/ | head -5
       
