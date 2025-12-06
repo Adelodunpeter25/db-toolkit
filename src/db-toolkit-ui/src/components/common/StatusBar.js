@@ -18,55 +18,19 @@ function StatusBar({ onTerminalClick }) {
   });
 
   useEffect(() => {
-    const updateMetrics = () => {
-      if (window.performance && window.performance.memory) {
-        const used = window.performance.memory.usedJSHeapSize / 1024 / 1024;
-        const total = window.performance.memory.totalJSHeapSize / 1024 / 1024;
-        setMetrics(prev => ({ ...prev, ram: { used, total } }));
-      }
-    };
-
-    updateMetrics();
-    const interval = setInterval(updateMetrics, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    let lastTime = Date.now();
-    let lastUsage = 0;
-
     const updateSystemMetrics = async () => {
-      if (window.performance && window.performance.memory) {
-        const now = Date.now();
-        const currentUsage = window.performance.memory.usedJSHeapSize;
-        const timeDiff = now - lastTime;
-        const usageDiff = Math.abs(currentUsage - lastUsage);
-        
-        const cpuPercent = Math.min(100, (usageDiff / timeDiff) * 0.01);
-        
-        lastTime = now;
-        lastUsage = currentUsage;
-        
-        if (window.electron && window.electron.getSystemMetrics) {
-          try {
-            const systemMetrics = await window.electron.getSystemMetrics();
-            setMetrics(prev => ({ 
-              ...prev, 
-              cpu: cpuPercent.toFixed(1),
-              load: systemMetrics.loadAvg.toFixed(1),
-              disk: systemMetrics.disk
-            }));
-          } catch (err) {
-            setMetrics(prev => ({ 
-              ...prev, 
-              cpu: cpuPercent.toFixed(1)
-            }));
-          }
-        } else {
+      if (window.electron && window.electron.getSystemMetrics) {
+        try {
+          const systemMetrics = await window.electron.getSystemMetrics();
           setMetrics(prev => ({ 
-            ...prev, 
-            cpu: cpuPercent.toFixed(1)
+            ...prev,
+            ram: systemMetrics.ram || prev.ram,
+            cpu: systemMetrics.cpu?.toFixed(1) || prev.cpu,
+            load: systemMetrics.loadAvg?.toFixed(1) || prev.load,
+            disk: systemMetrics.disk || prev.disk
           }));
+        } catch (err) {
+          console.error('Failed to get system metrics:', err);
         }
       }
     };
