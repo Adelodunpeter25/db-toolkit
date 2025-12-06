@@ -1,10 +1,20 @@
 """Application configuration."""
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from executable directory (for PyInstaller)
+if getattr(sys, 'frozen', False):
+    # Running in PyInstaller bundle
+    bundle_dir = Path(sys._MEIPASS)
+    env_path = bundle_dir / '.env'
+    if env_path.exists():
+        load_dotenv(env_path)
+else:
+    # Running in normal Python
+    load_dotenv()
 
 
 class Settings:
