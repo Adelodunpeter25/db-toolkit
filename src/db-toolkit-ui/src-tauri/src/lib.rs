@@ -196,7 +196,7 @@ fn start_backend(app_handle: tauri::AppHandle) -> Result<u16, String> {
         app_handle.path()
             .resource_dir()
             .unwrap()
-            .join("db-toolkit-backend/db-toolkit-backend")
+            .join("resources/db-toolkit-backend/db-toolkit-backend")
     };
 
     println!("Starting backend from: {:?}", backend_path);
