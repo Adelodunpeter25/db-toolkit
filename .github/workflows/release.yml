@@ -109,16 +109,16 @@ jobs:
         shell: bash
         run: |
           RESOURCES_PATH="$(pwd)/resources/backend"
-          python3 << EOF
-          import json
-          import os
-          with open('tauri.conf.json', 'r') as f:
-              config = json.load(f)
-          resources_path = os.environ['RESOURCES_PATH']
-          config['bundle']['resources'] = [f'{resources_path}/**']
-          with open('tauri.conf.json', 'w') as f:
-              json.dump(config, f, indent=2)
-          EOF
+          export RESOURCES_PATH
+          python3 -c "
+import json
+import os
+with open('tauri.conf.json', 'r') as f:
+    config = json.load(f)
+config['bundle']['resources'] = [os.environ['RESOURCES_PATH'] + '/**']
+with open('tauri.conf.json', 'w') as f:
+    json.dump(config, f, indent=2)
+"
           echo "Updated tauri.conf.json:"
           grep -A3 '"resources"' tauri.conf.json
           echo "Verifying resources directory exists:"
