@@ -79,14 +79,14 @@ async fn check_for_updates(app: tauri::AppHandle) -> Result<(), String> {
 #[tauri::command]
 async fn get_system_metrics() -> Result<serde_json::Value, String> {
     use std::process::Command;
-    use sysinfo::{System, SystemExt, CpuExt};
+    use sysinfo::System;
     
     let mut sys = System::new_all();
     sys.refresh_all();
     
     let total_mem = sys.total_memory() as f64 / 1024.0 / 1024.0;
     let used_mem = sys.used_memory() as f64 / 1024.0 / 1024.0;
-    let cpu_usage = sys.global_cpu_info().cpu_usage() as f64;
+    let cpu_usage = sys.global_cpu_usage() as f64;
     
     let load_avg = if cfg!(target_os = "macos") {
         Command::new("sysctl")
