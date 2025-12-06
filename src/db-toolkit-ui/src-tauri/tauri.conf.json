@@ -37,7 +37,10 @@
     ],
     "category": "DeveloperTool",
     "shortDescription": "Modern database management tool",
-    "longDescription": "A modern, cross-platform desktop database management application."
+    "longDescription": "A modern, cross-platform desktop database management application.",
+    "resources": [
+      "resources/db-toolkit-backend"
+    ]
   },
   "plugins": {
     "updater": {

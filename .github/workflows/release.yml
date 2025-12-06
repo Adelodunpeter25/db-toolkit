@@ -81,18 +81,20 @@ jobs:
             exit 1
           fi
       
-      - name: Copy backend to resources
+      - name: Copy backend to resources (create before Tauri reads config)
         shell: bash
         run: |
           echo "Creating resources directory inside src-tauri..."
-          mkdir -p src/db-toolkit-ui/src-tauri/resources/backend
+          mkdir -p src/db-toolkit-ui/src-tauri/resources
           echo "Checking backend build output..."
           ls -la src/db-toolkit/dist/ || echo "dist directory not found"
           if [ -d "src/db-toolkit/dist/db-toolkit-backend" ]; then
             echo "Copying backend files..."
-            cp -r src/db-toolkit/dist/db-toolkit-backend/* src/db-toolkit-ui/src-tauri/resources/backend/
+            cp -r src/db-toolkit/dist/db-toolkit-backend src/db-toolkit-ui/src-tauri/resources/
             echo "Backend copied successfully:"
-            ls -la src/db-toolkit-ui/src-tauri/resources/backend/
+            ls -la src/db-toolkit-ui/src-tauri/resources/
+            echo "Backend contents:"
+            ls -la src/db-toolkit-ui/src-tauri/resources/db-toolkit-backend/ | head -10
           else
             echo "ERROR: Backend build directory not found at src/db-toolkit/dist/db-toolkit-backend"
             echo "Contents of src/db-toolkit/:"
@@ -103,19 +105,6 @@ jobs:
       - name: Install frontend dependencies
         working-directory: src/db-toolkit-ui
         run: npm ci
-      
-      - name: Update tauri.conf.json with backend resources
-        working-directory: src/db-toolkit-ui/src-tauri
-        shell: bash
-        run: |
-          FULL_PATH="$(pwd)/resources/backend"
-          echo "Full resources path: $FULL_PATH"
-          jq --arg path "$FULL_PATH/**" '.bundle.resources = [$path]' tauri.conf.json > tauri.conf.json.tmp
-          mv tauri.conf.json.tmp tauri.conf.json
-          echo "Updated tauri.conf.json:"
-          jq '.bundle.resources' tauri.conf.json
-          echo "Verifying resources directory exists:"
-          ls -la resources/backend/ | head -5
       
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
