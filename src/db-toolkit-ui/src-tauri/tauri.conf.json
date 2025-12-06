@@ -27,6 +27,9 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "macOS": {
+      "minimumSystemVersion": "11.0"
+    },
     "publisher": "Peter Adelodun",
     "icon": [
       "icons/32x32.png",
@@ -36,6 +39,9 @@
       "icons/icon.ico"
     ],
     "category": "DeveloperTool",
+    "windows": {
+      "wix": null
+    },
     "shortDescription": "Modern database management tool",
     "longDescription": "A modern, cross-platform desktop database management application.",
     "resources": [
