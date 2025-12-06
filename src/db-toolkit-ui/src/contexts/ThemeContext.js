@@ -50,7 +50,6 @@ export function ThemeProvider({ children }) {
 
   const toggleTheme = async () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
     setSettingsTheme(newTheme);
     
     // Save to backend
