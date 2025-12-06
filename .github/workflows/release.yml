@@ -16,8 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-latest'
-            args: '--target universal-apple-darwin'
+          - platform: 'macos-13'
+            args: ''
           - platform: 'ubuntu-22.04'
             args: '--bundles deb,rpm'
           - platform: 'windows-latest'
