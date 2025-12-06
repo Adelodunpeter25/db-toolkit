@@ -114,7 +114,7 @@ function StatusBar({ onTerminalClick }) {
           <div className="absolute bottom-full left-0 mb-2 p-3 bg-gray-800 dark:bg-gray-950 text-white rounded-lg shadow-lg text-xs whitespace-nowrap z-50">
             <div className="font-semibold mb-1">CPU Usage</div>
             <div>Current: {metrics.cpu}%</div>
-            <div>Process: Electron + Python Backend</div>
+            <div>Process: Tauri + Python Backend</div>
           </div>
         )}
       </div>
