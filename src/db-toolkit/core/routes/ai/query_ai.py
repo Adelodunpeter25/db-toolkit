@@ -1,7 +1,7 @@
 """AI query assistance API routes."""
 
 from fastapi import APIRouter, HTTPException
-from operations.ai.query_assistant import query_assistant
+from operations.ai.query_assistant import get_query_assistant
 from operations.connection_manager import connection_manager
 from core.schemas.ai.query_schemas import (
     GenerateQueryRequest, GenerateQueryResponse,
@@ -26,7 +26,11 @@ async def generate_query(request: GenerateQueryRequest):
         # Get database type from connection
         db_type = connection_info.db_type.value if hasattr(connection_info.db_type, 'value') else str(connection_info.db_type)
         
-        result = await query_assistant.generate_from_natural_language(
+        assistant = get_query_assistant()
+        if not assistant:
+            raise HTTPException(status_code=503, detail="AI service not configured")
+        
+        result = await assistant.generate_from_natural_language(
             natural_language=request.natural_language,
             schema_context=request.schema_context or {},
             db_type=db_type
@@ -52,7 +56,11 @@ async def optimize_query(request: OptimizeQueryRequest):
         # Get database type from connection
         db_type = connection_info.db_type.value if hasattr(connection_info.db_type, 'value') else str(connection_info.db_type)
         
-        result = await query_assistant.optimize_query(
+        assistant = get_query_assistant()
+        if not assistant:
+            raise HTTPException(status_code=503, detail="AI service not configured")
+        
+        result = await assistant.optimize_query(
             query=request.query,
             execution_plan=request.execution_plan,
             db_type=db_type,
@@ -79,7 +87,11 @@ async def explain_query(request: ExplainQueryRequest):
         # Get database type from connection
         db_type = connection_info.db_type.value if hasattr(connection_info.db_type, 'value') else str(connection_info.db_type)
         
-        result = await query_assistant.explain_query(
+        assistant = get_query_assistant()
+        if not assistant:
+            raise HTTPException(status_code=503, detail="AI service not configured")
+        
+        result = await assistant.explain_query(
             query=request.query,
             db_type=db_type,
             schema_context=request.schema_context
@@ -105,7 +117,11 @@ async def fix_query_error(request: FixQueryRequest):
         # Get database type from connection
         db_type = connection_info.db_type.value if hasattr(connection_info.db_type, 'value') else str(connection_info.db_type)
         
-        result = await query_assistant.fix_query_error(
+        assistant = get_query_assistant()
+        if not assistant:
+            raise HTTPException(status_code=503, detail="AI service not configured")
+        
+        result = await assistant.fix_query_error(
             query=request.query,
             error_message=request.error_message,
             db_type=db_type,
@@ -132,7 +148,11 @@ async def complete_query(request: QueryCompletionRequest):
         # Get database type from connection
         db_type = connection_info.db_type.value if hasattr(connection_info.db_type, 'value') else str(connection_info.db_type)
         
-        result = await query_assistant.suggest_completion(
+        assistant = get_query_assistant()
+        if not assistant:
+            raise HTTPException(status_code=503, detail="AI service not configured")
+        
+        result = await assistant.suggest_completion(
             partial_query=request.partial_query,
             cursor_position=request.cursor_position,
             schema_context=request.schema_context or {},

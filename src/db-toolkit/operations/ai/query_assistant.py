@@ -274,5 +274,16 @@ class QueryAssistant:
         return '\n'.join(sql_lines).strip() if sql_lines else response.strip()
 
 
-# Global instance
-query_assistant = QueryAssistant()
+# Global instance (lazy initialization)
+_query_assistant = None
+
+def get_query_assistant() -> Optional[QueryAssistant]:
+    """Get query assistant instance (lazy initialization)."""
+    global _query_assistant
+    if _query_assistant is None:
+        try:
+            _query_assistant = QueryAssistant()
+        except ValueError:
+            # Credentials not configured, return None
+            return None
+    return _query_assistant
