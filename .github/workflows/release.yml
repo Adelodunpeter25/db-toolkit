@@ -108,11 +108,14 @@ jobs:
         working-directory: src/db-toolkit-ui/src-tauri
         shell: bash
         run: |
-          python3 << 'EOF'
+          RESOURCES_PATH="$(pwd)/resources/backend"
+          python3 << EOF
           import json
+          import os
           with open('tauri.conf.json', 'r') as f:
               config = json.load(f)
-          config['bundle']['resources'] = ['resources/backend/**']
+          resources_path = os.environ['RESOURCES_PATH']
+          config['bundle']['resources'] = [f'{resources_path}/**']
           with open('tauri.conf.json', 'w') as f:
               json.dump(config, f, indent=2)
           EOF
