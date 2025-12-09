@@ -82,7 +82,6 @@ export function BackupCard({ backup, onRestore, onDownload, onDelete }) {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            console.log('Delete clicked for backup:', backup.id);
             onDelete(backup.id);
           }}
           className="px-2 py-1.5 bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 rounded transition-colors cursor-pointer"

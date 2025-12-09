@@ -26,7 +26,6 @@ function BackupsPage() {
   const debouncedSearch = useDebounce(searchQuery, 300);
   const { connections } = useConnections();
   const { backups, loading, createBackup, restoreBackup, downloadBackup, deleteBackup, fetchBackups } = useBackups();
-  console.log('deleteBackup function:', deleteBackup);
   const [localBackups, setLocalBackups] = useState([]);
 
   useEffect(() => {
@@ -135,15 +134,13 @@ function BackupsPage() {
   };
 
   const handleDelete = async (backupId) => {
-    console.log('handleDelete called with:', backupId);
-    if (!window.confirm('Delete this backup? This cannot be undone.')) return;
+    const confirmed = confirm('Delete this backup? This cannot be undone.');
+    if (!confirmed) return;
     
-    console.log('Confirmed, deleting...');
     try {
       await deleteBackup(backupId);
       toast.success('Backup deleted');
     } catch (err) {
-      console.error('Delete error:', err);
       toast.error('Failed to delete backup');
     }
   };
