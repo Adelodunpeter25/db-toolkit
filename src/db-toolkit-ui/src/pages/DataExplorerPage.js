@@ -273,7 +273,11 @@ function DataExplorerPage() {
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{conn.name}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{conn.db_type}</p>
-                  {conn.host && (
+                  {conn.db_type === 'sqlite' ? (
+                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 truncate" title={conn.database}>
+                      {conn.database?.split('/').pop()}
+                    </p>
+                  ) : conn.host && (
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                       {conn.host}:{conn.port}
                     </p>
