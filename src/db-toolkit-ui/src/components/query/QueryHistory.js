@@ -17,7 +17,7 @@ export function QueryHistory({ connectionId, onSelectQuery }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div className="h-full flex flex-col p-4 overflow-y-auto">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Clock size={20} className="text-gray-600 dark:text-gray-400" />
@@ -38,7 +38,7 @@ export function QueryHistory({ connectionId, onSelectQuery }) {
       {history.length === 0 ? (
         <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No query history</p>
       ) : (
-        <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="space-y-2 flex-1 overflow-y-auto">
           {history.map((item, idx) => (
             <div
               key={idx}

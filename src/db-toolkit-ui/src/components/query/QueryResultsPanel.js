@@ -110,12 +110,10 @@ export function QueryResultsPanel({ connectionId, result, executionTime, onSelec
         )}
 
         {activeTab === 'history' && (
-          <div className="h-full overflow-y-auto overscroll-contain">
-            <QueryHistory
-              connectionId={connectionId}
-              onSelectQuery={onSelectQuery}
-            />
-          </div>
+          <QueryHistory
+            connectionId={connectionId}
+            onSelectQuery={onSelectQuery}
+          />
         )}
       </div>
     </div>
