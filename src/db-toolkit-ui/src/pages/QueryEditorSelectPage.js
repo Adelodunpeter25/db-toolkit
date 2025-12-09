@@ -92,8 +92,14 @@ function QueryEditorSelectPage() {
               />
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              <p className="truncate">{conn.host}:{conn.port}</p>
-              <p className="truncate">{conn.database}</p>
+              {conn.db_type === 'sqlite' ? (
+                <p className="truncate" title={conn.database}>{conn.database?.split('/').pop()}</p>
+              ) : (
+                <>
+                  <p className="truncate">{conn.host}:{conn.port}</p>
+                  <p className="truncate">{conn.database}</p>
+                </>
+              )}
             </div>
           </button>
         ))}

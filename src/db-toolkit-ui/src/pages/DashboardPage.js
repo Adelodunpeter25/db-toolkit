@@ -184,7 +184,7 @@ export default function DashboardPage() {
                       <div>
                         <div className="font-medium text-gray-900 dark:text-white">{conn.name}</div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {conn.db_type} • {conn.host}
+                          {conn.db_type} • {conn.db_type === 'sqlite' ? conn.database?.split('/').pop() : conn.host}
                         </div>
                       </div>
                     </div>
