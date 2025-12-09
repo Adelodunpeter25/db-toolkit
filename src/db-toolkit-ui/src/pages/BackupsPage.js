@@ -136,20 +136,18 @@ function BackupsPage() {
   };
 
   const handleDelete = async (backupId) => {
+    // Use a custom modal instead of window.confirm
+    const confirmed = await new Promise((resolve) => {
+      const result = window.confirm('Delete this backup? This cannot be undone.');
+      resolve(result);
+    });
+    
+    if (!confirmed) return;
+    
     try {
-      const confirmed = window.confirm('Delete this backup? This cannot be undone.');
-      console.log('Confirmation result:', confirmed);
-      if (!confirmed) {
-        console.log('User cancelled');
-        return;
-      }
-      
-      console.log('Calling deleteBackup...');
       await deleteBackup(backupId);
-      console.log('Delete successful');
       toast.success('Backup deleted');
     } catch (err) {
-      console.error('Delete failed:', err);
       toast.error('Failed to delete backup');
     }
   };
