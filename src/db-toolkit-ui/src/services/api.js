@@ -12,33 +12,24 @@ const api = axios.create({
   },
 });
 
-// Get backend port from Tauri with retry
+// Get backend port from Tauri with exponential backoff
 if (window.electron?.getBackendPort) {
-  const getPort = async (retries = 5) => {
-    for (let i = 0; i < retries; i++) {
+  const delays = [500, 2000, 5000, 7000, 10000];
+  const getPort = async () => {
+    for (let i = 0; i < delays.length; i++) {
       try {
         const port = await window.electron.getBackendPort();
         API_BASE_URL = `http://localhost:${port}/api/v1`;
         api.defaults.baseURL = API_BASE_URL;
         return;
       } catch (err) {
-        if (i === retries - 1) throw err;
-        await new Promise(resolve => setTimeout(resolve, 500));
+        if (i === delays.length - 1) throw err;
+        await new Promise(resolve => setTimeout(resolve, delays[i]));
       }
     }
   };
-  getPort().catch(err => console.error('Backend connection failed:', err));
+  getPort();
 }
-
-// Log all API errors
-api.interceptors.response.use(
-  response => response,
-  error => {
-    const msg = error.response?.data?.detail || error.message;
-    alert(`❌ API Error: ${msg}\nURL: ${error.config?.url}\nStatus: ${error.response?.status || 'Network Error'}`);
-    return Promise.reject(error);
-  }
-);
 
 export const connectionsAPI = {
   getAll: async () => {
