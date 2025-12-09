@@ -78,14 +78,13 @@ export function BackupCard({ backup, onRestore, onDownload, onDelete }) {
         >
           Download
         </Button>
-        <Button
-          variant="danger"
-          size="sm"
+        <button
           onClick={() => onDelete(backup.id)}
-          className="!px-2"
+          className="px-2 py-1.5 bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 rounded transition-colors"
+          title="Delete backup"
         >
           <Trash2 size={16} />
-        </Button>
+        </button>
       </div>
     </div>
   );
