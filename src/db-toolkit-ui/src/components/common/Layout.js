@@ -90,7 +90,7 @@ function Layout({ children }) {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
+    <div className="h-screen flex flex-col overflow-hidden bg-gray-100 dark:bg-gray-900">
       {showSidebar ? (
         <Split
           sizes={[sidebarWidth, 100 - sidebarWidth]}
@@ -98,7 +98,7 @@ function Layout({ children }) {
           maxSize={[400, Infinity]}
           gutterSize={4}
           onDragEnd={(sizes) => localStorage.setItem('sidebar-width', sizes[0])}
-          className="flex h-full"
+          className="flex flex-1 overflow-hidden"
         >
           <div>
             <Sidebar />
