@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Columns, Key, Sparkles } from 'lucide-react';
+import { Columns, Key, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSchema } from '../../hooks';
 import { useSchemaAI } from '../../hooks/useSchemaAI';
 import { useToast } from '../../contexts/ToastContext';
 import { LoadingState } from '../common/LoadingState';
 import { Button } from '../common/Button';
 import { TableAiInsights } from './TableAiInsights';
+import api from '../../services/api';
 
 export function TableDetails({ connectionId, schemaName, tableName }) {
   const { fetchTableInfo } = useSchema(connectionId);
@@ -15,10 +16,16 @@ export function TableDetails({ connectionId, schemaName, tableName }) {
   const [loading, setLoading] = useState(false);
   const [tableAnalysis, setTableAnalysis] = useState(null);
   const [showAiInsights, setShowAiInsights] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(5);
+  const [totalCount, setTotalCount] = useState(0);
+  const [previewData, setPreviewData] = useState([]);
 
   useEffect(() => {
     if (schemaName && tableName) {
       loadTableInfo();
+      loadPreviewData(0);
+      loadTotalCount();
     }
   }, [schemaName, tableName]);
 
@@ -32,6 +39,45 @@ export function TableDetails({ connectionId, schemaName, tableName }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadPreviewData = async (offset) => {
+    try {
+      const response = await api.post(`/connections/${connectionId}/data/browse`, {
+        schema_name: schemaName,
+        table_name: tableName,
+        limit: pageSize,
+        offset,
+      });
+      if (response.data.success) {
+        setPreviewData(response.data.rows);
+      }
+    } catch (err) {
+      console.error('Failed to load preview data:', err);
+    }
+  };
+
+  const loadTotalCount = async () => {
+    try {
+      const response = await api.get(`/connections/${connectionId}/data/count`, {
+        params: { schema_name: schemaName, table_name: tableName }
+      });
+      setTotalCount(response.data.count);
+    } catch (err) {
+      console.error('Failed to load count:', err);
+    }
+  };
+
+  const handleNextPage = () => {
+    const newPage = page + 1;
+    setPage(newPage);
+    loadPreviewData(newPage * pageSize);
+  };
+
+  const handlePrevPage = () => {
+    const newPage = Math.max(0, page - 1);
+    setPage(newPage);
+    loadPreviewData(newPage * pageSize);
   };
 
   const handleAnalyzeTable = async (forceRefresh = false) => {
@@ -100,9 +146,32 @@ export function TableDetails({ connectionId, schemaName, tableName }) {
         </div>
       </div>
 
-      {tableInfo.sample_data && (
+      {previewData.length > 0 && (
         <div>
-          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Data</h4>
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Data Preview</h4>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {page * pageSize + 1}-{Math.min((page + 1) * pageSize, totalCount)} of {totalCount}
+              </span>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handlePrevPage}
+                disabled={page === 0}
+              >
+                <ChevronLeft size={16} />
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleNextPage}
+                disabled={(page + 1) * pageSize >= totalCount}
+              >
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
               <thead className="bg-gray-50 dark:bg-gray-900">
@@ -115,9 +184,9 @@ export function TableDetails({ connectionId, schemaName, tableName }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {tableInfo.sample_data.map((row, idx) => (
+                {previewData.map((row, idx) => (
                   <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    {Object.values(row).map((cell, cellIdx) => (
+                    {row.map((cell, cellIdx) => (
                       <td key={cellIdx} className="px-4 py-2 text-gray-900 dark:text-gray-100">
                         {cell !== null ? String(cell) : <span className="text-gray-400 italic">NULL</span>}
                       </td>
