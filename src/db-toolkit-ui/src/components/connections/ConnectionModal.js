@@ -271,8 +271,13 @@ export function ConnectionModal({ isOpen, onClose, onSave, connection }) {
                 mongodb: 27017,
                 sqlite: 0
               };
-              handleChange('db_type', newType);
-              handleChange('port', defaultPorts[newType]);
+              setFormData(prev => ({
+                ...prev,
+                db_type: newType,
+                port: defaultPorts[newType],
+                database: ''
+              }));
+              setHasChanges(true);
             }}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           >
