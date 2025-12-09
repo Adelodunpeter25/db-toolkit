@@ -250,11 +250,13 @@ fn start_backend(app_handle: tauri::AppHandle) -> Result<u16, String> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+  let backend_state = BackendState {
+      process: Mutex::new(None),
+      port: Mutex::new(None),
+  };
+  
   tauri::Builder::default()
-    .manage(BackendState {
-        process: Mutex::new(None),
-        port: Mutex::new(None),
-    })
+    .manage(backend_state)
     .setup(|app| {
       if cfg!(debug_assertions) {
         app.handle().plugin(
@@ -282,14 +284,18 @@ pub fn run() {
       Ok(())
     })
     .on_window_event(|window, event| {
-      if let tauri::WindowEvent::CloseRequested { .. } = event {
-        let app_handle = window.app_handle();
-        let backend_state = app_handle.state::<BackendState>();
-        if let Ok(mut process) = backend_state.process.lock() {
-          if let Some(mut child) = process.take() {
-            let _ = child.kill();
-          }
-        };
+      match event {
+        tauri::WindowEvent::CloseRequested { .. } | tauri::WindowEvent::Destroyed => {
+          let app_handle = window.app_handle();
+          let backend_state = app_handle.state::<BackendState>();
+          if let Ok(mut process) = backend_state.process.lock() {
+            if let Some(mut child) = process.take() {
+              let _ = child.kill();
+              println!("Backend process killed");
+            }
+          };
+        }
+        _ => {}
       }
     })
     .invoke_handler(tauri::generate_handler![
@@ -304,6 +310,17 @@ pub fn run() {
         get_system_metrics,
         check_for_updates
     ])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    .build(tauri::generate_context!())
+    .expect("error while building tauri application")
+    .run(|app_handle, event| {
+      if let tauri::RunEvent::ExitRequested { .. } = event {
+        let backend_state = app_handle.state::<BackendState>();
+        if let Ok(mut process) = backend_state.process.lock() {
+          if let Some(mut child) = process.take() {
+            let _ = child.kill();
+            println!("Backend killed on app exit");
+          }
+        }
+      }
+    });
 }

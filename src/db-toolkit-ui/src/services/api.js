@@ -12,17 +12,22 @@ const api = axios.create({
   },
 });
 
-// Get backend port from Tauri
+// Get backend port from Tauri with retry
 if (window.electron?.getBackendPort) {
-  window.electron.getBackendPort().then(port => {
-    API_BASE_URL = `http://localhost:${port}/api/v1`;
-    api.defaults.baseURL = API_BASE_URL;
-    alert(`✅ Backend connected on port: ${port}`);
-  }).catch(err => {
-    alert(`❌ Failed to get backend port: ${err}`);
-  });
-} else {
-  alert('❌ window.electron.getBackendPort not available');
+  const getPort = async (retries = 5) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const port = await window.electron.getBackendPort();
+        API_BASE_URL = `http://localhost:${port}/api/v1`;
+        api.defaults.baseURL = API_BASE_URL;
+        return;
+      } catch (err) {
+        if (i === retries - 1) throw err;
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+  };
+  getPort().catch(err => console.error('Backend connection failed:', err));
 }
 
 // Log all API errors
