@@ -68,6 +68,7 @@ class SQLiteConnector(BaseConnector):
         """Execute SQLite query."""
         try:
             cursor = await self.connection.execute(query)
+            await self.connection.commit()
             rows = await cursor.fetchall()
             columns = [desc[0] for desc in cursor.description] if cursor.description else []
             return {
