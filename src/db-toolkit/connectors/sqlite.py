@@ -12,7 +12,7 @@ class SQLiteConnector(BaseConnector):
     async def connect(self, config: DatabaseConnection) -> bool:
         """Connect to SQLite database."""
         try:
-            self.connection = await aiosqlite.connect(config.file_path)
+            self.connection = await aiosqlite.connect(config.database)
             self.is_connected = True
             return True
         except Exception:
@@ -32,7 +32,7 @@ class SQLiteConnector(BaseConnector):
     async def test_connection(self, config: DatabaseConnection) -> Dict[str, Any]:
         """Test SQLite connection."""
         try:
-            async with aiosqlite.connect(config.file_path) as conn:
+            async with aiosqlite.connect(config.database) as conn:
                 await conn.execute("SELECT 1")
             return {"success": True, "message": "Connection successful"}
         except Exception as e:

@@ -59,7 +59,7 @@ async def _validate_sqlite(connection: DatabaseConnection) -> Dict[str, Any]:
     """Validate SQLite connection."""
     try:
         import aiosqlite
-        async with aiosqlite.connect(connection.file_path) as conn:
+        async with aiosqlite.connect(connection.database) as conn:
             await conn.execute("SELECT 1")
         return {"success": True, "message": "Connection successful"}
     except Exception as e:
