@@ -104,14 +104,14 @@ class DataEditor:
         changes: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Update SQL row."""
-        set_clause = ", ".join([f"{col} = '{val}'" for col, val in changes.items()])
-        where_clause = " AND ".join([f"{col} = '{val}'" for col, val in primary_key.items()])
+        set_clause = ", ".join([f'"{col}" = \'{val}\'' for col, val in changes.items()])
+        where_clause = " AND ".join([f'"{col}" = \'{val}\'' for col, val in primary_key.items()])
         
         # SQLite doesn't use schemas
         if schema and schema not in ("main", "public") and connector.__class__.__name__ != "SQLiteConnector":
-            query = f"UPDATE {schema}.{table} SET {set_clause} WHERE {where_clause}"
+            query = f'UPDATE {schema}."{table}" SET {set_clause} WHERE {where_clause}'
         else:
-            query = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+            query = f'UPDATE "{table}" SET {set_clause} WHERE {where_clause}'
         
         result = await connector.execute_query(query)
         
@@ -128,14 +128,14 @@ class DataEditor:
         data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Insert SQL row."""
-        columns = ", ".join(data.keys())
+        columns = ", ".join([f'"{col}"' for col in data.keys()])
         values = ", ".join([f"'{val}'" for val in data.values()])
         
         # SQLite doesn't use schemas
         if schema and schema not in ("main", "public") and connector.__class__.__name__ != "SQLiteConnector":
-            query = f"INSERT INTO {schema}.{table} ({columns}) VALUES ({values})"
+            query = f'INSERT INTO {schema}."{table}" ({columns}) VALUES ({values})'
         else:
-            query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
+            query = f'INSERT INTO "{table}" ({columns}) VALUES ({values})'
         
         result = await connector.execute_query(query)
         
@@ -152,13 +152,13 @@ class DataEditor:
         primary_key: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Delete SQL row."""
-        where_clause = " AND ".join([f"{col} = '{val}'" for col, val in primary_key.items()])
+        where_clause = " AND ".join([f'"{col}" = \'{val}\'' for col, val in primary_key.items()])
         
         # SQLite doesn't use schemas
         if schema and schema not in ("main", "public") and connector.__class__.__name__ != "SQLiteConnector":
-            query = f"DELETE FROM {schema}.{table} WHERE {where_clause}"
+            query = f'DELETE FROM {schema}."{table}" WHERE {where_clause}'
         else:
-            query = f"DELETE FROM {table} WHERE {where_clause}"
+            query = f'DELETE FROM "{table}" WHERE {where_clause}'
         
         result = await connector.execute_query(query)
         
