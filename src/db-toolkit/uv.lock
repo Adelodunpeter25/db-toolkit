@@ -274,6 +274,7 @@ dependencies = [
     { name = "asyncpg" },
     { name = "fastapi" },
     { name = "google-generativeai" },
+    { name = "httpx" },
     { name = "migrator-cli" },
     { name = "motor" },
     { name = "pandas" },
@@ -297,7 +298,6 @@ dev = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "httpx" },
     { name = "pyinstaller" },
     { name = "ruff" },
 ]
@@ -310,6 +310,7 @@ requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0" },
     { name = "fastapi", specifier = ">=0.121.2" },
     { name = "google-generativeai", specifier = ">=0.8.5" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "migrator-cli", specifier = ">=0.4.0" },
     { name = "motor", specifier = ">=3.3.0" },
     { name = "pandas", specifier = ">=2.0.0" },
@@ -329,7 +330,6 @@ provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pyinstaller", specifier = ">=6.17.0" },
     { name = "ruff", specifier = ">=0.14.5" },
 ]
