@@ -5,20 +5,35 @@ import { cacheService } from './indexedDB';
 
 let API_BASE_URL = 'http://localhost:8000/api/v1';
 
-// Get backend port from Electron
-if (window.electron?.getBackendPort) {
-  window.electron.getBackendPort().then(port => {
-    API_BASE_URL = `http://localhost:${port}/api/v1`;
-    api.defaults.baseURL = API_BASE_URL;
-  });
-}
-
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// Get backend port from Tauri
+if (window.electron?.getBackendPort) {
+  window.electron.getBackendPort().then(port => {
+    API_BASE_URL = `http://localhost:${port}/api/v1`;
+    api.defaults.baseURL = API_BASE_URL;
+    alert(`✅ Backend connected on port: ${port}`);
+  }).catch(err => {
+    alert(`❌ Failed to get backend port: ${err}`);
+  });
+} else {
+  alert('❌ window.electron.getBackendPort not available');
+}
+
+// Log all API errors
+api.interceptors.response.use(
+  response => response,
+  error => {
+    const msg = error.response?.data?.detail || error.message;
+    alert(`❌ API Error: ${msg}\nURL: ${error.config?.url}\nStatus: ${error.response?.status || 'Network Error'}`);
+    return Promise.reject(error);
+  }
+);
 
 export const connectionsAPI = {
   getAll: async () => {
