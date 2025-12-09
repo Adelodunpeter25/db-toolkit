@@ -320,7 +320,7 @@ pub fn run() {
             let _ = child.kill();
             println!("Backend killed on app exit");
           }
-        }
+        };
       }
     });
 }
