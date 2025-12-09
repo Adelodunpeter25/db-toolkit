@@ -75,7 +75,7 @@ async def get_table_stats_mongodb(connection) -> List[Dict[str, Any]]:
         return []
 
 
-async def get_table_stats_sqlite(connection) -> List[Dict[str, Any]]:
+async def get_table_stats_sqlite(connector) -> List[Dict[str, Any]]:
     """Get SQLite table statistics."""
     try:
         query = """
@@ -87,17 +87,28 @@ async def get_table_stats_sqlite(connection) -> List[Dict[str, Any]]:
             ORDER BY name
             LIMIT 20
         """
-        result = await connection.fetch(query)
+        result = await connector.execute_query(query)
+        
+        if not result.get('success'):
+            return []
         
         stats = []
-        for row in result:
+        for row in result.get('data', []):
             try:
-                count_query = f"SELECT COUNT(*) as count FROM {row['table_name']}"
-                count_result = await connection.fetchrow(count_query)
+                table_name = row[0] if isinstance(row, (list, tuple)) else row.get('table_name')
+                index_count = row[1] if isinstance(row, (list, tuple)) else row.get('index_count', 0)
+                
+                count_query = f"SELECT COUNT(*) as count FROM {table_name}"
+                count_result = await connector.execute_query(count_query)
+                
+                row_count = 0
+                if count_result.get('success') and count_result.get('data'):
+                    row_count = count_result['data'][0][0] if isinstance(count_result['data'][0], (list, tuple)) else count_result['data'][0].get('count', 0)
+                
                 stats.append({
-                    'table_name': row['table_name'],
-                    'row_count': count_result['count'] if count_result else 0,
-                    'index_count': row['index_count']
+                    'table_name': table_name,
+                    'row_count': row_count,
+                    'index_count': index_count
                 })
             except Exception:
                 pass
