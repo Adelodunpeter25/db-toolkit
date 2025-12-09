@@ -88,7 +88,9 @@ function BackupsPage() {
   };
 
   const handleDeleteSchedule = async (scheduleId) => {
-    if (!window.confirm('Delete this schedule?')) return;
+    const confirmed = window.confirm('Delete this schedule?');
+    console.log('Schedule delete confirmation:', confirmed);
+    if (!confirmed) return;
     
     try {
       await api.delete(`/backup-schedules/${scheduleId}`);
@@ -134,13 +136,20 @@ function BackupsPage() {
   };
 
   const handleDelete = async (backupId) => {
-    const confirmed = confirm('Delete this backup? This cannot be undone.');
-    if (!confirmed) return;
-    
     try {
+      const confirmed = window.confirm('Delete this backup? This cannot be undone.');
+      console.log('Confirmation result:', confirmed);
+      if (!confirmed) {
+        console.log('User cancelled');
+        return;
+      }
+      
+      console.log('Calling deleteBackup...');
       await deleteBackup(backupId);
+      console.log('Delete successful');
       toast.success('Backup deleted');
     } catch (err) {
+      console.error('Delete failed:', err);
       toast.error('Failed to delete backup');
     }
   };
