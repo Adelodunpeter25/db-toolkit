@@ -17,7 +17,7 @@ export function ConnectionCard({ connection, onConnect, onDelete, onEdit, isActi
           <p className="text-sm text-gray-600 dark:text-gray-400">{connection.db_type}</p>
           {connection.db_type === 'sqlite' ? (
             <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 truncate" title={connection.database}>
-              {connection.database}
+              {connection.database.split('/').pop()}
             </p>
           ) : connection.host && (
             <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
