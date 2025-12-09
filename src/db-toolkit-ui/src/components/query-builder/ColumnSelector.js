@@ -20,7 +20,7 @@ export function ColumnSelector({ columns, onUpdateColumn, onRemoveColumn, onReor
       ) : (
         <div className="space-y-2">
           {columns.map((col, idx) => (
-            <div key={`${col.table}.${col.name}`} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded">
+            <div key={`${col.table}.${col.name || col.column || idx}`} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded">
               {/* Reorder buttons */}
               <div className="flex flex-col gap-1">
                 <button
