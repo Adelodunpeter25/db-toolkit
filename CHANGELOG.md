@@ -12,12 +12,14 @@ Initial beta release of DB Toolkit - a modern, cross-platform database managemen
 ### Features
 - **Multi-Database Support** - PostgreSQL, MySQL, SQLite, MongoDB
 - **Connection Management** - Save, test, and manage multiple database connections
-- **Schema Explorer** - Visual tree browser for databases, schemas, tables, and columns
+- **Schema Explorer** - Visual tree browser for databases, schemas, tables, and columns with ER diagram visualization
 - **Query Editor** - Monaco-based editor with syntax highlighting, auto-complete, and formatting
+- **Visual Query Builder** - Build SQL queries visually without writing code
 - **Multiple Query Tabs** - Work on multiple queries simultaneously with auto-save
 - **Query History** - Track and re-run previous queries
 - **Data Explorer** - Inline editing, insert/delete rows, pagination, sorting, and filtering
 - **AI Query Assistant** - Generate, optimize, and explain SQL queries with AI
+- **ER Diagram** - Visualize database relationships and schema structure
 - **Backup & Restore** - Automated backups with scheduling, retention policies, and restore capabilities
 - **Database Analytics** - Visual insights, query performance analysis, and database statistics
 - **Auto-Updater** - Automatic updates from GitHub releases
@@ -27,4 +29,3 @@ Initial beta release of DB Toolkit - a modern, cross-platform database managemen
 - Frontend: React 18, Tailwind CSS, Monaco Editor, Vite
 - Backend: Python FastAPI, SQLAlchemy, PyInstaller
 - Desktop: Tauri 2.x, Rust
-- Bundle Size: ~30MB
