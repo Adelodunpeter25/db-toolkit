@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, FolderOpen } from 'lucide-react';
 import { Modal } from '../common/Modal';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
@@ -304,12 +304,47 @@ export function ConnectionModal({ isOpen, onClose, onSave, connection }) {
               </>
             )}
 
-            <Input
-          label="Database"
-          value={formData.database}
-          onChange={(e) => handleChange('database', e.target.value)}
-          required
-        />
+            {formData.db_type === 'sqlite' ? (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Database File Path
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={formData.database}
+                    onChange={(e) => handleChange('database', e.target.value)}
+                    placeholder="/path/to/database.db"
+                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const path = await window.electron.selectFile();
+                        if (path) {
+                          handleChange('database', path);
+                        }
+                      } catch (err) {
+                        toast.error('Failed to select file');
+                      }
+                    }}
+                    className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    title="Browse for database file"
+                  >
+                    <FolderOpen size={18} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Input
+                label="Database"
+                value={formData.database}
+                onChange={(e) => handleChange('database', e.target.value)}
+                required
+              />
+            )}
 
             {formData.db_type !== 'sqlite' && (
               <>

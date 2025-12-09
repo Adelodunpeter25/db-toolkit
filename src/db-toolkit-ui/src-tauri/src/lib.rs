@@ -28,6 +28,16 @@ async fn select_folder(app: tauri::AppHandle) -> Result<Option<String>, String> 
 }
 
 #[tauri::command]
+async fn select_file(app: tauri::AppHandle) -> Result<Option<String>, String> {
+    let file = app.dialog()
+        .file()
+        .add_filter("SQLite Database", &["db", "sqlite", "sqlite3"])
+        .blocking_pick_file();
+    
+    Ok(file.map(|p| p.to_string()))
+}
+
+#[tauri::command]
 async fn read_file(file_path: String) -> Result<String, String> {
     std::fs::read_to_string(&file_path)
         .map_err(|_| "Failed to read file".to_string())
@@ -301,6 +311,7 @@ pub fn run() {
     .invoke_handler(tauri::generate_handler![
         get_backend_port,
         select_folder,
+        select_file,
         read_file,
         delete_file,
         rename_file,
