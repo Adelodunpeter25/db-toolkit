@@ -18,10 +18,11 @@ Initial beta release of DB Toolkit - a modern, cross-platform database managemen
 - **Query History** - Track and re-run previous queries
 - **Data Explorer** - Inline editing, insert/delete rows, pagination, sorting, and filtering
 - **CSV/JSON Import/Export** - Bulk import data and export query results
-- **Automated Backups** - Schedule daily, weekly, or monthly backups with retention policies
-- **Real-time Metrics** - Monitor RAM, CPU, load average, and disk usage
+- **Backup & Restore** - Automated backups with scheduling, retention policies, and restore capabilities
+- **Database Analytics** - Visual insights, query performance analysis, and database statistics
+- **System Monitoring** - Real-time RAM, CPU, load average, and disk usage metrics
 - **Dark Mode** - Automatic OS theme detection with manual toggle
-- **AI Query Assistant** - Generate, optimize, and explain SQL queries (requires Cloudflare credentials)
+- **AI Query Assistant** - Generate, optimize, and explain SQL queries with AI
 - **Auto-Updater** - Automatic updates from GitHub releases
 - **Cross-Platform** - Available for macOS (Intel), Windows, and Linux (deb/rpm)
 
