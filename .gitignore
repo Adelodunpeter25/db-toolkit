@@ -35,6 +35,7 @@ src/db-toolkit-ui/.env.production.local
 src/db-toolkit-ui/npm-debug.log*
 src/db-toolkit-ui/yarn-debug.log*
 src/db-toolkit-ui/yarn-error.log*
+src/db-toolkit-ui/src-tauri/resources
 
 # Electron
 src/db-toolkit-ui/dist/

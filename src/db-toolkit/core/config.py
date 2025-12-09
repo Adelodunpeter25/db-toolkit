@@ -8,10 +8,17 @@ from dotenv import load_dotenv
 # Load .env from executable directory (for PyInstaller)
 if getattr(sys, 'frozen', False):
     # Running in PyInstaller bundle
+    # Try _internal folder first
     bundle_dir = Path(sys._MEIPASS)
     env_path = bundle_dir / '.env'
     if env_path.exists():
         load_dotenv(env_path)
+    else:
+        # Try executable directory
+        exe_dir = Path(sys.executable).parent
+        env_path = exe_dir / '.env'
+        if env_path.exists():
+            load_dotenv(env_path)
 else:
     # Running in normal Python
     load_dotenv()
