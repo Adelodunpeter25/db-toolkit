@@ -24,13 +24,14 @@ export function QueryHistory({ connectionId, onSelectQuery }) {
           <h3 className="font-semibold text-gray-900 dark:text-gray-100">Query History</h3>
         </div>
         {history.length > 0 && (
-          <button
+          <Button 
+            variant="outline" 
+            size="sm" 
             onClick={handleClear}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <Trash2 size={16} />
             Clear
-          </button>
+          </Button>
         )}
       </div>
 
