@@ -90,7 +90,7 @@ function Layout({ children }) {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gray-100 dark:bg-gray-900">
+    <div className="h-screen flex flex-col bg-gray-100 dark:bg-gray-900" style={{ overflow: 'hidden' }}>
       {showSidebar ? (
         <Split
           sizes={[sidebarWidth, 100 - sidebarWidth]}
