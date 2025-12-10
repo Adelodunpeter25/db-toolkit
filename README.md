@@ -4,7 +4,7 @@
 
 ![DB Toolkit](https://img.shields.io/badge/version-0.1.0-blue) ![Python](https://img.shields.io/badge/python-3.11+-green) ![Node](https://img.shields.io/badge/node-18+-green) ![License](https://img.shields.io/badge/license-MIT-green)
 
-[ARCHIVED] Legacy Tauri version of DB Toolkit. Development moved to Electron version for better debugging and faster iteration. See [db-toolkit](https://github.com/db-toolkit/db-toolkit) for active development.
+[ARCHIVED] Legacy Tauri version of DB Toolkit. See [db-toolkit](https://github.com/db-toolkit/db-toolkit) for active development.
 
 </div>
 
