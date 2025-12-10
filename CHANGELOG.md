@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0-beta] - 2025-12-09
 
-Initial beta release of DB Toolkit - a modern, cross-platform database management application.
+[ARCHIVED] Legacy Tauri version of DB Toolkit. Development moved to Electron version for better debugging and faster iteration.
 
 ### Features
 - **Multi-Database Support** - PostgreSQL, MySQL, SQLite, MongoDB
