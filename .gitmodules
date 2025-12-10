@@ -1,0 +1,3 @@
+[submodule "db-toolkit-electron"]
+	path = db-toolkit-electron
+	url = https://github.com/db-toolkit/db-toolkit-electron.git
